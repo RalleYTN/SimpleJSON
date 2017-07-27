@@ -13,7 +13,7 @@ It adds type safety, serialization, tidy formatting and improved performance.
 ```
 
 # Links
-See the [original](https://github.com/fangyidong/json-simple)
-See the [online documentation](https://ralleytn.github.io/SimpleJSON/)
-See the [changelog](https://github.com/RalleYTN/SimpleJSON/blob/master/CHANGELOG.md)
-See the [download page](https://github.com/RalleYTN/SimpleJSON/releases)
+See the [original](https://github.com/fangyidong/json-simple)    
+See the [online documentation](https://ralleytn.github.io/SimpleJSON/)    
+See the [changelog](https://github.com/RalleYTN/SimpleJSON/blob/master/CHANGELOG.md)    
+See the [download page](https://github.com/RalleYTN/SimpleJSON/releases)    
