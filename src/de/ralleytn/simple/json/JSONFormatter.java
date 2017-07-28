@@ -1,5 +1,9 @@
 package de.ralleytn.simple.json;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+
 /**
  * 
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
@@ -45,6 +49,44 @@ public final class JSONFormatter {
 	public static final String format(String json, int indent, boolean useTabs, boolean windowsLineBreak) {
 		
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @param jsonReader
+	 * @param minimizedWriter
+	 * @throws IOException
+	 * @since 1.0.0
+	 */
+	public static final void minimize(Reader jsonReader, Writer minimizedWriter) throws IOException {
+		
+		boolean inString = false;
+		char lastChar = '\0';
+		int read = -1;
+		
+		while((read = jsonReader.read()) != -1) {
+			
+			char character = (char)read;
+			
+			if(character != '\n' &&
+			   character != '\t' &&
+			   character != '\b' &&
+			   character != '\0' &&
+			   character != '\f') {
+				
+				if(character == '"') {
+					
+					inString = !(inString && !(lastChar == '\\'));
+				}
+				
+				if(!(character == ' ' && !inString)) {
+					
+					minimizedWriter.write(character);
+				}
+			}
+			
+			lastChar = character;
+		}
 	}
 	
 	/**
