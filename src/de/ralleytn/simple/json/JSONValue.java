@@ -1,3 +1,206 @@
+/*
+ *                                  Apache License
+ *                            Version 2.0, January 2004
+ *                         http://www.apache.org/licenses/
+ * 
+ *    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+ * 
+ *    1. Definitions.
+ * 
+ *       "License" shall mean the terms and conditions for use, reproduction,
+ *       and distribution as defined by Sections 1 through 9 of this document.
+ * 
+ *       "Licensor" shall mean the copyright owner or entity authorized by
+ *       the copyright owner that is granting the License.
+ * 
+ *       "Legal Entity" shall mean the union of the acting entity and all
+ *       other entities that control, are controlled by, or are under common
+ *       control with that entity. For the purposes of this definition,
+ *       "control" means (i) the power, direct or indirect, to cause the
+ *       direction or management of such entity, whether by contract or
+ *       otherwise, or (ii) ownership of fifty percent (50%) or more of the
+ *       outstanding shares, or (iii) beneficial ownership of such entity.
+ * 
+ *       "You" (or "Your") shall mean an individual or Legal Entity
+ *       exercising permissions granted by this License.
+ * 
+ *       "Source" form shall mean the preferred form for making modifications,
+ *       including but not limited to software source code, documentation
+ *       source, and configuration files.
+ * 
+ *       "Object" form shall mean any form resulting from mechanical
+ *       transformation or translation of a Source form, including but
+ *       not limited to compiled object code, generated documentation,
+ *       and conversions to other media types.
+ * 
+ *       "Work" shall mean the work of authorship, whether in Source or
+ *       Object form, made available under the License, as indicated by a
+ *       copyright notice that is included in or attached to the work
+ *       (an example is provided in the Appendix below).
+ * 
+ *       "Derivative Works" shall mean any work, whether in Source or Object
+ *       form, that is based on (or derived from) the Work and for which the
+ *       editorial revisions, annotations, elaborations, or other modifications
+ *       represent, as a whole, an original work of authorship. For the purposes
+ *       of this License, Derivative Works shall not include works that remain
+ *       separable from, or merely link (or bind by name) to the interfaces of,
+ *       the Work and Derivative Works thereof.
+ * 
+ *       "Contribution" shall mean any work of authorship, including
+ *       the original version of the Work and any modifications or additions
+ *       to that Work or Derivative Works thereof, that is intentionally
+ *       submitted to Licensor for inclusion in the Work by the copyright owner
+ *       or by an individual or Legal Entity authorized to submit on behalf of
+ *       the copyright owner. For the purposes of this definition, "submitted"
+ *       means any form of electronic, verbal, or written communication sent
+ *       to the Licensor or its representatives, including but not limited to
+ *       communication on electronic mailing lists, source code control systems,
+ *       and issue tracking systems that are managed by, or on behalf of, the
+ *       Licensor for the purpose of discussing and improving the Work, but
+ *       excluding communication that is conspicuously marked or otherwise
+ *       designated in writing by the copyright owner as "Not a Contribution."
+ * 
+ *       "Contributor" shall mean Licensor and any individual or Legal Entity
+ *       on behalf of whom a Contribution has been received by Licensor and
+ *       subsequently incorporated within the Work.
+ * 
+ *    2. Grant of Copyright License. Subject to the terms and conditions of
+ *       this License, each Contributor hereby grants to You a perpetual,
+ *       worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+ *       copyright license to reproduce, prepare Derivative Works of,
+ *       publicly display, publicly perform, sublicense, and distribute the
+ *       Work and such Derivative Works in Source or Object form.
+ * 
+ *    3. Grant of Patent License. Subject to the terms and conditions of
+ *       this License, each Contributor hereby grants to You a perpetual,
+ *       worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+ *       (except as stated in this section) patent license to make, have made,
+ *       use, offer to sell, sell, import, and otherwise transfer the Work,
+ *       where such license applies only to those patent claims licensable
+ *       by such Contributor that are necessarily infringed by their
+ *       Contribution(s) alone or by combination of their Contribution(s)
+ *       with the Work to which such Contribution(s) was submitted. If You
+ *       institute patent litigation against any entity (including a
+ *       cross-claim or counterclaim in a lawsuit) alleging that the Work
+ *       or a Contribution incorporated within the Work constitutes direct
+ *       or contributory patent infringement, then any patent licenses
+ *       granted to You under this License for that Work shall terminate
+ *       as of the date such litigation is filed.
+ * 
+ *    4. Redistribution. You may reproduce and distribute copies of the
+ *       Work or Derivative Works thereof in any medium, with or without
+ *       modifications, and in Source or Object form, provided that You
+ *       meet the following conditions:
+ * 
+ *       (a) You must give any other recipients of the Work or
+ *           Derivative Works a copy of this License; and
+ * 
+ *       (b) You must cause any modified files to carry prominent notices
+ *           stating that You changed the files; and
+ * 
+ *       (c) You must retain, in the Source form of any Derivative Works
+ *           that You distribute, all copyright, patent, trademark, and
+ *           attribution notices from the Source form of the Work,
+ *           excluding those notices that do not pertain to any part of
+ *           the Derivative Works; and
+ * 
+ *       (d) If the Work includes a "NOTICE" text file as part of its
+ *           distribution, then any Derivative Works that You distribute must
+ *           include a readable copy of the attribution notices contained
+ *           within such NOTICE file, excluding those notices that do not
+ *           pertain to any part of the Derivative Works, in at least one
+ *           of the following places: within a NOTICE text file distributed
+ *           as part of the Derivative Works; within the Source form or
+ *           documentation, if provided along with the Derivative Works; or,
+ *           within a display generated by the Derivative Works, if and
+ *           wherever such third-party notices normally appear. The contents
+ *           of the NOTICE file are for informational purposes only and
+ *           do not modify the License. You may add Your own attribution
+ *           notices within Derivative Works that You distribute, alongside
+ *           or as an addendum to the NOTICE text from the Work, provided
+ *           that such additional attribution notices cannot be construed
+ *           as modifying the License.
+ * 
+ *       You may add Your own copyright statement to Your modifications and
+ *       may provide additional or different license terms and conditions
+ *       for use, reproduction, or distribution of Your modifications, or
+ *       for any such Derivative Works as a whole, provided Your use,
+ *       reproduction, and distribution of the Work otherwise complies with
+ *       the conditions stated in this License.
+ * 
+ *    5. Submission of Contributions. Unless You explicitly state otherwise,
+ *       any Contribution intentionally submitted for inclusion in the Work
+ *       by You to the Licensor shall be under the terms and conditions of
+ *       this License, without any additional terms or conditions.
+ *       Notwithstanding the above, nothing herein shall supersede or modify
+ *       the terms of any separate license agreement you may have executed
+ *       with Licensor regarding such Contributions.
+ * 
+ *    6. Trademarks. This License does not grant permission to use the trade
+ *       names, trademarks, service marks, or product names of the Licensor,
+ *       except as required for reasonable and customary use in describing the
+ *       origin of the Work and reproducing the content of the NOTICE file.
+ * 
+ *    7. Disclaimer of Warranty. Unless required by applicable law or
+ *       agreed to in writing, Licensor provides the Work (and each
+ *       Contributor provides its Contributions) on an "AS IS" BASIS,
+ *       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ *       implied, including, without limitation, any warranties or conditions
+ *       of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+ *       PARTICULAR PURPOSE. You are solely responsible for determining the
+ *       appropriateness of using or redistributing the Work and assume any
+ *       risks associated with Your exercise of permissions under this License.
+ * 
+ *    8. Limitation of Liability. In no event and under no legal theory,
+ *       whether in tort (including negligence), contract, or otherwise,
+ *       unless required by applicable law (such as deliberate and grossly
+ *       negligent acts) or agreed to in writing, shall any Contributor be
+ *       liable to You for damages, including any direct, indirect, special,
+ *       incidental, or consequential damages of any character arising as a
+ *       result of this License or out of the use or inability to use the
+ *       Work (including but not limited to damages for loss of goodwill,
+ *       work stoppage, computer failure or malfunction, or any and all
+ *       other commercial damages or losses), even if such Contributor
+ *       has been advised of the possibility of such damages.
+ * 
+ *    9. Accepting Warranty or Additional Liability. While redistributing
+ *       the Work or Derivative Works thereof, You may choose to offer,
+ *       and charge a fee for, acceptance of support, warranty, indemnity,
+ *       or other liability obligations and/or rights consistent with this
+ *       License. However, in accepting such obligations, You may act only
+ *       on Your own behalf and on Your sole responsibility, not on behalf
+ *       of any other Contributor, and only if You agree to indemnify,
+ *       defend, and hold each Contributor harmless for any liability
+ *       incurred by, or claims asserted against, such Contributor by reason
+ *       of your accepting any such warranty or additional liability.
+ * 
+ *    END OF TERMS AND CONDITIONS
+ * 
+ *    APPENDIX: How to apply the Apache License to your work.
+ * 
+ *       To apply the Apache License to your work, attach the following
+ *       boilerplate notice, with the fields enclosed by brackets "{}"
+ *       replaced with your own identifying information. (Don't include
+ *       the brackets!)  The text should be enclosed in the appropriate
+ *       comment syntax for the file format. We also recommend that a
+ *       file or class name and description of purpose be included on the
+ *       same "printed page" as the copyright notice for easier
+ *       identification within third-party archives.
+ * 
+ *    Copyright {yyyy} {name of copyright owner}
+ * 
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.ralleytn.simple.json;
 
 import java.io.IOException;
@@ -18,133 +221,131 @@ import java.util.Date;
 import java.util.Map;
 
 /**
+ * Contains a few static methods for JSON values.
  * @author FangYidong<fangyidong@yahoo.com.cn>
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 1.0.0
  * @since 1.0.0
  */
-public class JSONValue {
+public final class JSONValue {
 	
-	private static final String TIME_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-	private static final DateFormat DATETIME_FORMAT_JAVA5 = new SimpleDateFormat(JSONValue.TIME_FORMAT_PATTERN);
-	private static final DateTimeFormatter DATETIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern(JSONValue.TIME_FORMAT_PATTERN);
-	private static final DateTimeFormatter DATE_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private static final DateTimeFormatter TIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("HH:mm:ss");
+	static final DateFormat DATETIME_FORMAT_JAVA5 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	static final DateTimeFormatter DATETIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	static final DateTimeFormatter ZONED_DATETIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+	static final DateTimeFormatter DATE_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	static final DateTimeFormatter TIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("HH:mm:ss");
+	static final DateTimeFormatter ZONED_TIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("HH:mm:ssZ");
+	
+	private JSONValue() {}
 	
     /**
-     * Encode an object into JSON text and write it to out.
-     * <p>
-     * If this object is a Map or a List, and it's also a JSONStreamAware or a JSONAware, JSONStreamAware or JSONAware will be considered firstly.
-     * <p>
-     * DO NOT call this method from writeJSONString(Writer) of a class that implements both JSONStreamAware and (Map or List) with 
-     * "this" as the first parameter, use JSONObject.writeJSONString(Map, Writer) or JSONArray.writeJSONString(List, Writer) instead. 
-     * 
+     * Encode an {@linkplain Object} into JSON text and write it to a {@linkplain Writer}.
+     * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain List}, and it's also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} or {@linkplain JSONAware} will be considered firstly.<p>
+     * DO NOT call this method from {@link JSONStreamAware#writeJSONString(Writer)} of a class that implements both {@linkplain JSONStreamAware} and ({@linkplain Map} or {@linkplain List}) with 
+     * "this" as the first parameter, use {@link JSONObject#writeJSONString(Map, Writer)} or {@link JSONArray#writeJSONString(List, Writer)} instead. 
      * @see de.ralleytn.simple.json.JSONObject#writeJSONString(Map, Writer)
      * @see de.ralleytn.simple.json.JSONArray#writeJSONString(List, Writer)
-     * 
-     * @param value
-     * @param writer
+     * @param value the {@linkplain Object} to write on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write on.
+     * @since 1.0.0
      */
 	@SuppressWarnings("unchecked")
-	public static void writeJSONString(Object value, Writer out) throws IOException {
+	public static void writeJSONString(Object value, Writer writer) throws IOException {
 		
 		if(value == null) {
 			
-			out.write("null");
+			writer.write("null");
 			
 		} else if(value instanceof String) {
 			
-            out.write('\"');
-			out.write(JSONValue.escape((String)value));
-            out.write('\"');
+            writer.write('\"');
+			writer.write(JSONValue.escape((String)value));
+            writer.write('\"');
             
 		} else if(value instanceof Date) {
 			
-			out.write('\"');
-			out.write(JSONValue.DATETIME_FORMAT_JAVA5.format((Date)value));
-            out.write('\"');
+			writer.write('\"');
+			writer.write(JSONValue.DATETIME_FORMAT_JAVA5.format((Date)value));
+            writer.write('\"');
             
 		} else if(value instanceof LocalDateTime) {
 			
-			out.write('\"');
-			out.write(((LocalDateTime)value).format(JSONValue.DATETIME_FORMAT_JAVA8));
-            out.write('\"');
+			writer.write('\"');
+			writer.write(((LocalDateTime)value).format(JSONValue.DATETIME_FORMAT_JAVA8));
+            writer.write('\"');
             
 		} else if(value instanceof LocalDate) {
 			
-			out.write('\"');
-			out.write(((LocalDate)value).format(JSONValue.DATE_FORMAT_JAVA8));
-            out.write('\"');
+			writer.write('\"');
+			writer.write(((LocalDate)value).format(JSONValue.DATE_FORMAT_JAVA8));
+            writer.write('\"');
 			
 		} else if(value instanceof LocalTime) {
             
-			out.write('\"');
-			out.write(((LocalTime)value).format(JSONValue.TIME_FORMAT_JAVA8));
-            out.write('\"');
+			writer.write('\"');
+			writer.write(((LocalTime)value).format(JSONValue.TIME_FORMAT_JAVA8));
+            writer.write('\"');
             
 		} else if(value instanceof OffsetDateTime) {
 			
-			out.write('\"');
-			out.write(((OffsetDateTime)value).format(JSONValue.DATETIME_FORMAT_JAVA8));
-            out.write('\"');
+			writer.write('\"');
+			writer.write(((OffsetDateTime)value).format(JSONValue.ZONED_DATETIME_FORMAT_JAVA8));
+            writer.write('\"');
             
 		} else if(value instanceof OffsetTime) {
 			
-			out.write('\"');
-			out.write(((OffsetTime)value).format(JSONValue.TIME_FORMAT_JAVA8));
-            out.write('\"');
+			writer.write('\"');
+			writer.write(((OffsetTime)value).format(JSONValue.ZONED_TIME_FORMAT_JAVA8));
+            writer.write('\"');
             
 		} else if(value instanceof ZonedDateTime) {
 			
-			out.write('\"');
-			out.write(((ZonedDateTime)value).format(JSONValue.DATETIME_FORMAT_JAVA8));
-            out.write('\"');
+			writer.write('\"');
+			writer.write(((ZonedDateTime)value).format(JSONValue.ZONED_DATETIME_FORMAT_JAVA8));
+            writer.write('\"');
 			
-		} else if(value instanceof Instant)           {JSONValue.writeJSONString(new Date(((Instant)value).toEpochMilli()), out);
-		} else if(value instanceof Double)            {out.write(((Double)value).isInfinite() || ((Double)value).isNaN() ? "null" : value.toString());
-		} else if(value instanceof Float)             {out.write(((Float)value).isInfinite() || ((Float)value).isNaN() ? "null" : value.toString());
-		} else if(value instanceof Number)            {out.write(value.toString());
-		} else if(value instanceof Boolean)           {out.write(value.toString());
-		} else if((value instanceof JSONStreamAware)) {((JSONStreamAware)value).writeJSONString(out);
-		} else if((value instanceof JSONAware))       {out.write(((JSONAware)value).toJSONString());
-		} else if(value instanceof Map)               {JSONObject.writeJSONString((Map<Object, Object>)value, out);
-		} else if(value instanceof Collection)        {JSONArray.writeJSONString((Collection<Object>)value, out);
-		} else if(value instanceof byte[])            {JSONArray.writeJSONString((byte[])value, out);
-		} else if(value instanceof short[])           {JSONArray.writeJSONString((short[])value, out);
-		} else if(value instanceof int[])             {JSONArray.writeJSONString((int[])value, out);
-		} else if(value instanceof long[])            {JSONArray.writeJSONString((long[])value, out);
-		} else if(value instanceof float[])           {JSONArray.writeJSONString((float[])value, out);
-		} else if(value instanceof double[])          {JSONArray.writeJSONString((double[])value, out);
-		} else if(value instanceof boolean[])         {JSONArray.writeJSONString((boolean[])value, out);
-		} else if(value instanceof char[])            {JSONArray.writeJSONString((char[])value, out);
-		} else if(value.getClass().isArray())         {JSONArray.writeJSONString((Object[])value, out);
+		} else if(value instanceof Instant)           {JSONValue.writeJSONString(new Date(((Instant)value).toEpochMilli()), writer);
+		} else if(value instanceof Double)            {writer.write(((Double)value).isInfinite() || ((Double)value).isNaN() ? "null" : value.toString());
+		} else if(value instanceof Float)             {writer.write(((Float)value).isInfinite() || ((Float)value).isNaN() ? "null" : value.toString());
+		} else if(value instanceof Number)            {writer.write(value.toString());
+		} else if(value instanceof Boolean)           {writer.write(value.toString());
+		} else if((value instanceof JSONStreamAware)) {((JSONStreamAware)value).writeJSONString(writer);
+		} else if((value instanceof JSONAware))       {writer.write(((JSONAware)value).toJSONString());
+		} else if(value instanceof Map)               {JSONObject.writeJSONString((Map<Object, Object>)value, writer);
+		} else if(value instanceof Collection)        {JSONArray.writeJSONString((Collection<Object>)value, writer);
+		} else if(value instanceof byte[])            {JSONArray.writeJSONString((byte[])value, writer);
+		} else if(value instanceof short[])           {JSONArray.writeJSONString((short[])value, writer);
+		} else if(value instanceof int[])             {JSONArray.writeJSONString((int[])value, writer);
+		} else if(value instanceof long[])            {JSONArray.writeJSONString((long[])value, writer);
+		} else if(value instanceof float[])           {JSONArray.writeJSONString((float[])value, writer);
+		} else if(value instanceof double[])          {JSONArray.writeJSONString((double[])value, writer);
+		} else if(value instanceof boolean[])         {JSONArray.writeJSONString((boolean[])value, writer);
+		} else if(value instanceof char[])            {JSONArray.writeJSONString((char[])value, writer);
+		} else if(value.getClass().isArray())         {JSONArray.writeJSONString((Object[])value, writer);
 		} else {
 			
-			out.write('"');
-			out.write(JSONValue.escape(value.toString()));
-			out.write('"');
+			writer.write('"');
+			writer.write(JSONValue.escape(value.toString()));
+			writer.write('"');
 		}
 	}
 
 	/**
-	 * Convert an object to JSON text.
-	 * <p>
-	 * If this object is a Map or a List, and it's also a JSONAware, JSONAware will be considered firstly.
-	 * <p>
-	 * DO NOT call this method from toJSONString() of a class that implements both JSONAware and Map or List with 
-	 * "this" as the parameter, use JSONObject.toJSONString(Map) or JSONArray.toJSONString(List) instead. 
-	 * 
+	 * Convert an {@linkplain Object} to JSON text.
+	 * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain List}, and it's also a {@linkplain JSONAware}, {@linkplain JSONAware} it will be considered first.<p>
+	 * DO NOT call this method from {@link JSONAware#toJSONString()} of a class that implements both {@linkplain JSONAware} and {@linkplain Map} or {@linkplain List} with 
+	 * "this" as the parameter, use {@link JSONObject#toJSONString(Map)} or {@link JSONArray#toJSONString(List)} instead. 
 	 * @see de.ralleytn.simple.json.JSONObject#toJSONString(Map)
 	 * @see de.ralleytn.simple.json.JSONArray#toJSONString(List)
-	 * 
-	 * @param value
-	 * @return JSON text, or "null" if value is null or it's an NaN or an INF number.
+	 * @param value the {@linkplain Object} to convert
+	 * @return JSON text, or "null" if the {@linkplain Object} is {@code null} or it's an {@code NaN} or an infinite number.
+	 * @since 1.0.0
 	 */
-	public static String toJSONString(Object value){
+	public static final String toJSONString(Object value){
 
 		try(StringWriter writer = new StringWriter()) {
 			
-			writeJSONString(value, writer);
+			JSONValue.writeJSONString(value, writer);
 			return writer.toString();
 			
 		} catch(IOException exception){
