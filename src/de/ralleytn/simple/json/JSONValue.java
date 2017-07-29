@@ -207,46 +207,32 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
 /**
  * Contains a few static methods for JSON values.
- * @author FangYidong<fangyidong@yahoo.com.cn>
+ * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 1.0.0
  * @since 1.0.0
  */
 public final class JSONValue {
-	
-	static final DateFormat DATETIME_FORMAT_JAVA5 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-	static final DateTimeFormatter DATETIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	static final DateTimeFormatter ZONED_DATETIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-	static final DateTimeFormatter DATE_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	static final DateTimeFormatter TIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("HH:mm:ss");
-	static final DateTimeFormatter ZONED_TIME_FORMAT_JAVA8 = DateTimeFormatter.ofPattern("HH:mm:ssZ");
-	
+
 	private JSONValue() {}
 	
     /**
      * Encode an {@linkplain Object} into JSON text and write it to a {@linkplain Writer}.
      * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain List}, and it's also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} or {@linkplain JSONAware} will be considered firstly.<p>
      * DO NOT call this method from {@link JSONStreamAware#writeJSONString(Writer)} of a class that implements both {@linkplain JSONStreamAware} and ({@linkplain Map} or {@linkplain List}) with 
-     * "this" as the first parameter, use {@link JSONObject#writeJSONString(Map, Writer)} or {@link JSONArray#writeJSONString(List, Writer)} instead. 
+     * "this" as the first parameter, use {@link JSONObject#writeJSONString(Map, Writer)} or {@link JSONArray#writeJSONString(Collection, Writer)} instead. 
      * @see de.ralleytn.simple.json.JSONObject#writeJSONString(Map, Writer)
-     * @see de.ralleytn.simple.json.JSONArray#writeJSONString(List, Writer)
+     * @see de.ralleytn.simple.json.JSONArray#writeJSONString(Collection, Writer)
      * @param value the {@linkplain Object} to write on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write on.
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	@SuppressWarnings("unchecked")
@@ -262,49 +248,6 @@ public final class JSONValue {
 			writer.write(JSONValue.escape((String)value));
             writer.write('\"');
             
-		} else if(value instanceof Date) {
-			
-			writer.write('\"');
-			writer.write(JSONValue.DATETIME_FORMAT_JAVA5.format((Date)value));
-            writer.write('\"');
-            
-		} else if(value instanceof LocalDateTime) {
-			
-			writer.write('\"');
-			writer.write(((LocalDateTime)value).format(JSONValue.DATETIME_FORMAT_JAVA8));
-            writer.write('\"');
-            
-		} else if(value instanceof LocalDate) {
-			
-			writer.write('\"');
-			writer.write(((LocalDate)value).format(JSONValue.DATE_FORMAT_JAVA8));
-            writer.write('\"');
-			
-		} else if(value instanceof LocalTime) {
-            
-			writer.write('\"');
-			writer.write(((LocalTime)value).format(JSONValue.TIME_FORMAT_JAVA8));
-            writer.write('\"');
-            
-		} else if(value instanceof OffsetDateTime) {
-			
-			writer.write('\"');
-			writer.write(((OffsetDateTime)value).format(JSONValue.ZONED_DATETIME_FORMAT_JAVA8));
-            writer.write('\"');
-            
-		} else if(value instanceof OffsetTime) {
-			
-			writer.write('\"');
-			writer.write(((OffsetTime)value).format(JSONValue.ZONED_TIME_FORMAT_JAVA8));
-            writer.write('\"');
-            
-		} else if(value instanceof ZonedDateTime) {
-			
-			writer.write('\"');
-			writer.write(((ZonedDateTime)value).format(JSONValue.ZONED_DATETIME_FORMAT_JAVA8));
-            writer.write('\"');
-			
-		} else if(value instanceof Instant)           {JSONValue.writeJSONString(new Date(((Instant)value).toEpochMilli()), writer);
 		} else if(value instanceof Double)            {writer.write(((Double)value).isInfinite() || ((Double)value).isNaN() ? "null" : value.toString());
 		} else if(value instanceof Float)             {writer.write(((Float)value).isInfinite() || ((Float)value).isNaN() ? "null" : value.toString());
 		} else if(value instanceof Number)            {writer.write(value.toString());
@@ -333,10 +276,10 @@ public final class JSONValue {
 	/**
 	 * Convert an {@linkplain Object} to JSON text.
 	 * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain List}, and it's also a {@linkplain JSONAware}, {@linkplain JSONAware} it will be considered first.<p>
-	 * DO NOT call this method from {@link JSONAware#toJSONString()} of a class that implements both {@linkplain JSONAware} and {@linkplain Map} or {@linkplain List} with 
-	 * "this" as the parameter, use {@link JSONObject#toJSONString(Map)} or {@link JSONArray#toJSONString(List)} instead. 
+	 * DO NOT call this method from {@link JSONAware#toJSONString()} of a class that implements both {@linkplain JSONAware} and {@linkplain Map} or {@linkplain Collection} with 
+	 * "this" as the parameter, use {@link JSONObject#toJSONString(Map)} or {@link JSONArray#toJSONString(Collection)} instead. 
 	 * @see de.ralleytn.simple.json.JSONObject#toJSONString(Map)
-	 * @see de.ralleytn.simple.json.JSONArray#toJSONString(List)
+	 * @see de.ralleytn.simple.json.JSONArray#toJSONString(Collection)
 	 * @param value the {@linkplain Object} to convert
 	 * @return JSON text, or "null" if the {@linkplain Object} is {@code null} or it's an {@code NaN} or an infinite number.
 	 * @since 1.0.0
@@ -352,6 +295,167 @@ public final class JSONValue {
 
 			throw new RuntimeException(exception);
 		}
+	}
+	
+	static final JSONObject getObject(Object value) {
+
+		if(value != null) {
+			
+			       if(value instanceof JSONObject) {return (JSONObject)value;
+			} else if(value instanceof Map)        {return new JSONObject((Map<?, ?>)value);
+			}
+		}
+		
+		return null;
+	}
+	
+	static final JSONArray getArray(Object value) {
+
+		if(value != null) {
+			
+			       if(value instanceof JSONArray)  {return (JSONArray)value;
+			} else if(value instanceof boolean[])  {return new JSONArray((boolean[])value);
+			} else if(value instanceof byte[])     {return new JSONArray((byte[])value);
+			} else if(value instanceof char[])     {return new JSONArray((char[])value);
+			} else if(value instanceof short[])    {return new JSONArray((short[])value);
+			} else if(value instanceof int[])      {return new JSONArray((int[])value);
+			} else if(value instanceof long[])     {return new JSONArray((long[])value);
+			} else if(value instanceof float[])    {return new JSONArray((float[])value);
+			} else if(value instanceof double[])   {return new JSONArray((double[])value);
+			} else if(value instanceof Collection) {return new JSONArray((Collection<?>)value);
+			} else if(value.getClass().isArray())  {return new JSONArray(value);
+			}
+		}
+		
+		return null;
+	}
+
+	static final Boolean getBoolean(Object value) {
+
+		if(value != null) {
+			
+			       if(value instanceof Boolean) {return (boolean)value;
+			} else if(value instanceof String)  {return Boolean.parseBoolean((String)value);
+			} else if(value instanceof Number)  {return ((Number)value).longValue() == 1L;
+			}
+		}
+		
+		return null;
+	}
+
+	static final Byte getByte(Object value) {
+		
+		if(value != null) {
+			
+			       if(value instanceof Number)  {return ((Number)value).byteValue();
+			} else if(value instanceof String)  {return Byte.parseByte((String)value);
+			} else if(value instanceof Boolean) {return (boolean)value ? (byte)1 : (byte)0;
+			}
+		}
+		
+		return null;
+	}
+
+	static final Short getShort(Object value) {
+
+		if(value != null) {
+			
+			       if(value instanceof Number)  {return ((Number)value).shortValue();
+			} else if(value instanceof String)  {return Short.parseShort((String)value);
+			} else if(value instanceof Boolean) {return (boolean)value ? (short)1 : (short)0;
+			}
+		}
+		
+		return null;
+	}
+
+	static final Integer getInteger(Object value) {
+		
+		if(value != null) {
+			
+			       if(value instanceof Number)  {return ((Number)value).intValue();
+			} else if(value instanceof String)  {return Integer.parseInt((String)value);
+			} else if(value instanceof Boolean) {return (boolean)value ? 1 : 0;
+			}
+		}
+		
+		return null;
+	}
+
+	static final Long getLong(Object value) {
+
+		if(value != null) {
+			
+			       if(value instanceof Number)  {return ((Number)value).longValue();
+			} else if(value instanceof String)  {return Long.parseLong((String)value);
+			} else if(value instanceof Boolean) {return (boolean)value ? 1L : 0L;
+			}
+		}
+		
+		return null;
+	}
+
+	static final Float getFloat(Object value) {
+
+		if(value != null) {
+			
+			       if(value instanceof Number)  {return ((Number)value).floatValue();
+			} else if(value instanceof String)  {return Float.parseFloat((String)value);
+			} else if(value instanceof Boolean) {return (boolean)value ? 1F : 0F;
+			}
+		}
+		
+		return null;
+	}
+
+	static final Double getDouble(Object value) {
+		
+		if(value != null) {
+			
+			       if(value instanceof Number)  {return ((Number)value).doubleValue();
+			} else if(value instanceof String)  {return Double.parseDouble((String)value);
+			} else if(value instanceof Boolean) {return (boolean)value ? 1D : 0D;
+			}
+		}
+		
+		return null;
+	}
+
+	static final String getString(Object value) {
+
+		if(value != null) {
+			
+			return value.toString();
+		}
+		
+		return null;
+	}
+	
+	static final Date getDate(Object value, DateFormat format) throws ParseException {
+
+		if(value != null) {
+			
+			return value instanceof Date ? (Date)value : format.parse(value.toString());
+		}
+		
+		return null;
+	}
+	
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	static final <T extends Enum>T getEnum(Object value, Class<T> type) {
+		
+		if(value != null) {
+			
+			for(Object enumConstant : type.getEnumConstants()) {
+				
+				if(((T)enumConstant).name().equals(value.toString())) {
+					
+					return (T)enumConstant;
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	/**

@@ -203,17 +203,260 @@
  */
 package de.ralleytn.simple.json;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * Provides static methods which allow you to convert Java objects into {@linkplain JSONObject}s
+ * and the other way around.
+ * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public final class JSONSerializer {
 
 	private JSONSerializer() {}
 	
-	public static final JSONObject serialize(Object object) {
+	/**
+	 * Converts a Java object into a {@linkplain JSONObject}.
+	 * @param object the Java object you want to convert
+	 * @return the resulting {@linkplain JSONObject}
+	 * @throws Exception if an error occurs
+	 * @since 1.0.0
+	 */
+	public static final JSONObject serialize(Object object) throws Exception {
 		
-		return null;
+		Class<?> clazz = object.getClass();
+		Field[] fields = clazz.getFields();
+		Method[] methods = clazz.getMethods();
+		JSONObject json = new JSONObject();
+		
+		for(Field field : fields) {
+
+			JSONAttribute annotation = field.getAnnotation(JSONAttribute.class);
+			
+			if(!Modifier.isTransient(field.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.GETTER, annotation)) {
+
+				JSONSerializer.serialize(json, field.get(object), annotation);
+			}
+		}
+		
+		for(Method method : methods) {
+
+			JSONAttribute annotation = method.getAnnotation(JSONAttribute.class);
+			
+			if(!Modifier.isTransient(method.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.GETTER, annotation)) {
+				
+				JSONSerializer.serialize(json, method.invoke(object), annotation);
+			}
+		}
+		
+		return json;
 	}
 	
-	public static final void deserialize(JSONObject json, Object object) {
+	/**
+	 * Transfers the data of {@linkplain JSONObject} into a Java object.
+	 * @param json the JSON object containing the data
+	 * @param object the body of the Java object that should be filled
+	 * @throws Exception if an error occurs
+	 * @since 1.0.0
+	 */
+	public static final void deserialize(JSONObject json, Object object) throws Exception {
 		
+		Class<?> clazz = object.getClass();
+		Field[] fields = clazz.getFields();
+		Method[] methods = clazz.getMethods();
 		
+		for(Field field : fields) {
+
+			JSONAttribute annotation = field.getAnnotation(JSONAttribute.class);
+			
+			if(!Modifier.isTransient(field.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
+
+				if(String.class.isAssignableFrom(field.getType()) ||
+				   Boolean.class.isAssignableFrom(field.getType()) ||
+				   Number.class.isAssignableFrom(field.getType()) ||
+				   boolean.class.isAssignableFrom(field.getType()) ||
+				   byte.class.isAssignableFrom(field.getType()) ||
+				   short.class.isAssignableFrom(field.getType()) ||
+				   int.class.isAssignableFrom(field.getType()) ||
+				   long.class.isAssignableFrom(field.getType()) ||
+				   float.class.isAssignableFrom(field.getType()) ||
+				   double.class.isAssignableFrom(field.getType())) {
+					
+					field.set(object, json.get(annotation.name()));
+				}
+			}
+		}
+		
+		for(Method method : methods) {
+
+			JSONAttribute annotation = method.getAnnotation(JSONAttribute.class);
+			
+			if(!Modifier.isTransient(method.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
+				
+				Class<?> parameterType = method.getParameterTypes()[0];
+				
+				if(String.class.isAssignableFrom(parameterType) ||
+				   Boolean.class.isAssignableFrom(parameterType) ||
+				   Number.class.isAssignableFrom(parameterType) ||
+				   boolean.class.isAssignableFrom(parameterType) ||
+				   byte.class.isAssignableFrom(parameterType) ||
+				   short.class.isAssignableFrom(parameterType) ||
+				   int.class.isAssignableFrom(parameterType) ||
+				   long.class.isAssignableFrom(parameterType) ||
+				   float.class.isAssignableFrom(parameterType) ||
+				   double.class.isAssignableFrom(parameterType)) {
+					
+					method.invoke(object, json.get(annotation.name()));
+					
+				} else if(parameterType.isEnum()) {
+					
+					for(Object enumConstant : parameterType.getEnumConstants()) {
+						
+						if(enumConstant.toString().equals(json.getString(annotation.name()))) {
+							
+							method.invoke(object, enumConstant);
+							break;
+						}
+					}
+					
+				} else if(parameterType.isArray()) {
+					
+				} else if(parameterType.getAnnotation(JSONRoot.class) != null) {
+					
+					
+				} else if(Collection.class.isAssignableFrom(parameterType)) {
+					
+					
+				} else if(Map.class.isAssignableFrom(parameterType)) {
+					
+					
+				}
+			}
+		}
+	}
+	
+	private static final void serialize(JSONObject json, Object value, JSONAttribute annotation) throws Exception {
+		
+		       if(value instanceof String || value instanceof Number || value instanceof Boolean) {json.put(annotation.name(), value);
+		} else if(value instanceof boolean[]) {json.put(annotation.name(), new JSONArray((boolean[])value));
+		} else if(value instanceof byte[]) {json.put(annotation.name(), new JSONArray((byte[])value));
+		} else if(value instanceof short[]) {json.put(annotation.name(), new JSONArray((short[])value));
+		} else if(value instanceof int[]) {json.put(annotation.name(), new JSONArray((int[])value));
+		} else if(value instanceof long[]) {json.put(annotation.name(), new JSONArray((long[])value));
+		} else if(value instanceof float[]) {json.put(annotation.name(), new JSONArray((float[])value));
+		} else if(value instanceof double[]) {json.put(annotation.name(), new JSONArray((double[])value));
+		} else if(value != null && value.getClass().isArray()) {json.put(annotation.name(), JSONSerializer.getArray(value));
+		} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.put(annotation.name(), JSONSerializer.serialize(value));
+		} else if(value instanceof Collection) {json.put(annotation.name(), JSONSerializer.getArray((Collection<?>)value));
+		} else if(value instanceof Map) {json.put(annotation.name(), JSONSerializer.getObject((Map<?, ?>)value));
+		} else {
+			
+			json.put(annotation.name(),  value);
+		}
+	}
+	
+	private static final JSONObject getObject(Map<?, ?> map) throws Exception {
+		
+		JSONObject json = new JSONObject();
+		
+		for(Map.Entry<?, ?> entry : map.entrySet()) {
+			
+			Object value = entry.getValue();
+			
+			       if(value instanceof boolean[]) {json.put(entry.getKey(), new JSONArray((boolean[])value));
+			} else if(value instanceof byte[]) {json.put(entry.getKey(), new JSONArray((byte[])value));
+			} else if(value instanceof short[]) {json.put(entry.getKey(), new JSONArray((short[])value));
+			} else if(value instanceof int[]) {json.put(entry.getKey(), new JSONArray((int[])value));
+			} else if(value instanceof long[]) {json.put(entry.getKey(), new JSONArray((long[])value));
+			} else if(value instanceof float[]) {json.put(entry.getKey(), new JSONArray((float[])value));
+			} else if(value instanceof double[]) {json.put(entry.getKey(), new JSONArray((double[])value));
+			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.put(entry.getKey(), JSONSerializer.serialize(value));
+			} else if(value instanceof Map) {json.put(entry.getKey(), JSONSerializer.getObject((Map<?, ?>)value));
+			} else if(value instanceof Collection) {json.put(entry.getKey(), JSONSerializer.getArray((Collection<?>)value));
+			} else if(value != null && value.getClass().isArray()) {json.put(entry.getKey(), JSONSerializer.getArray(value));
+			} else {
+				
+				json.put(entry.getKey(), value);
+			}
+		}
+		
+		return json;
+	}
+	
+	private static final JSONArray getArray(Collection<?> collection) throws Exception {
+		
+		JSONArray json = new JSONArray();
+		Iterator<?> iterator = collection.iterator();
+		
+		while(iterator.hasNext()) {
+			
+			Object value = iterator.next();
+			
+			       if(value instanceof boolean[]) {json.add(new JSONArray((boolean[])value));
+			} else if(value instanceof byte[]) {json.add(new JSONArray((byte[])value));
+			} else if(value instanceof short[]) {json.add(new JSONArray((short[])value));
+			} else if(value instanceof int[]) {json.add(new JSONArray((int[])value));
+			} else if(value instanceof long[]) {json.add(new JSONArray((long[])value));
+			} else if(value instanceof float[]) {json.add(new JSONArray((float[])value));
+			} else if(value instanceof double[]) {json.add(new JSONArray((double[])value));
+			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.add(JSONSerializer.serialize(value));
+			} else if(value instanceof Map) {json.add(JSONSerializer.getObject((Map<?, ?>)value));
+			} else if(value instanceof Collection) {json.add(JSONSerializer.getArray((Collection<?>)value));
+			} else if(value != null && value.getClass().isArray()) {json.add(JSONSerializer.getArray(value));
+			} else {
+				
+				json.add(value);
+			}
+		}
+		
+		return json;
+	}
+	
+	private static final JSONArray getArray(Object array) throws Exception {
+		
+		JSONArray json = new JSONArray();
+		
+		for(int index = 0; index < Array.getLength(array); index++) {
+			
+			Object value = Array.get(array, index);
+			
+			       if(value instanceof boolean[]) {json.add(new JSONArray((boolean[])value));
+			} else if(value instanceof byte[]) {json.add(new JSONArray((byte[])value));
+			} else if(value instanceof short[]) {json.add(new JSONArray((short[])value));
+			} else if(value instanceof int[]) {json.add(new JSONArray((int[])value));
+			} else if(value instanceof long[]) {json.add(new JSONArray((long[])value));
+			} else if(value instanceof float[]) {json.add(new JSONArray((float[])value));
+			} else if(value instanceof double[]) {json.add(new JSONArray((double[])value));
+			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.add(JSONSerializer.serialize(value));
+			} else if(value instanceof Map) {json.add(JSONSerializer.getObject((Map<?, ?>)value));
+			} else if(value instanceof Collection) {json.add(JSONSerializer.getArray((Collection<?>)value));
+			} else if(value != null && value.getClass().isArray()) {json.add(JSONSerializer.getArray(value));
+			} else {
+				
+				json.add(value);
+			}
+		}
+		
+		return json;
+	}
+	
+	private static final boolean contains(JSONAttribute.Type type, JSONAttribute attribute) {
+		
+		for(JSONAttribute.Type value : attribute.type()) {
+			
+			if(type == value) {
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

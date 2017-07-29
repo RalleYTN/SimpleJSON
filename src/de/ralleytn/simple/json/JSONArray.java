@@ -204,11 +204,18 @@
 package de.ralleytn.simple.json;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
+
+import de.ralleytn.simple.json.parser.JSONParser;
 
 /**
  * Represents a JSON array.
@@ -353,6 +360,45 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 			
 			this.add(element);
 		}
+	}
+	
+	/**
+	 * Constructs a {@linkplain JSONArray} containing the elements of the specified array.
+	 * This constructor is a little slower than the others because it uses the Reflection API.
+	 * @param array the array whose elements are to be placed into this {@linkplain JSONArray}
+	 * @since 1.0.0
+	 */
+	public JSONArray(Object array) {
+		
+		int length = Array.getLength(array);
+		
+		for(int index = 0; index < length; index++) {
+			
+			this.add(Array.get(array, index));
+		}
+	}
+	
+	/**
+	 * Constructs a {@linkplain JSONArray} from JSON data.
+	 * @param json the JSON data
+	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @since 1.0.0
+	 */
+	public JSONArray(String json) throws de.ralleytn.simple.json.parser.ParseException {
+		
+		super((JSONArray)new JSONParser().parse(json));
+	}
+	
+	/**
+	 * Constructs a {@linkplain JSONArray} from JSON data read from a {@linkplain Reader}.
+	 * @param jsonReader the {@linkplain Reader} with the JSON data
+	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @throws IOException if an I/O error occurred
+	 * @since 1.0.0
+	 */
+	public JSONArray(Reader jsonReader) throws de.ralleytn.simple.json.parser.ParseException, IOException {
+		
+		super((JSONArray)new JSONParser().parse(jsonReader));
 	}
 	
     /**
@@ -913,5 +959,343 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	public String toString() {
 		
 		return this.toJSONString();
+	}
+	
+	/**
+	 * If the value is a {@linkplain JSONobject} already, it will be casted and returned.
+	 * If the value is a {@linkplain Map}, it will be wrapped in a {@linkplain JSONObject}. The wrapped {@linkplain Map} will be returned.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@code JSONObject} or {@code null}
+	 * @since 1.0.0
+	 */
+	public JSONObject getObject(int index) {
+		
+		return JSONValue.getObject(this.get(index));
+	}
+	
+	/**
+	 * If the value already is a {@linkplain JSONArray}, it will be casted and returned.
+	 * If the value is an array or {@linkplain Collection}, it will be wrapped in a {@linkplain JSONArray}.
+	 * The result is returned.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain JSONArray} or {@code null}
+	 * @since 1.0.0
+	 */
+	public JSONArray getArray(int index) {
+		
+		return JSONValue.getArray(this.get(index));
+	}
+	
+	/**
+	 * If the value is already a {@linkplain Boolean}, it will be casted and returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Number}, this method will return {@code true} in case its {@code long} value is {@code 1}.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain Boolean} or {@code null}
+	 * @since 1.0.0
+	 */
+	public Boolean getBoolean(int index) {
+		
+		return JSONValue.getBoolean(this.get(index));
+	}
+	
+	/**
+	 * If the value is a {@linkplain Number}, its {@code byte} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain Byte} or {@code null}
+	 * @since 1.0.0
+	 */
+	public Byte getByte(int index) {
+		
+		return JSONValue.getByte(this.get(index));
+	}
+	
+	/**
+	 * If the value is a {@linkplain Number}, its {@code short} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain Short} or {@code null}
+	 * @since 1.0.0
+	 */
+	public Short getShort(int index) {
+		
+		return JSONValue.getShort(this.get(index));
+	}
+	
+	/**
+	 * If the value is a {@linkplain Number}, its {@code int} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain Integer} or {@code null}
+	 * @since 1.0.0
+	 */
+	public Integer getInteger(int index) {
+		
+		return JSONValue.getInteger(this.get(index));
+	}
+	
+	/**
+	 * If the value is a {@linkplain Number}, its {@code long} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain Long} or {@code null}
+	 * @since 1.0.0
+	 */
+	public Long getLong(int index) {
+		
+		return JSONValue.getLong(this.get(index));
+	}
+	
+	/**
+	 * If the value is a {@linkplain Number}, its {@code float} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain Float} or {@code null}
+	 * @since 1.0.0
+	 */
+	public Float getFloat(int index) {
+		
+		return JSONValue.getFloat(this.get(index));
+	}
+	
+	/**
+	 * If the value is a {@linkplain Number}, its {@code double} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain Double} or {@code null}
+	 * @since 1.0.0
+	 */
+	public Double getDouble(int index) {
+		
+		return JSONValue.getDouble(this.get(index));
+	}
+	
+	/**
+	 * Returns the same as the value's {@link Object#toString()} method.
+	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * @param index index of the value
+	 * @return a {@linkplain String} or {@code null}
+	 * @since 1.0.0
+	 */
+	public String getString(int index) {
+		
+		return JSONValue.getString(this.get(index));
+	}
+
+	/**
+	 * If the value already is a {@linkplain Date}, it will be casted and returned.
+	 * Otherwise the result of the value's {@link Object#toString()} will be parsed by the given
+	 * {@linkplain DateFormat}. The result is returned.
+	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * @param index index of the value
+	 * @param format the {@linkplain DateFormat} used to parse the date
+	 * @return a {@linkplain Date} or {@code null}
+	 * @throws ParseException if the date could not be parsed
+	 * @since 1.0.0
+	 */
+	public Date getDate(int index, DateFormat format) throws ParseException {
+		
+		return JSONValue.getDate(this.get(index), format);
+	}
+	
+	/**
+	 * If the {@linkplain String} representation of the value equals the name of the enum constant
+	 * in the given enum type, it will return the enum constant.
+	 * In any other case this method returns {@code null}.
+	 * @param index index of the value
+	 * @param type the enum type
+	 * @return an {@linkplain Enum} or {@code null}
+	 * @since 1.0.0
+	 */
+	@SuppressWarnings("rawtypes")
+	public <T extends Enum>T getEnum(int index, Class<T> type) {
+		
+		return JSONValue.getEnum(this.get(index), type);
+	}
+
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain Boolean}s using the {@link #getBoolean(int)} method.
+	 * @return an array {@linkplain Boolean}s
+	 * @since 1.0.0
+	 */
+	public Boolean[] toBooleanArray() {
+		
+		Boolean[] array = new Boolean[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getBoolean(index);
+		}
+		
+		return array;
+	}
+
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain Byte}s using the {@link #getByte(int)} method.
+	 * @return an array of {@linkplain Byte}s
+	 * @since 1.0.0
+	 */
+	public Byte[] toByteArray() {
+		
+		Byte[] array = new Byte[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getByte(index);
+		}
+		
+		return array;
+	}
+
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain Short}s using the {@link #getShort(int)} method.
+	 * @return an array of {@linkplain Short}s
+	 * @since 1.0.0
+	 */
+	public Short[] toShortArray() {
+		
+		Short[] array = new Short[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getShort(index);
+		}
+		
+		return array;
+	}
+
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain Integer}s using the {@link #getInteger(int)} method.
+	 * @return an array of {@linkplain Integer}s
+	 * @since 1.0.0
+	 */
+	public Integer[] toIntegerArray() {
+		
+		Integer[] array = new Integer[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getInteger(index);
+		}
+		
+		return array;
+	}
+
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain Long}s using the {@link #getLong(int)} method.
+	 * @return an array of {@linkplain Long}s
+	 * @since 1.0.0
+	 */
+	public Long[] toLongArray() {
+		
+		Long[] array = new Long[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getLong(index);
+		}
+		
+		return array;
+	}
+
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain Float}s using the {@link #getFloat(int)} method.
+	 * @return an array of {@linkplain Float}s
+	 * @since 1.0.0
+	 */
+	public Float[] toFloatArray() {
+		
+		Float[] array = new Float[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getFloat(index);
+		}
+		
+		return array;
+	}
+	
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain Double}s using the {@link #getDouble(int)} method.
+	 * @return an array of {@linkplain Double}s
+	 * @since 1.0.0
+	 */
+	public Double[] toDoubleArray() {
+		
+		Double[] array = new Double[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getDouble(index);
+		}
+		
+		return array;
+	}
+	
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain String}s using the {@link #getString(int)} method.
+	 * @return an array of {@linkplain String}s
+	 * @since 1.0.0
+	 */
+	public String[] toStringArray() {
+		
+		String[] array = new String[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getString(index);
+		}
+		
+		return array;
+	}
+	
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain JSONObject}s using the {@link #getObject(int)} method.
+	 * @return an array of {@linkplain JSONObject}s
+	 * @since 1.0.0
+	 */
+	public JSONObject[] toObjectArray() {
+		
+		JSONObject[] array = new JSONObject[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getObject(index);
+		}
+		
+		return array;
+	}
+	
+	/**
+	 * Converts this {@linkplain JSONArray} into an array of {@linkplain JSONArray}s using the {@link #getArray(int)} method.
+	 * @return an array of {@linkplain JSONArray}s.
+	 * @since 1.0.0
+	 */
+	public JSONArray[] toArrayArray() {
+		
+		JSONArray[] array = new JSONArray[this.size()];
+		
+		for(int index = 0; index < array.length; index++) {
+			
+			array[index] = this.getArray(index);
+		}
+		
+		return array;
 	}
 }

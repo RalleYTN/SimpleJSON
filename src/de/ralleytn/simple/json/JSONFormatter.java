@@ -335,9 +335,10 @@ public final class JSONFormatter {
 	}
 	
 	/**
-	 * 
-	 * @param json
-	 * @return
+	 * Calls {@link #format(String, int, boolean, boolean)}.
+	 * UNIX line breaks and tabs are used. The indent is {@code 1}.
+	 * @param json the JSON data to format
+	 * @return the formatted JSON data
 	 * @since 1.0.0
 	 */
 	public static final String format(String json) {
@@ -346,10 +347,11 @@ public final class JSONFormatter {
 	}
 	
 	/**
-	 * 
-	 * @param json
-	 * @param indent
-	 * @return
+	 * Call {@link #format(String, int, boolean, boolean)}.
+	 * UNIX line breaks and white spaces are used.
+	 * @param json the JSON data to format
+	 * @param indent number of characters used for one level of indent
+	 * @return the formatted JSON data
 	 * @since 1.0.0
 	 */
 	public static final String format(String json, int indent) {
@@ -358,12 +360,12 @@ public final class JSONFormatter {
 	}
 	
 	/**
-	 * 
-	 * @param json
-	 * @param indent
-	 * @param useTabs
-	 * @param windowsLineBreak
-	 * @return
+	 * Formats JSON data according to the parameters with which this method was called.
+	 * @param json the JSON data to format
+	 * @param indent number of characters used for one level of indent
+	 * @param useTabs if {@code true} tabs will be used to for indent, else white spaces will
+	 * @param windowsLineBreak if {@code true} {@code "\r\n"} will be used for line breaks, else {@code "\n"} will
+	 * @return the formatted JSON data
 	 * @since 1.0.0
 	 */
 	public static final String format(String json, int indent, boolean useTabs, boolean windowsLineBreak) {
@@ -447,9 +449,11 @@ public final class JSONFormatter {
 	}
 	
 	/**
-	 * 
-	 * @param jsonReader
-	 * @param minimizedWriter
+	 * Minimizes formatted JSON data to the bare minimum of what it needs to be valid.
+	 * Can be useful for I/O operations to reduce the data that is transfered.
+	 * The result of {@link JSONAware#toJSONString()} already returns minimized JSON data.
+	 * @param jsonReader the {@linkplain Reader} from which the JSON data to minimize should be read from
+	 * @param minimizedWriter the {@linkplain Writer} to which the minimized JSON data should be written
 	 * @throws IOException  if an I/O error occurs
 	 * @since 1.0.0
 	 */

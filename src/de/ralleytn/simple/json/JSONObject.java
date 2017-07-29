@@ -204,17 +204,17 @@
 package de.ralleytn.simple.json;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import de.ralleytn.simple.json.parser.JSONParser;
 
 /**
  * Represents a JSON object.
@@ -243,6 +243,29 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 		
 		super(map);
 	}
+	
+	/**
+	 * Constructs a {@linkplain JSONObject} from JSON data.
+	 * @param json the JSON data
+	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @since 1.0.0
+	 */
+	public JSONObject(String json) throws de.ralleytn.simple.json.parser.ParseException {
+		
+		super((JSONObject)new JSONParser().parse(json));
+	}
+	
+	/**
+	 * Constructs a {@linkplain JSONObject} from JSON data read from a {@linkplain Reader}.
+	 * @param jsonReader the {@linkplain Reader} with the JSON data
+	 * @throws IOException if an I/O error occurred
+	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @since 1.0.0
+	 */
+	public JSONObject(Reader jsonReader) throws IOException, de.ralleytn.simple.json.parser.ParseException {
+		
+		super((JSONObject)new JSONParser().parse(jsonReader));
+	}
 
     /**
      * Encode a {@linkplain Map} into JSON text and write it to out. This method will not close or flush the given {@linkplain Writer}!
@@ -250,6 +273,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param map the {@linkplain Map} to write
      * @param writer the {@linkplain Writer} to which the {@linkplain Map} should be written to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(Map<?, ?> map, Writer writer) throws IOException {
@@ -330,309 +354,170 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	}
 	
 	/**
-	 * It doesn't matter if the actual value is a {@linkplain String} or {@linkplain Number}.
-	 * In case of a {@linkplain Number} this method will return {@code true} if the value is {@code 1}.
-	 * If the actual value is {@code null}, this method will return {@code null}.
-	 * If the value has another type than {@linkplain Number}, {@linkplain Boolean} or {@linkplain String}, this method will return {@code false}.
+	 * If the value is a {@linkplain JSONobject} already, it will be casted and returned.
+	 * If the value is a {@linkplain Map}, it will be wrapped in a {@linkplain JSONObject}. The wrapped {@linkplain Map} will be returned.
+	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain Boolean}
+	 * @return a {@linkplain JSONObject} or {@code null}
+	 * @since 1.0.0
+	 */
+	public JSONObject getObject(String key) {
+		
+		return JSONValue.getObject(this.get(key));
+	}
+	
+	/**
+	 * If the value already is a {@linkplain JSONArray}, it will be casted and returned.
+	 * If the value is an array or {@linkplain Collection}, it will be wrapped in a {@linkplain JSONArray}.
+	 * The result is returned.
+	 * In any other case this method returns {@code null}.
+	 * @param key key of the value
+	 * @return a {@linkplain JSONArray} or {@code null}
+	 * @since 1.0.0
+	 */
+	public JSONArray getArray(String key) {
+		
+		return JSONValue.getArray(this.get(key));
+	}
+	
+	/**
+	 * If the value is already a {@linkplain Boolean}, it will be casted and returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Number}, this method will return {@code true} in case its {@code long} value is {@code 1}.
+	 * In any other case this method returns {@code null}.
+	 * @param key key of the value
+	 * @return a {@linkplain Boolean} or {@code null}
 	 * @since 1.0.0
 	 */
 	public Boolean getBoolean(String key) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Boolean) {return (boolean)value;
-			} else if(value instanceof String)  {return Boolean.parseBoolean((String)value);
-			} else if(value instanceof Number)  {return ((Number)value).longValue() == 1L;
-			} else {
-				
-				return false;
-			}
-		}
-		
-		return null;
+		return JSONValue.getBoolean(this.get(key));
 	}
 	
 	/**
-	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * If the value is a {@linkplain Number}, its {@code byte} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain Byte}
+	 * @return a {@linkplain Byte} or {@code null}
 	 * @since 1.0.0
 	 */
 	public Byte getByte(String key) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).byteValue();
-			} else if(value instanceof String)  {return Byte.parseByte((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? (byte)1 : (byte)0;
-			} else {
-				
-				return (byte)0;
-			}
-		}
-		
-		return null;
+		return JSONValue.getByte(this.get(key));
 	}
 	
 	/**
-	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * If the value is a {@linkplain Number}, its {@code short} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain Short}
+	 * @return a {@linkplain Short} or {@code null}
 	 * @since 1.0.0
 	 */
 	public Short getShort(String key) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).shortValue();
-			} else if(value instanceof String)  {return Short.parseShort((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? (short)1 : (short)0;
-			} else {
-				
-				return (short)0;
-			}
-		}
-		
-		return null;
+		return JSONValue.getShort(this.get(key));
 	}
 	
 	/**
-	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * If the value is a {@linkplain Number}, its {@code int} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain Integer}
+	 * @return a {@linkplain Integer} or {@code null}
 	 * @since 1.0.0
 	 */
 	public Integer getInteger(String key) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).intValue();
-			} else if(value instanceof String)  {return Integer.parseInt((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1 : 0;
-			} else {
-				
-				return 0;
-			}
-		}
-		
-		return null;
+		return JSONValue.getInteger(this.get(key));
 	}
 	
 	/**
-	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * If the value is a {@linkplain Number}, its {@code long} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain Long}
+	 * @return a {@linkplain Long} or {@code null}
 	 * @since 1.0.0
 	 */
 	public Long getLong(String key) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).longValue();
-			} else if(value instanceof String)  {return Long.parseLong((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1L : 0L;
-			} else {
-				
-				return 0L;
-			}
-		}
-		
-		return null;
+		return JSONValue.getLong(this.get(key));
 	}
 	
 	/**
-	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * If the value is a {@linkplain Number}, its {@code float} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain Float}
+	 * @return a {@linkplain Float} or {@code null}
 	 * @since 1.0.0
 	 */
 	public Float getFloat(String key) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).floatValue();
-			} else if(value instanceof String)  {return Float.parseFloat((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1F : 0F;
-			} else {
-				
-				return 0F;
-			}
-		}
-		
-		return null;
+		return JSONValue.getFloat(this.get(key));
 	}
 	
 	/**
-	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * If the value is a {@linkplain Number}, its {@code double} value is returned.
+	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
+	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
+	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain Double}
+	 * @return a {@linkplain Double} or {@code null}
 	 * @since 1.0.0
 	 */
 	public Double getDouble(String key) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).doubleValue();
-			} else if(value instanceof String)  {return Double.parseDouble((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1D : 0D;
-			} else {
-
-				return 0D;
-			}
-		}
-		
-		return null;
+		return JSONValue.getDouble(this.get(key));
 	}
 	
 	/**
-	 * It doesn't matter if the actual value is a {@linkplain Boolean} or {@linkplain Number}.
-	 * This method will return the result of {@link Object#toString()} for the value.
+	 * Returns the same as the value's {@link Object#toString()} method.
 	 * If the actual value is {@code null}, this method will return {@code null}.
 	 * @param key key of the value
-	 * @return a {@linkplain String}
+	 * @return a {@linkplain String} or {@code null}
 	 * @since 1.0.0
 	 */
 	public String getString(String key) {
 		
-		Object value = this.get(key);
+		return JSONValue.getString(this.get(key));
+	}
+
+	/**
+	 * If the value already is a {@linkplain Date}, it will be casted and returned.
+	 * Otherwise the result of the value's {@link Object#toString()} will be parsed by the given
+	 * {@linkplain DateFormat}. The result is returned.
+	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * @param key key of the value
+	 * @param format the {@linkplain DateFormat} to parse the date with
+	 * @return a {@linkplain Date} or {@code null}
+	 * @throws ParseException if the date could not be parsed
+	 * @since 1.0.0
+	 */
+	public Date getDate(String key, DateFormat format) throws ParseException {
 		
-		if(value != null) {
-			
-			return value.toString();
-		}
-		
-		return null;
+		return JSONValue.getDate(this.get(key), format);
 	}
 	
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * If the {@linkplain String} representation of the value equals the name of the enum constant
+	 * in the given enum type, it will return the enum constant.
+	 * In any other case this method returns {@code null}.
+	 * @param key key of the value
+	 * @param type the enum type
+	 * @return an {@linkplain Enum} or {@code null}
 	 * @since 1.0.0
 	 */
-	public LocalDate getLocalDate(String key) {
+	@SuppressWarnings("rawtypes")
+	public <T extends Enum>T getEnum(String key, Class<T> type) {
 		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof LocalDate) {return (LocalDate)value;
-			} else if(value instanceof Number)    {return LocalDate.from(Instant.ofEpochMilli(((Number)value).longValue()));
-			} else {
-				
-				return LocalDate.parse(value.toString(), JSONValue.DATE_FORMAT_JAVA8);
-			}
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 * @since 1.0.0
-	 */
-	public LocalTime getLocalTime(String key) {
-		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof LocalTime) {return (LocalTime)value;
-			} else if(value instanceof Number)    {return LocalTime.from(Instant.ofEpochMilli(((Number)value).longValue()));
-			} else {
-				
-				return LocalTime.parse(value.toString(), JSONValue.TIME_FORMAT_JAVA8);
-			}
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 * @since 1.0.0
-	 */
-	public Instant getInstant(String key) {
-		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Instant) {return (Instant)value;
-			} else if(value instanceof Number)  {return Instant.ofEpochMilli(((Number)value).longValue());
-			} else {
-				
-				return ZonedDateTime.parse(value.toString(), JSONValue.ZONED_DATETIME_FORMAT_JAVA8).toInstant();
-			}
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 * @since 1.0.0
-	 */
-	public LocalDateTime getLocalDateTime(String key) {
-		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof LocalDateTime) {return (LocalDateTime)value;
-			} else if(value instanceof Number)        {return LocalDateTime.from(Instant.ofEpochMilli(((Number)value).longValue()));
-			} else {
-				
-				return LocalDateTime.parse(value.toString(), JSONValue.DATETIME_FORMAT_JAVA8);
-			}
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 * @throws ParseException
-	 * @since 1.0.0
-	 */
-	public Date getDate(String key) throws ParseException {
-		
-		Object value = this.get(key);
-		
-		if(value != null) {
-			
-			       if(value instanceof Date)   {return (Date)value;
-			} else if(value instanceof Number) {return new Date(((Number)value).longValue());
-			} else {
-				
-				return JSONValue.DATETIME_FORMAT_JAVA5.parse(value.toString());
-			}
-		}
-		
-		return null;
+		return JSONValue.getEnum(this.get(key), type);
 	}
 }
