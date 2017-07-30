@@ -214,6 +214,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Represents a JSON array.
@@ -246,6 +247,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	/**
 	 * Constructs a {@linkplain JSONArray} containing the elements of the specified array.
 	 * @param array the array whose elements are to be placed into this {@linkplain JSONArray}
+	 * @param <T> the generic type of the given array
 	 * @since 1.0.0
 	 */
 	public <T>JSONArray(T[] array) {
@@ -405,6 +407,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param collection the {@linkplain Collection} which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(Collection<?> collection, Writer writer) throws IOException {
@@ -457,6 +460,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(byte[] array, Writer writer) throws IOException {
@@ -489,6 +493,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(short[] array, Writer writer) throws IOException {
@@ -521,6 +526,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(int[] array, Writer writer) throws IOException {
@@ -553,6 +559,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(long[] array, Writer writer) throws IOException {
@@ -585,6 +592,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(float[] array, Writer writer) throws IOException {
@@ -617,6 +625,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(double[] array, Writer writer) throws IOException {
@@ -649,6 +658,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(boolean[] array, Writer writer) throws IOException {
@@ -681,6 +691,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final void writeJSONString(char[] array, Writer writer) throws IOException {
@@ -714,6 +725,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @param <T> type of the array
+     * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	public static final <T>void writeJSONString(T[] array, Writer writer) throws IOException {
@@ -960,7 +972,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	}
 	
 	/**
-	 * If the value is a {@linkplain JSONobject} already, it will be casted and returned.
+	 * If the value is a {@linkplain JSONObject} already, it will be casted and returned.
 	 * If the value is a {@linkplain Map}, it will be wrapped in a {@linkplain JSONObject}. The wrapped {@linkplain Map} will be returned.
 	 * In any other case this method returns {@code null}.
 	 * @param index index of the value
@@ -1118,6 +1130,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 * In any other case this method returns {@code null}.
 	 * @param index index of the value
 	 * @param type the enum type
+	 * @param <T> the return type
 	 * @return an {@linkplain Enum} or {@code null}
 	 * @since 1.0.0
 	 */

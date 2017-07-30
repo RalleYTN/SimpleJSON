@@ -216,7 +216,8 @@ public interface JSONStreamAware {
 	
 	/**
 	 * Writes a JSON encoded string on a {@linkplain Writer}.
-	 * @param the {@linkplain Writer} to write on
+	 * @param writer the {@linkplain Writer} to write on
+	 * @throws IOException if an I/O error occurs
 	 * @since 1.0.0
 	 */
 	public void writeJSONString(Writer writer) throws IOException;

@@ -248,8 +248,6 @@ public class JSONParser {
     /**
      * Resets the parser to the initial state with a new character reader.
      * @param reader the new character reader.
-     * @throws IOException
-     * @throws JSONParseException
      * @since 1.0.0
      */
 	public void reset(Reader reader) {
@@ -268,30 +266,46 @@ public class JSONParser {
 	}
 	
 	/**
-	 * 
-	 * @param string
-	 * @return
-	 * @throws JSONParseException
+	 * Parses JSON data.
+	 * @param string text with the JSON data
+	 * @return An instance of:
+	 * <ul>
+	 * <li>{@linkplain JSONObject}</li>
+	 * <li>{@linkplain JSONArray}</li>
+	 * <li>{@linkplain String}</li>
+	 * <li>{@linkplain Number}</li>
+	 * <li>{@linkplain Boolean}</li>
+	 * <li>{@code null}</li>
+	 * </ul>
+	 * @throws JSONParseException if the JSON data is invalid
 	 * @since 1.0.0
 	 */
 	public Object parse(String string) throws JSONParseException {
 		
-		return parse(string, (JSONContainerFactory)null);
+		return parse(string != null ? string.trim() : null, (JSONContainerFactory)null);
 	}
 	
 	/**
-	 * 
-	 * @param string
-	 * @param containerFactory
-	 * @return
-	 * @throws JSONParseException
+	 * Parses JSON data using a custom {@linkplain JSONContainerFactory}.
+	 * @param string text with the JSON data
+	 * @param containerFactory the custom {@linkplain JSONContainerFactory}
+	 * @return An instance of:
+	 * <ul>
+	 * <li>{@linkplain JSONObject}</li>
+	 * <li>{@linkplain JSONArray}</li>
+	 * <li>{@linkplain String}</li>
+	 * <li>{@linkplain Number}</li>
+	 * <li>{@linkplain Boolean}</li>
+	 * <li>{@code null}</li>
+	 * </ul>
+	 * @throws JSONParseException if the JSON data is invalid
 	 * @since 1.0.0
 	 */
 	public Object parse(String string, JSONContainerFactory containerFactory) throws JSONParseException {
 		
-		try(StringReader in = new StringReader(string)) {
+		try(StringReader reader = new StringReader(string != null ? string.trim() : null)) {
 			
-			return this.parse(in, containerFactory);
+			return this.parse(reader, containerFactory);
 		
 		} catch(IOException exception){
 
@@ -300,33 +314,42 @@ public class JSONParser {
 	}
 	
 	/**
-	 * 
-	 * @param in
-	 * @return
-	 * @throws IOException
-	 * @throws JSONParseException
+	 * Parses JSON data.
+	 * @param reader the {@linkplain Reader} from which the JSON data comes
+	 * @return An instance of:
+	 * <ul>
+	 * <li>{@linkplain JSONObject}</li>
+	 * <li>{@linkplain JSONArray}</li>
+	 * <li>{@linkplain String}</li>
+	 * <li>{@linkplain Number}</li>
+	 * <li>{@linkplain Boolean}</li>
+	 * <li>{@code null}</li>
+	 * </ul>
+	 * @throws IOException if an I/O error occurs
+	 * @throws JSONParseException if the JSON data is invalid
 	 * @since 1.0.0
 	 */
-	public Object parse(Reader in) throws IOException, JSONParseException {
+	public Object parse(Reader reader) throws IOException, JSONParseException {
 		
-		return this.parse(in, (JSONContainerFactory)null);
+		return this.parse(reader, (JSONContainerFactory)null);
 	}
 	
 	/**
-	 * Parse JSON text into java object from the input source.
-	 * 	
-	 * @param reader
-     * @param containerFactory - Use this factory to create your own JSON object and JSON array containers.
-	 * @return Instance of the following:
-	 *  org.json.simple.JSONObject,
-	 * 	org.json.simple.JSONArray,
-	 * 	java.lang.String,
-	 * 	java.lang.Number,
-	 * 	java.lang.Boolean,
-	 * 	null
-	 * 
-	 * @throws IOException
-	 * @throws JSONParseException
+	 * Parses JSON data using a custom {@linkplain JSONContainerFactory}.
+	 * @param reader the {@linkplain Reader} from which the JSON data comes
+     * @param containerFactory the custom {@linkplain JSONContainerFactory}
+	 * @return An instance of:
+	 * <ul>
+	 * <li>{@linkplain JSONObject}</li>
+	 * <li>{@linkplain JSONArray}</li>
+	 * <li>{@linkplain String}</li>
+	 * <li>{@linkplain Number}</li>
+	 * <li>{@linkplain Boolean}</li>
+	 * <li>{@code null}</li>
+	 * </ul>
+	 * @throws IOException if an I/O error occurs
+	 * @throws JSONParseException if the JSON data is invalid
+	 * @since 1.0.0
 	 */
 	@SuppressWarnings("unchecked")
 	public Object parse(Reader reader, JSONContainerFactory containerFactory) throws IOException, JSONParseException {
@@ -552,28 +575,28 @@ public class JSONParser {
 	}
 	
 	/**
-	 * 
-	 * @param string
-	 * @param contentHandler
-	 * @throws JSONParseException
+	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
+	 * @param string text with the JSON data
+	 * @param contentHandler the {@linkplain JSONContentHandler}
+	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
 	public void parse(String string, JSONContentHandler contentHandler) throws JSONParseException {
 		
-		this.parse(string, contentHandler, false);
+		this.parse(string != null ? string.trim() : null, contentHandler, false);
 	}
 	
 	/**
-	 * 
-	 * @param string
-	 * @param contentHandler
-	 * @param resume
-	 * @throws JSONParseException
+	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
+	 * @param string text with the JSON data
+	 * @param contentHandler the {@linkplain JSONContentHandler}
+	 * @param resume Indicates if it continues previous parsing operation. If set to {@code true}, resume parsing the old stream, and parameter {@code reader} will be ignored.  If this method is called for the first time in this instance, {@code resume} will be ignored.
+	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
 	public void parse(String string, JSONContentHandler contentHandler, boolean resume) throws JSONParseException {
 
-		try(StringReader reader = new StringReader(string)) {
+		try(StringReader reader = new StringReader(string != null ? string.trim() : null)) {
 			
 			this.parse(reader, contentHandler, resume);
 		
@@ -584,11 +607,11 @@ public class JSONParser {
 	}
 	
 	/**
-	 * 
-	 * @param reader
-	 * @param contentHandler
-	 * @throws IOException
-	 * @throws JSONParseException
+	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
+	 * @param reader the {@linkplain Reader} containing the JSON data
+	 * @param contentHandler the {@linkplain JSONContentHandler}
+	 * @throws IOException if an I/O error occurs or the {@linkplain JSONContentHandler} throws it
+	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
 	public void parse(Reader reader, JSONContentHandler contentHandler) throws IOException, JSONParseException {
@@ -597,31 +620,26 @@ public class JSONParser {
 	}
 	
 	/**
-	 * Stream processing of JSON text.
-	 * 
+	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
 	 * @see JSONContentHandler
-	 * 
-	 * @param in
-	 * @param contentHandler
-	 * @param resume - Indicates if it continues previous parsing operation.
-     *                   If set to true, resume parsing the old stream, and parameter 'in' will be ignored. 
-	 *                   If this method is called for the first time in this instance, isResume will be ignored.
-	 * 
-	 * @throws IOException
-	 * @throws JSONParseException
+	 * @param reader the {@linkplain Reader} containing the JSON data
+	 * @param contentHandler the {@linkplain JSONContentHandler}
+	 * @param resume Indicates if it continues previous parsing operation. If set to {@code true}, resume parsing the old stream, and parameter {@code reader} will be ignored.  If this method is called for the first time in this instance, {@code resume} will be ignored.
+	 * @throws IOException if an I/O error occurs or the {@linkplain JSONContentHandler} throws it
+	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
-	public void parse(Reader in, JSONContentHandler contentHandler, boolean resume) throws IOException, JSONParseException {
+	public void parse(Reader reader, JSONContentHandler contentHandler, boolean resume) throws IOException, JSONParseException {
 		
 		if(!resume) {
 			
-			this.reset(in);
+			this.reset(reader);
 			this.handlerStatusStack = new Stack<>();
 		
 		} else if(this.handlerStatusStack == null) {
 				
 			resume = false;
-			this.reset(in);
+			this.reset(reader);
 			this.handlerStatusStack = new Stack<>();
 		}
 		

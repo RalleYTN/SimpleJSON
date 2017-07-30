@@ -208,7 +208,7 @@ import java.util.Map;
 
 /**
  * Container factory which creates containers for {@linkplain JSONObject} and {@linkplain JSONArray}.
- * @see de.ralleytn.simple.json.JSONParser#parse(java.io.Reader, ContainerFactory)
+ * @see JSONParser#parse(java.io.Reader, JSONContainerFactory)
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 1.0.0

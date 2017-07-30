@@ -352,7 +352,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	}
 	
 	/**
-	 * If the value is a {@linkplain JSONobject} already, it will be casted and returned.
+	 * If the value is a {@linkplain JSONObject} already, it will be casted and returned.
 	 * If the value is a {@linkplain Map}, it will be wrapped in a {@linkplain JSONObject}. The wrapped {@linkplain Map} will be returned.
 	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
@@ -510,6 +510,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 * In any other case this method returns {@code null}.
 	 * @param key key of the value
 	 * @param type the enum type
+	 * @param <T> the generic return type
 	 * @return an {@linkplain Enum} or {@code null}
 	 * @since 1.0.0
 	 */
