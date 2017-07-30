@@ -25,7 +25,7 @@ JSON:
 			"first_name":"Jane",
 			"last_name":"Doe",
 			"income":1000.0,
-			"friends" [
+			"friends": [
 				"John|Doe"
 			]
 		}
@@ -66,6 +66,7 @@ This list only applies to version 1.0.0 of this library!
 - Added constructors to the `JSONObject` and `JSONArray` class which allows direct and type safe parsing of JSON data.
 - Added getter methods to `JSONObject` and `JSONArray` which allow type safe reading of data.
 - Deleted all unneeded and deprecated methods.
+- Fixed a bug that would not quote non-JSON type values.
 
 
 # Links
