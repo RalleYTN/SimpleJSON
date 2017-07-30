@@ -214,8 +214,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import de.ralleytn.simple.json.parser.JSONParser;
-
 /**
  * Represents a JSON object.
  * @author FangYidong(fangyidong@yahoo.com.cn)
@@ -247,10 +245,10 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	/**
 	 * Constructs a {@linkplain JSONObject} from JSON data.
 	 * @param json the JSON data
-	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @throws JSONParseException if the JSON data is invalid
 	 * @since 1.0.0
 	 */
-	public JSONObject(String json) throws de.ralleytn.simple.json.parser.ParseException {
+	public JSONObject(String json) throws JSONParseException {
 		
 		super((JSONObject)new JSONParser().parse(json));
 	}
@@ -259,10 +257,10 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 * Constructs a {@linkplain JSONObject} from JSON data read from a {@linkplain Reader}.
 	 * @param jsonReader the {@linkplain Reader} with the JSON data
 	 * @throws IOException if an I/O error occurred
-	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @throws JSONParseException if the JSON data is invalid
 	 * @since 1.0.0
 	 */
-	public JSONObject(Reader jsonReader) throws IOException, de.ralleytn.simple.json.parser.ParseException {
+	public JSONObject(Reader jsonReader) throws IOException, JSONParseException {
 		
 		super((JSONObject)new JSONParser().parse(jsonReader));
 	}

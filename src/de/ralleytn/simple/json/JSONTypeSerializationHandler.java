@@ -201,74 +201,31 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.parser;
+package de.ralleytn.simple.json;
 
 /**
- * @author FangYidong(fangyidong@yahoo.com.cn)
+ * Is needed to manage none-JSON types when serializing or deserializing objects.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 1.0.0
  * @since 1.0.0
  */
-class Yytoken {
+public interface JSONTypeSerializationHandler {
+
+	/**
+	 * Is called when an object is being serialized and a none-JSON type is reached.
+	 * @param type the none-JSON type
+	 * @param value the value
+	 * @return a JSON type value that will be written into the object
+	 * @since 1.0.0
+	 */
+	public Object serialize(Class<?> type, Object value);
 	
-	static final int TYPE_VALUE = 0;
-	static final int TYPE_LEFT_BRACE = 1;
-	static final int TYPE_RIGHT_BRACE = 2;
-	static final int TYPE_LEFT_SQUARE = 3;
-	static final int TYPE_RIGHT_SQUARE = 4;
-	static final int TYPE_COMMA = 5;
-	static final int TYPE_COLON = 6;
-	static final int TYPE_EOF = -1;
-	
-	int type;
-	Object value;
-	
-	Yytoken(int type, Object value) {
-		
-		this.type = type;
-		this.value = value;
-	}
-	
-	@Override
-	public String toString() {
-		
-		StringBuilder builder = new StringBuilder();
-		
-		switch(this.type){
-		
-			case TYPE_VALUE:
-				builder.append("VALUE(").append(this.value).append(")");
-				break;
-				
-			case TYPE_LEFT_BRACE:
-				builder.append("LEFT BRACE({)");
-				break;
-				
-			case TYPE_RIGHT_BRACE:
-				builder.append("RIGHT BRACE(})");
-				break;
-				
-			case TYPE_LEFT_SQUARE:
-				builder.append("LEFT SQUARE([)");
-				break;
-				
-			case TYPE_RIGHT_SQUARE:
-				builder.append("RIGHT SQUARE(])");
-				break;
-				
-			case TYPE_COMMA:
-				builder.append("COMMA(,)");
-				break;
-				
-			case TYPE_COLON:
-				builder.append("COLON(:)");
-				break;
-				
-			case TYPE_EOF:
-				builder.append("END OF FILE");
-				break;
-		}
-		
-		return builder.toString();
-	}
+	/**
+	 * Is called when the needed type is a none-JSON type.
+	 * @param type the needed type
+	 * @param value the value from the {@linkplain JSONObject}
+	 * @return the value to which the Java object attribute will be set
+	 * @since 1.0.0
+	 */
+	public Object deserialize(Class<?> type, Object value);
 }

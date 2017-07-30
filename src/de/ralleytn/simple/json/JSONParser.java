@@ -201,7 +201,7 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.parser;
+package de.ralleytn.simple.json;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -210,13 +210,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import de.ralleytn.simple.json.JSONArray;
-import de.ralleytn.simple.json.JSONObject;
-
 
 /**
  * Parser for JSON text. Please note that JSONParser is NOT thread-safe.
- * @author FangYidong<fangyidong@yahoo.com.cn>
+ * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 1.0.0
  * @since 1.0.0
@@ -238,7 +235,7 @@ public class JSONParser {
 	private int status = JSONParser.S_INIT;
 	
     /**
-     * Reset the parser to the initial state without resetting the underlying reader.
+     * Resets the parser to the initial state without resetting the underlying reader.
      * @since 1.0.0
      */
     public void reset(){
@@ -249,33 +246,48 @@ public class JSONParser {
     }
     
     /**
-     * Reset the parser to the initial state with a new character reader.
-     * 
-     * @param in - The new character reader.
+     * Resets the parser to the initial state with a new character reader.
+     * @param reader the new character reader.
      * @throws IOException
-     * @throws ParseException
+     * @throws JSONParseException
      * @since 1.0.0
      */
-	public void reset(Reader in) {
+	public void reset(Reader reader) {
 		
-		this.lexer.yyreset(in);
+		this.lexer.yyreset(reader);
 		this.reset();
 	}
 	
 	/**
-	 * @return The position of the beginning of the current token.
+	 * @return the position of the beginning of the current token.
+	 * @since 1.0.0
 	 */
 	public int getPosition() {
 		
 		return this.lexer.getPosition();
 	}
 	
-	public Object parse(String string) throws ParseException {
+	/**
+	 * 
+	 * @param string
+	 * @return
+	 * @throws JSONParseException
+	 * @since 1.0.0
+	 */
+	public Object parse(String string) throws JSONParseException {
 		
-		return parse(string, (ContainerFactory)null);
+		return parse(string, (JSONContainerFactory)null);
 	}
 	
-	public Object parse(String string, ContainerFactory containerFactory) throws ParseException {
+	/**
+	 * 
+	 * @param string
+	 * @param containerFactory
+	 * @return
+	 * @throws JSONParseException
+	 * @since 1.0.0
+	 */
+	public Object parse(String string, JSONContainerFactory containerFactory) throws JSONParseException {
 		
 		try(StringReader in = new StringReader(string)) {
 			
@@ -283,13 +295,21 @@ public class JSONParser {
 		
 		} catch(IOException exception){
 
-			throw new ParseException(-1, ParseException.ERROR_UNEXPECTED_EXCEPTION, exception);
+			throw new JSONParseException(-1, JSONParseException.ERROR_UNEXPECTED_EXCEPTION, exception);
 		}
 	}
 	
-	public Object parse(Reader in) throws IOException, ParseException {
+	/**
+	 * 
+	 * @param in
+	 * @return
+	 * @throws IOException
+	 * @throws JSONParseException
+	 * @since 1.0.0
+	 */
+	public Object parse(Reader in) throws IOException, JSONParseException {
 		
-		return this.parse(in, (ContainerFactory)null);
+		return this.parse(in, (JSONContainerFactory)null);
 	}
 	
 	/**
@@ -306,10 +326,10 @@ public class JSONParser {
 	 * 	null
 	 * 
 	 * @throws IOException
-	 * @throws ParseException
+	 * @throws JSONParseException
 	 */
 	@SuppressWarnings("unchecked")
-	public Object parse(Reader reader, ContainerFactory containerFactory) throws IOException, ParseException {
+	public Object parse(Reader reader, JSONContainerFactory containerFactory) throws IOException, JSONParseException {
 		
 		this.reset(reader);
 		Stack<Object> statusStack = new Stack<>();
@@ -354,7 +374,7 @@ public class JSONParser {
 						
 					} else {
 						
-						throw new ParseException(this.getPosition(), ParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+						throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
 					}
 					
 				} else if(this.status == JSONParser.S_IN_OBJECT) {
@@ -474,7 +494,7 @@ public class JSONParser {
 				
 				if(this.status == JSONParser.S_IN_ERROR) {
 					
-					throw new ParseException(getPosition(), ParseException.ERROR_UNEXPECTED_TOKEN, token);
+					throw new JSONParseException(getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, token);
 				}
 
 			} while(this.token.type != Yytoken.TYPE_EOF);
@@ -484,10 +504,10 @@ public class JSONParser {
 			throw exception;
 		}
 		
-		throw new ParseException(this.getPosition(), ParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+		throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
 	}
 	
-	private final void nextToken() throws ParseException, IOException {
+	private final void nextToken() throws JSONParseException, IOException {
 		
 		this.token = this.lexer.yylex();
 		
@@ -497,7 +517,7 @@ public class JSONParser {
 		}
 	}
 	
-	private final Map<Object, Object> createObjectContainer(ContainerFactory containerFactory) {
+	private final Map<Object, Object> createObjectContainer(JSONContainerFactory containerFactory) {
 
 		if(containerFactory == null) {
 			
@@ -514,7 +534,7 @@ public class JSONParser {
 		return map;
 	}
 	
-	private final List<Object> createArrayContainer(ContainerFactory containerFactory) {
+	private final List<Object> createArrayContainer(JSONContainerFactory containerFactory) {
 		
 		if(containerFactory == null) {
 			
@@ -531,12 +551,27 @@ public class JSONParser {
 		return list;
 	}
 	
-	public void parse(String string, ContentHandler contentHandler) throws ParseException {
+	/**
+	 * 
+	 * @param string
+	 * @param contentHandler
+	 * @throws JSONParseException
+	 * @since 1.0.0
+	 */
+	public void parse(String string, JSONContentHandler contentHandler) throws JSONParseException {
 		
 		this.parse(string, contentHandler, false);
 	}
 	
-	public void parse(String string, ContentHandler contentHandler, boolean resume) throws ParseException {
+	/**
+	 * 
+	 * @param string
+	 * @param contentHandler
+	 * @param resume
+	 * @throws JSONParseException
+	 * @since 1.0.0
+	 */
+	public void parse(String string, JSONContentHandler contentHandler, boolean resume) throws JSONParseException {
 
 		try(StringReader reader = new StringReader(string)) {
 			
@@ -544,11 +579,19 @@ public class JSONParser {
 		
 		} catch(IOException exception){
 
-			throw new ParseException(-1, ParseException.ERROR_UNEXPECTED_EXCEPTION, exception);
+			throw new JSONParseException(-1, JSONParseException.ERROR_UNEXPECTED_EXCEPTION, exception);
 		}
 	}
 	
-	public void parse(Reader reader, ContentHandler contentHandler) throws IOException, ParseException {
+	/**
+	 * 
+	 * @param reader
+	 * @param contentHandler
+	 * @throws IOException
+	 * @throws JSONParseException
+	 * @since 1.0.0
+	 */
+	public void parse(Reader reader, JSONContentHandler contentHandler) throws IOException, JSONParseException {
 		
 		this.parse(reader, contentHandler, false);
 	}
@@ -556,7 +599,7 @@ public class JSONParser {
 	/**
 	 * Stream processing of JSON text.
 	 * 
-	 * @see ContentHandler
+	 * @see JSONContentHandler
 	 * 
 	 * @param in
 	 * @param contentHandler
@@ -565,9 +608,10 @@ public class JSONParser {
 	 *                   If this method is called for the first time in this instance, isResume will be ignored.
 	 * 
 	 * @throws IOException
-	 * @throws ParseException
+	 * @throws JSONParseException
+	 * @since 1.0.0
 	 */
-	public void parse(Reader in, ContentHandler contentHandler, boolean resume) throws IOException, ParseException {
+	public void parse(Reader in, JSONContentHandler contentHandler, boolean resume) throws IOException, JSONParseException {
 		
 		if(!resume) {
 			
@@ -799,18 +843,18 @@ public class JSONParser {
 				
 				if(this.status == JSONParser.S_IN_ERROR) {
 					
-					throw new ParseException(this.getPosition(), ParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+					throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
 				}
 				
 			} while(this.token.type != Yytoken.TYPE_EOF);
 		
-		} catch(IOException | ParseException | RuntimeException | Error exception) {
+		} catch(IOException | JSONParseException | RuntimeException | Error exception) {
 			
 			this.status = JSONParser.S_IN_ERROR;
 			throw exception;
 		}
 		
 		this.status = JSONParser.S_IN_ERROR;
-		throw new ParseException(this.getPosition(), ParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+		throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
 	}
 }

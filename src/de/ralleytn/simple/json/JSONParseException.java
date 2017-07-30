@@ -201,7 +201,7 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.parser;
+package de.ralleytn.simple.json;
 
 /**
  * ParseException explains why and where the error occurs in source JSON text.
@@ -209,7 +209,7 @@ package de.ralleytn.simple.json.parser;
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  */
-public class ParseException extends Exception {
+public class JSONParseException extends Exception {
 	
 	private static final long serialVersionUID = -7880698968187728547L;
 	
@@ -221,17 +221,17 @@ public class ParseException extends Exception {
 	private Object unexpectedObject;
 	private int position;
 	
-	public ParseException(int errorType) {
+	public JSONParseException(int errorType) {
 		
 		this(-1, errorType, null);
 	}
 	
-	public ParseException(int errorType, Object unexpectedObject) {
+	public JSONParseException(int errorType, Object unexpectedObject) {
 		
 		this(-1, errorType, unexpectedObject);
 	}
 	
-	public ParseException(int position, int errorType, Object unexpectedObject) {
+	public JSONParseException(int position, int errorType, Object unexpectedObject) {
 		
 		this.position = position;
 		this.errorType = errorType;
@@ -249,7 +249,7 @@ public class ParseException extends Exception {
 	}
 	
 	/**
-	 * @see de.ralleytn.simple.json.parser.JSONParser#getPosition()
+	 * @see de.ralleytn.simple.json.JSONParser#getPosition()
 	 * 
 	 * @return The character position (starting with 0) of the input where the error occurs.
 	 */
@@ -264,7 +264,7 @@ public class ParseException extends Exception {
 	}
 	
 	/**
-	 * @see de.ralleytn.simple.json.parser.Yytoken
+	 * @see de.ralleytn.simple.json.Yytoken
 	 * 
 	 * @return One of the following base on the value of errorType:
 	 * 		   	ERROR_UNEXPECTED_CHAR		java.lang.Character

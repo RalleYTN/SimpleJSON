@@ -215,8 +215,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import de.ralleytn.simple.json.parser.JSONParser;
-
 /**
  * Represents a JSON array.
  * @author FangYidong(fangyidong@yahoo.com.cn)
@@ -381,10 +379,10 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	/**
 	 * Constructs a {@linkplain JSONArray} from JSON data.
 	 * @param json the JSON data
-	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @throws JSONParseException if the JSON data is invalid
 	 * @since 1.0.0
 	 */
-	public JSONArray(String json) throws de.ralleytn.simple.json.parser.ParseException {
+	public JSONArray(String json) throws JSONParseException {
 		
 		super((JSONArray)new JSONParser().parse(json));
 	}
@@ -392,11 +390,11 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	/**
 	 * Constructs a {@linkplain JSONArray} from JSON data read from a {@linkplain Reader}.
 	 * @param jsonReader the {@linkplain Reader} with the JSON data
-	 * @throws de.ralleytn.simple.json.parser.ParseException if the JSON data is invalid
+	 * @throws JSONParseException if the JSON data is invalid
 	 * @throws IOException if an I/O error occurred
 	 * @since 1.0.0
 	 */
-	public JSONArray(Reader jsonReader) throws de.ralleytn.simple.json.parser.ParseException, IOException {
+	public JSONArray(Reader jsonReader) throws JSONParseException, IOException {
 		
 		super((JSONArray)new JSONParser().parse(jsonReader));
 	}

@@ -201,33 +201,74 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.parser;
+package de.ralleytn.simple.json;
 
-import java.util.List;
-import java.util.Map;
-
-import de.ralleytn.simple.json.JSONArray;
-import de.ralleytn.simple.json.JSONObject;
-
-/**
- * Container factory which creates containers for {@linkplain JSONObject} and {@linkplain JSONArray}.
- * @see de.ralleytn.simple.json.parser.JSONParser#parse(java.io.Reader, ContainerFactory)
+/*
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 1.0.0
  * @since 1.0.0
  */
-public interface ContainerFactory {
+class Yytoken {
 	
-	/**
-	 * @return A {@linkplain Map} instance to store the data for a JSON object, or {@code null} if you want to use {@linkplain JSONObject} instead..
-	 * @since 1.0.0
-	 */
-	public Map<Object, Object> createObjectContainer();
+	static final int TYPE_VALUE = 0;
+	static final int TYPE_LEFT_BRACE = 1;
+	static final int TYPE_RIGHT_BRACE = 2;
+	static final int TYPE_LEFT_SQUARE = 3;
+	static final int TYPE_RIGHT_SQUARE = 4;
+	static final int TYPE_COMMA = 5;
+	static final int TYPE_COLON = 6;
+	static final int TYPE_EOF = -1;
 	
-	/**
-	 * @return A {@linkplain List} instance to store data for a JSON array, or {@code null} if you want to use {@linkplain JSONArray} instead.
-	 * @since 1.0.0
-	 */
-	public List<Object> creatArrayContainer();
+	int type;
+	Object value;
+	
+	Yytoken(int type, Object value) {
+		
+		this.type = type;
+		this.value = value;
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder builder = new StringBuilder();
+		
+		switch(this.type){
+		
+			case TYPE_VALUE:
+				builder.append("VALUE(").append(this.value).append(")");
+				break;
+				
+			case TYPE_LEFT_BRACE:
+				builder.append("LEFT BRACE({)");
+				break;
+				
+			case TYPE_RIGHT_BRACE:
+				builder.append("RIGHT BRACE(})");
+				break;
+				
+			case TYPE_LEFT_SQUARE:
+				builder.append("LEFT SQUARE([)");
+				break;
+				
+			case TYPE_RIGHT_SQUARE:
+				builder.append("RIGHT SQUARE(])");
+				break;
+				
+			case TYPE_COMMA:
+				builder.append("COMMA(,)");
+				break;
+				
+			case TYPE_COLON:
+				builder.append("COLON(:)");
+				break;
+				
+			case TYPE_EOF:
+				builder.append("END OF FILE");
+				break;
+		}
+		
+		return builder.toString();
+	}
 }

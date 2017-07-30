@@ -204,314 +204,106 @@
 package de.ralleytn.simple.json;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
 
 /**
- * Contains a few static methods for JSON values.
+ * A simplified and stoppable SAX-like content handler for stream processing of JSON text. 
+ * @see org.xml.sax.ContentHandler
+ * @see de.ralleytn.simple.json.JSONParser#parse(java.io.Reader, JSONContentHandler, boolean)
  * @author FangYidong(fangyidong@yahoo.com.cn)
- * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 1.0.0
  * @since 1.0.0
  */
-public final class JSONValue {
-
-	private JSONValue() {}
+public interface JSONContentHandler {
+	/**
+	 * Receives a notification when the JSON processing begins.
+	 * The {@linkplain JSONParser} will invoke this method only once.
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+	 * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+	 * @since 1.0.0
+	 */
+	public void startJSON() throws JSONParseException, IOException;
 	
-    /**
-     * Encode an {@linkplain Object} into JSON text and write it to a {@linkplain Writer}.
-     * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain Collection}, and it's also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} or {@linkplain JSONAware} will be considered firstly.<p>
-     * DO NOT call this method from {@link JSONStreamAware#writeJSONString(Writer)} of a class that implements both {@linkplain JSONStreamAware} and ({@linkplain Map} or {@linkplain Collection}) with 
-     * "this" as the first parameter, use {@link JSONObject#writeJSONString(Map, Writer)} or {@link JSONArray#writeJSONString(Collection, Writer)} instead. 
-     * @see de.ralleytn.simple.json.JSONObject#writeJSONString(Map, Writer)
-     * @see de.ralleytn.simple.json.JSONArray#writeJSONString(Collection, Writer)
-     * @param value the {@linkplain Object} to write on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write on.
-     * @throws IOException if an I/O error occurs
+	/**
+	 * Receives a notification when the JSON processing ends.
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+	 * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+	 * @since 1.0.0
+	 */
+	public void endJSON() throws JSONParseException, IOException;
+	
+	/**
+	 * Receives a notification when a JSON object begins.
+	 * @return {@code false} if the {@linkplain JSONContentHandler} wants to stop parsing after return
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @see #endJSON
      * @since 1.0.0
-     */
-	@SuppressWarnings("unchecked")
-	public static void writeJSONString(Object value, Writer writer) throws IOException {
-		
-		if(value == null) {
-			
-			writer.write("null");
-			
-		} else if(value instanceof String) {
-			
-            writer.write('\"');
-			writer.write(JSONValue.escape((String)value));
-            writer.write('\"');
-            
-		} else if(value instanceof Double)            {writer.write(((Double)value).isInfinite() || ((Double)value).isNaN() ? "null" : value.toString());
-		} else if(value instanceof Float)             {writer.write(((Float)value).isInfinite() || ((Float)value).isNaN() ? "null" : value.toString());
-		} else if(value instanceof Number)            {writer.write(value.toString());
-		} else if(value instanceof Boolean)           {writer.write(value.toString());
-		} else if((value instanceof JSONStreamAware)) {((JSONStreamAware)value).writeJSONString(writer);
-		} else if((value instanceof JSONAware))       {writer.write(((JSONAware)value).toJSONString());
-		} else if(value instanceof Map)               {JSONObject.writeJSONString((Map<Object, Object>)value, writer);
-		} else if(value instanceof Collection)        {JSONArray.writeJSONString((Collection<Object>)value, writer);
-		} else if(value instanceof byte[])            {JSONArray.writeJSONString((byte[])value, writer);
-		} else if(value instanceof short[])           {JSONArray.writeJSONString((short[])value, writer);
-		} else if(value instanceof int[])             {JSONArray.writeJSONString((int[])value, writer);
-		} else if(value instanceof long[])            {JSONArray.writeJSONString((long[])value, writer);
-		} else if(value instanceof float[])           {JSONArray.writeJSONString((float[])value, writer);
-		} else if(value instanceof double[])          {JSONArray.writeJSONString((double[])value, writer);
-		} else if(value instanceof boolean[])         {JSONArray.writeJSONString((boolean[])value, writer);
-		} else if(value instanceof char[])            {JSONArray.writeJSONString((char[])value, writer);
-		} else if(value.getClass().isArray())         {JSONArray.writeJSONString((Object[])value, writer);
-		} else {
-			
-			writer.write('"');
-			writer.write(JSONValue.escape(value.toString()));
-			writer.write('"');
-		}
-	}
-
+	 */
+	public boolean startObject() throws JSONParseException, IOException;
+	
 	/**
-	 * Convert an {@linkplain Object} to JSON text.
-	 * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain Collection}, and it's also a {@linkplain JSONAware}, {@linkplain JSONAware} it will be considered first.<p>
-	 * DO NOT call this method from {@link JSONAware#toJSONString()} of a class that implements both {@linkplain JSONAware} and {@linkplain Map} or {@linkplain Collection} with 
-	 * "this" as the parameter, use {@link JSONObject#toJSONString(Map)} or {@link JSONArray#toJSONString(Collection)} instead. 
-	 * @see de.ralleytn.simple.json.JSONObject#toJSONString(Map)
-	 * @see de.ralleytn.simple.json.JSONArray#toJSONString(Collection)
-	 * @param value the {@linkplain Object} to convert
-	 * @return JSON text, or "null" if the {@linkplain Object} is {@code null} or it's an {@code NaN} or an infinite number.
+	 * Receives a notification when a JSON object ends.
+	 * @return {@code false} if the {@linkplain JSONContentHandler} wants to stop parsing after return
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @see #startObject
+     * @since 1.0.0
+	 */
+	public boolean endObject() throws JSONParseException, IOException;
+	
+	/**
+	 * Receives a notification when a JSON object entry begins.
+	 * @param key name of the object entry
+	 * @return {@code false} if the {@linkplain JSONContentHandler} wants to stop parsing after return
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @see #endObjectEntry
+     * @since 1.0.0
+	 */
+	public boolean startObjectEntry(String key) throws JSONParseException, IOException;
+	
+	/**
+	 * Receives a notification when a JSON entry ends.
+	 * @return {@code false} if the {@linkplain JSONContentHandler} wants to stop parsing after return
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @see #startObjectEntry
+	 */
+	public boolean endObjectEntry() throws JSONParseException, IOException;
+	
+	/**
+	 * Receives a notification when a JSON array begins.
+	 * @return {@code false} if the {@linkplain JSONContentHandler} wants to stop parsing after return
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @see #endArray
+     * @since 1.0.0
+	 */
+	public boolean startArray() throws JSONParseException, IOException;
+	
+	/**
+	 * Receives a notification when a JSON array ends.
+	 * @return {@code false} if the {@linkplain JSONContentHandler} wants to stop parsing after return
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+     * @see #startArray
+     * @since 1.0.0
+	 */
+	public boolean endArray() throws JSONParseException, IOException;
+	
+	/**
+	 * Receives a notification when a primitive JSON value is reached:
+	 * <ul>
+	 * <li>{@linkplain String}</li>
+	 * <li>{@linkplain Number}</li>
+	 * <li>{@linkplain Boolean}</li>
+	 * <li>{@code null}</li>
+	 * </ul>
+	 * @param value the primitive JSON value
+	 * @return {@code false} if the {@linkplain JSONContentHandler} wants to stop parsing after return
+	 * @throws JSONParseException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
+	 * @throws IOException {@linkplain JSONParser} will stop and throw the same {@linkplain Exception} to the caller when receiving this {@linkplain Exception}.
 	 * @since 1.0.0
 	 */
-	public static final String toJSONString(Object value){
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONValue.writeJSONString(value, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	static final JSONObject getObject(Object value) {
-
-		if(value != null) {
-			
-			       if(value instanceof JSONObject) {return (JSONObject)value;
-			} else if(value instanceof Map)        {return new JSONObject((Map<?, ?>)value);
-			}
-		}
-		
-		return null;
-	}
-	
-	static final JSONArray getArray(Object value) {
-
-		if(value != null) {
-			
-			       if(value instanceof JSONArray)  {return (JSONArray)value;
-			} else if(value instanceof boolean[])  {return new JSONArray((boolean[])value);
-			} else if(value instanceof byte[])     {return new JSONArray((byte[])value);
-			} else if(value instanceof char[])     {return new JSONArray((char[])value);
-			} else if(value instanceof short[])    {return new JSONArray((short[])value);
-			} else if(value instanceof int[])      {return new JSONArray((int[])value);
-			} else if(value instanceof long[])     {return new JSONArray((long[])value);
-			} else if(value instanceof float[])    {return new JSONArray((float[])value);
-			} else if(value instanceof double[])   {return new JSONArray((double[])value);
-			} else if(value instanceof Collection) {return new JSONArray((Collection<?>)value);
-			} else if(value.getClass().isArray())  {return new JSONArray(value);
-			}
-		}
-		
-		return null;
-	}
-
-	static final Boolean getBoolean(Object value) {
-
-		if(value != null) {
-			
-			       if(value instanceof Boolean) {return (boolean)value;
-			} else if(value instanceof String)  {return Boolean.parseBoolean((String)value);
-			} else if(value instanceof Number)  {return ((Number)value).longValue() == 1L;
-			}
-		}
-		
-		return null;
-	}
-
-	static final Byte getByte(Object value) {
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).byteValue();
-			} else if(value instanceof String)  {return Byte.parseByte((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? (byte)1 : (byte)0;
-			}
-		}
-		
-		return null;
-	}
-
-	static final Short getShort(Object value) {
-
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).shortValue();
-			} else if(value instanceof String)  {return Short.parseShort((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? (short)1 : (short)0;
-			}
-		}
-		
-		return null;
-	}
-
-	static final Integer getInteger(Object value) {
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).intValue();
-			} else if(value instanceof String)  {return Integer.parseInt((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1 : 0;
-			}
-		}
-		
-		return null;
-	}
-
-	static final Long getLong(Object value) {
-
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).longValue();
-			} else if(value instanceof String)  {return Long.parseLong((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1L : 0L;
-			}
-		}
-		
-		return null;
-	}
-
-	static final Float getFloat(Object value) {
-
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).floatValue();
-			} else if(value instanceof String)  {return Float.parseFloat((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1F : 0F;
-			}
-		}
-		
-		return null;
-	}
-
-	static final Double getDouble(Object value) {
-		
-		if(value != null) {
-			
-			       if(value instanceof Number)  {return ((Number)value).doubleValue();
-			} else if(value instanceof String)  {return Double.parseDouble((String)value);
-			} else if(value instanceof Boolean) {return (boolean)value ? 1D : 0D;
-			}
-		}
-		
-		return null;
-	}
-
-	static final String getString(Object value) {
-
-		if(value != null) {
-			
-			return value.toString();
-		}
-		
-		return null;
-	}
-	
-	static final Date getDate(Object value, DateFormat format) throws ParseException {
-
-		if(value != null) {
-			
-			return value instanceof Date ? (Date)value : format.parse(value.toString());
-		}
-		
-		return null;
-	}
-	
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	static final <T extends Enum>T getEnum(Object value, Class<T> type) {
-		
-		if(value != null) {
-			
-			for(Object enumConstant : type.getEnumConstants()) {
-				
-				if(((T)enumConstant).name().equals(value.toString())) {
-					
-					return (T)enumConstant;
-				}
-			}
-		}
-		
-		return null;
-	}
-
-	/**
-	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
-	 * @param string the {@linkplain String} you want to escape
-	 * @return the escaped {@linkplain String}
-	 * @since 1.0.0
-	 */
-	public static final String escape(String string) {
-		
-		if(string != null) {
-			
-			StringBuilder builder = new StringBuilder();
-	        JSONValue.escape(string, builder);
-	        return builder.toString();
-		}
-
-		return null;
-    }
-
-    static void escape(String string, StringBuilder builder) {
-    	
-    	for(int index = 0; index < string.length(); index++) {
-    		
-    		char character = string.charAt(index);
-    		
-    		// If is faster than Switch
-    		       if(character == '"')  {builder.append("\\\"");
-    		} else if(character == '\\') {builder.append("\\\\");
-    		} else if(character == '\b') {builder.append("\\b");
-    		} else if(character == '\f') {builder.append("\\f");
-    		} else if(character == '\n') {builder.append("\\n");
-    		} else if(character == '\r') {builder.append("\\r");
-    		} else if(character == '\t') {builder.append("\\t");
-    		} else if(character == '/')  {builder.append("\\/");
-    		} else {
-    			
-    			if((character >= '\u0000' && character <= '\u001F') ||
-    			   (character >= '\u007F' && character <= '\u009F') ||
-    			   (character >= '\u2000' && character <= '\u20FF')) {
-    				
-    				String hex = Integer.toHexString(character);
-					builder.append("\\u");
-					
-					for(int k = 0; k < (4 - hex.length()); k++) {
-						
-						builder.append('0');
-					}
-					
-					builder.append(hex.toUpperCase());
-					
-    			} else {
-    				
-    				builder.append(character);
-    			}
-    		}
-    	}
-	}
+	public boolean primitive(Object value) throws JSONParseException, IOException;
 }
