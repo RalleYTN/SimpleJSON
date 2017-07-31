@@ -8,6 +8,15 @@ It adds type safety, serialization, tidy formatting and improved performance.
 Because the original was made for Java 2. A version of Java where things like generics weren't there yet. That causes code written with the original library to be completly type unsafe.
 It was a casting hell. And on top of that, you could not serialize and deserialize objects.
 
+# Features
+
+- [x] type safe JSON parsing
+- [x] parsing JSON with a stoppable SAX like content handler
+- [x] serializing and deserializing
+- [x] formatting and minimizing JSON data
+- [x] light weight JSON writing
+- [x] a `JSONObject` and `JSONArray` class allowing for reading and writing of JSON data even without serializing
+
 # Requirements
 
 - Java 8 or higher
@@ -49,6 +58,15 @@ try {
 }
 ```
 
+# Setup
+
+Just put the Java archive on your project's class path.
+
+# Changelog
+
+- Version 1.0.0
+	- Release
+
 # List of changes made to the original library
 
 This list only applies to version 1.0.0 of this library!
@@ -67,7 +85,6 @@ This list only applies to version 1.0.0 of this library!
 - Added getter methods to `JSONObject` and `JSONArray` which allow type safe reading of data.
 - Deleted all unneeded and deprecated methods.
 - Fixed a bug that would not quote non-JSON type values.
-
 
 # Links
 See the [original](https://github.com/fangyidong/json-simple)    
