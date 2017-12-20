@@ -220,7 +220,7 @@ import java.util.Map;
  * Represents a JSON array.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStreamAware {
@@ -1308,5 +1308,43 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 		}
 		
 		return array;
+	}
+	
+	/**
+	 * @param rootName name of the root element
+	 * @return this JSON array as XML
+	 * @since 1.1.0
+	 */
+	public String toXML(String rootName) {
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append('<');
+		builder.append(rootName);
+		builder.append(" length=");
+		builder.append(this.size());
+		builder.append('>');
+		
+		for(Object element : this) {
+
+				   if(element instanceof JSONObject) {builder.append(((JSONObject)element).toXML("item"));
+			} else if(element instanceof JSONArray) {builder.append(((JSONArray)element).toXML("item"));
+			} else {
+					
+				builder.append("<item>");
+				
+				if(element != null) {
+					
+					builder.append(String.valueOf(element));
+				}
+				
+				builder.append("</item>");
+			}
+		}
+		
+		builder.append("</");
+		builder.append(rootName);
+		builder.append('>');
+		
+		return builder.toString();
 	}
 }

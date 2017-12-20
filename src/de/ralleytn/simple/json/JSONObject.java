@@ -218,7 +218,7 @@ import java.util.Map;
  * Represents a JSON object.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAware, JSONStreamAware {
@@ -333,6 +333,25 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 
 			throw new RuntimeException(exception);
 		}
+	}
+	
+	/**
+	 * @return a new {@linkplain JSONObject} without any {@code null} values
+	 * @since 1.1.0
+	 */
+	public JSONObject compact() {
+		
+		JSONObject object = new JSONObject();
+		
+		this.forEach((key, value) -> {
+			
+			if(value != null) {
+				
+				object.put(key, value);
+			}
+		});
+		
+		return object;
 	}
 	
 	@Override
@@ -518,5 +537,46 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	public <T extends Enum>T getEnum(String key, Class<T> type) {
 		
 		return JSONValue.getEnum(this.get(key), type);
+	}
+
+	/**
+	 * @param rootName the name of the root element
+	 * @return this JSON Object in XML
+	 * @since 1.1.0
+	 */
+	public String toXML(String rootName) {
+		
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append('<');
+		builder.append(rootName);
+		builder.append('>');
+		
+		this.forEach((key, value) -> {
+			
+			       if(value instanceof JSONObject) {builder.append(((JSONObject)value).toXML(key.toString()));
+			} else if(value instanceof JSONArray)  {builder.append(((JSONArray)value).toXML(key.toString()));
+			} else {
+				
+				builder.append('<');
+				builder.append(key);
+				builder.append('>');
+				
+				if(value != null) {
+					
+					builder.append(String.valueOf(value));
+				}
+				
+				builder.append("</");
+				builder.append(key);
+				builder.append('>');
+			}
+		});
+		
+		builder.append("</");
+		builder.append(rootName);
+		builder.append('>');
+		
+		return builder.toString();
 	}
 }

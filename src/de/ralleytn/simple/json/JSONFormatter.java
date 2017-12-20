@@ -213,7 +213,7 @@ import java.io.Writer;
  * @version 1.0.0
  * @since 1.0.0
  */
-public final class JSONFormatter {
+public class JSONFormatter {
 
 	private JSONFormatter() {}
 	
