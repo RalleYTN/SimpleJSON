@@ -16,6 +16,7 @@ It was a casting hell. And on top of that, you could not serialize and deseriali
 - [x] formatting and minimizing JSON data
 - [x] light weight JSON writing
 - [x] a `JSONObject` and `JSONArray` class allowing for reading and writing of JSON data even without serializing
+- [x] converting JSON into XML
 
 # Requirements
 
