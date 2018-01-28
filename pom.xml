@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.ralleytn.simple.json</groupId>
   <artifactId>SimpleJSON</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.2-SNAPSHOT</version>
   <name>SimpleJSON</name>
   <description>SimpleJSON is an improved version of https://github.com/fangyidong/json-simple. It adds type safety, serialization, tidy formatting and improved performance.</description>
     <build>
