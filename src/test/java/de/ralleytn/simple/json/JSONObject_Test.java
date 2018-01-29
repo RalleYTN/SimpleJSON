@@ -1,4 +1,4 @@
-package de.ralleytn.simple.json.tests;
+package de.ralleytn.simple.json;
 
 import static org.junit.jupiter.api.Assertions.*;
 
