@@ -287,21 +287,21 @@ public final class JSONSerializer {
 						
 					} else if(targetType.getAnnotation(JSONRoot.class) != null) {
 						
-						Object newObject = targetType.newInstance();
+						Object newObject = targetType.getDeclaredConstructor().newInstance();
 						JSONSerializer.deserialize((JSONObject)value, newObject);
 						field.set(object, newObject);
 						
 					} else if(Map.class.isAssignableFrom(targetType)) {
 						
 						@SuppressWarnings("unchecked")
-						Map<Object, Object> map = (Map<Object, Object>)targetType.newInstance();
+						Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
 						JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
 						field.set(object, map);
 						
 					} else if(Collection.class.isAssignableFrom(targetType)) {
 						
 						@SuppressWarnings("unchecked")
-						Collection<Object> collection = (Collection<Object>)targetType.newInstance();
+						Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
 						JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
 						field.set(object, collection);
 						
@@ -371,21 +371,21 @@ public final class JSONSerializer {
 						
 					} else if(targetType.getAnnotation(JSONRoot.class) != null) {
 						
-						Object newObject = targetType.newInstance();
+						Object newObject = targetType.getDeclaredConstructor().newInstance();
 						JSONSerializer.deserialize((JSONObject)value, newObject);
 						method.invoke(object, newObject);
 						
 					} else if(Map.class.isAssignableFrom(targetType)) {
 						
 						@SuppressWarnings("unchecked")
-						Map<Object, Object> map = (Map<Object, Object>)targetType.newInstance();
+						Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
 						JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
 						method.invoke(object, map);
 						
 					} else if(Collection.class.isAssignableFrom(targetType)) {
 						
 						@SuppressWarnings("unchecked")
-						Collection<Object> collection = (Collection<Object>)targetType.newInstance();
+						Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
 						JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
 						method.invoke(object, collection);
 						
@@ -453,21 +453,21 @@ public final class JSONSerializer {
 					
 				} else if(type.getAnnotation(JSONRoot.class) != null) {
 					
-					Object newObject = type.newInstance();
+					Object newObject = type.getDeclaredConstructor().newInstance();
 					JSONSerializer.deserialize((JSONObject)value, newObject);
 					collection.add(newObject);
 					
 				} else if(Map.class.isAssignableFrom(type)) {
 					
 					@SuppressWarnings("unchecked")
-					Map<Object, Object> newMap = (Map<Object, Object>)type.newInstance();
+					Map<Object, Object> newMap = (Map<Object, Object>)type.getDeclaredConstructor().newInstance();
 					JSONSerializer.deserialize(clazz, classObject, newMap, (JSONObject)value);
 					collection.add(newMap);
 					
 				} else if(Collection.class.isAssignableFrom(type)) {
 					
 					@SuppressWarnings("unchecked")
-					Collection<Object> newCollection = (Collection<Object>)type.newInstance();
+					Collection<Object> newCollection = (Collection<Object>)type.getDeclaredConstructor().newInstance();
 					JSONSerializer.deserialize(clazz, classObject, newCollection, (JSONArray)value);
 					collection.add(newCollection);
 					
@@ -541,21 +541,21 @@ public final class JSONSerializer {
 					
 				} else if(type.getAnnotation(JSONRoot.class) != null) {
 					
-					Object newObject = type.newInstance();
+					Object newObject = type.getDeclaredConstructor().newInstance();
 					JSONSerializer.deserialize((JSONObject)value, newObject);
 					map.put(entry.getKey(), newObject);
 					
 				} else if(Map.class.isAssignableFrom(type)) {
 					
 					@SuppressWarnings("unchecked")
-					Map<Object, Object> newMap = (Map<Object, Object>)type.newInstance();
+					Map<Object, Object> newMap = (Map<Object, Object>)type.getDeclaredConstructor().newInstance();
 					JSONSerializer.deserialize(clazz, classObject, newMap, (JSONObject)value);
 					map.put(entry.getKey(), newMap);
 					
 				} else if(Collection.class.isAssignableFrom(type)) {
 					
 					@SuppressWarnings("unchecked")
-					Collection<Object> collection = (Collection<Object>)type.newInstance();
+					Collection<Object> collection = (Collection<Object>)type.getDeclaredConstructor().newInstance();
 					JSONSerializer.deserialize(clazz, classObject, collection, (JSONArray)value);
 					map.put(entry.getKey(), collection);
 					
@@ -626,21 +626,21 @@ public final class JSONSerializer {
 				
 			} else if(type.getAnnotation(JSONRoot.class) != null) {
 				
-				Object newObject = type.newInstance();
+				Object newObject = type.getDeclaredConstructor().newInstance();
 				JSONSerializer.deserialize((JSONObject)value, newObject);
 				Array.set(targetObject, index, newObject);
 				
 			} else if(Map.class.isAssignableFrom(type)) {
 				
 				@SuppressWarnings("unchecked")
-				Map<Object, Object> map = (Map<Object, Object>)type.newInstance();
+				Map<Object, Object> map = (Map<Object, Object>)type.getDeclaredConstructor().newInstance();
 				JSONSerializer.deserialize(clazz, classObject, map, (JSONObject)value);
 				Array.set(targetObject, index, map);
 				
 			} else if(Collection.class.isAssignableFrom(type)) {
 				
 				@SuppressWarnings("unchecked")
-				Collection<Object> collection = (Collection<Object>)type.newInstance();
+				Collection<Object> collection = (Collection<Object>)type.getDeclaredConstructor().newInstance();
 				JSONSerializer.deserialize(clazz, classObject, collection, (JSONArray)value);
 				Array.set(targetObject, index, collection);
 				

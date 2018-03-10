@@ -210,6 +210,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import de.ralleytn.simple.json.internal.Yylex;
+import de.ralleytn.simple.json.internal.Yytoken;
+
 
 /**
  * Parser for JSON text. Please note that JSONParser is NOT thread-safe.

@@ -264,7 +264,7 @@ public class JSONParseException extends Exception {
 	}
 	
 	/**
-	 * @see de.ralleytn.simple.json.Yytoken
+	 * @see de.ralleytn.simple.json.internal.Yytoken
 	 * 
 	 * @return One of the following base on the value of errorType:
 	 * 		   	ERROR_UNEXPECTED_CHAR		java.lang.Character

@@ -201,29 +201,35 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json;
+package de.ralleytn.simple.json.internal;
 
-/*
+/**
+ * Represents a token.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
-class Yytoken {
+public class Yytoken {
 	
-	static final int TYPE_VALUE = 0;
-	static final int TYPE_LEFT_BRACE = 1;
-	static final int TYPE_RIGHT_BRACE = 2;
-	static final int TYPE_LEFT_SQUARE = 3;
-	static final int TYPE_RIGHT_SQUARE = 4;
-	static final int TYPE_COMMA = 5;
-	static final int TYPE_COLON = 6;
-	static final int TYPE_EOF = -1;
+	/** @since 1.0.0 */ public static final int TYPE_VALUE = 0;
+	/** @since 1.0.0 */ public static final int TYPE_LEFT_BRACE = 1;
+	/** @since 1.0.0 */ public static final int TYPE_RIGHT_BRACE = 2;
+	/** @since 1.0.0 */ public static final int TYPE_LEFT_SQUARE = 3;
+	/** @since 1.0.0 */ public static final int TYPE_RIGHT_SQUARE = 4;
+	/** @since 1.0.0 */ public static final int TYPE_COMMA = 5;
+	/** @since 1.0.0 */ public static final int TYPE_COLON = 6;
+	/** @since 1.0.0 */ public static final int TYPE_EOF = -1;
 	
-	int type;
-	Object value;
+	public int type;
+	public Object value;
 	
-	Yytoken(int type, Object value) {
+	/**
+	 * @param type the token type
+	 * @param value the value of this token
+	 * @since 1.0.0
+	 */
+	public Yytoken(int type, Object value) {
 		
 		this.type = type;
 		this.value = value;
@@ -234,41 +240,20 @@ class Yytoken {
 		
 		StringBuilder builder = new StringBuilder();
 		
-		switch(this.type){
+		// Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// 01.03.2018
+		// Replaced switch-case with if-else because if-else is faster
 		
-			case TYPE_VALUE:
-				builder.append("VALUE(").append(this.value).append(")");
-				break;
-				
-			case TYPE_LEFT_BRACE:
-				builder.append("LEFT BRACE({)");
-				break;
-				
-			case TYPE_RIGHT_BRACE:
-				builder.append("RIGHT BRACE(})");
-				break;
-				
-			case TYPE_LEFT_SQUARE:
-				builder.append("LEFT SQUARE([)");
-				break;
-				
-			case TYPE_RIGHT_SQUARE:
-				builder.append("RIGHT SQUARE(])");
-				break;
-				
-			case TYPE_COMMA:
-				builder.append("COMMA(,)");
-				break;
-				
-			case TYPE_COLON:
-				builder.append("COLON(:)");
-				break;
-				
-			case TYPE_EOF:
-				builder.append("END OF FILE");
-				break;
+		       if(this.type == Yytoken.TYPE_VALUE) {builder.append("VALUE(").append(this.value).append(")");
+		} else if(this.type == Yytoken.TYPE_LEFT_BRACE) {builder.append("LEFT BRACE({)");
+		} else if(this.type == Yytoken.TYPE_RIGHT_BRACE) {builder.append("RIGHT BRACE(})");
+		} else if(this.type == Yytoken.TYPE_LEFT_SQUARE) {builder.append("LEFT SQUARE([)");
+		} else if(this.type == Yytoken.TYPE_RIGHT_SQUARE) {builder.append("RIGHT SQUARE(])");
+		} else if(this.type == Yytoken.TYPE_COMMA) {builder.append("COMMA(,)");
+		} else if(this.type == Yytoken.TYPE_COLON) {builder.append("COLON(:)");
+		} else if(this.type == Yytoken.TYPE_EOF) {builder.append("END OF FILE");
 		}
-		
+
 		return builder.toString();
 	}
 }
