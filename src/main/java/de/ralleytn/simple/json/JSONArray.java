@@ -216,14 +216,23 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+import de.ralleytn.simple.json.internal.Util;
+
 /**
  * Represents a JSON array.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.1.0
+ * @version 2.0.0
  * @since 1.0.0
  */
-public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStreamAware {
+public class JSONArray extends ArrayList<Object> {
+	
+	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	// -	Removed the interfaces JSONAware and JSONStreamAware
+	// -	Moved all static "writeJSONString" methods to the Util class
+	// -	Removed all "toJSONString" methods
+	// -	Renamed the "writeJSONString" method to simply "write"
+	// ====
 	
 	private static final long serialVersionUID = 3957988303675231981L;
 	
@@ -391,574 +400,19 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	
 	/**
 	 * Constructs a {@linkplain JSONArray} from JSON data read from a {@linkplain Reader}.
-	 * @param jsonReader the {@linkplain Reader} with the JSON data
+	 * @param reader the {@linkplain Reader} with the JSON data
 	 * @throws JSONParseException if the JSON data is invalid
 	 * @throws IOException if an I/O error occurred
 	 * @since 1.0.0
 	 */
-	public JSONArray(Reader jsonReader) throws JSONParseException, IOException {
+	public JSONArray(Reader reader) throws JSONParseException, IOException {
 		
-		super((JSONArray)new JSONParser().parse(jsonReader));
+		super((JSONArray)new JSONParser().parse(reader));
 	}
 	
-    /**
-     * Encode a {@linkplain Collection} into JSON text and write it to a {@linkplain Writer}. 
-     * If this list is also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} and {@linkplain JSONAware} specific behaviors will be ignored at this top level.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param collection the {@linkplain Collection} which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(Collection<?> collection, Writer writer) throws IOException {
+	public void write(Writer writer) throws IOException {
 		
-		if(collection != null) {
-			
-			boolean first = true;
-			Iterator<?> iterator = collection.iterator();
-	        writer.write('[');
-	        
-			while(iterator.hasNext()) {
-				
-	            if(first) {
-	            	
-	                first = false;
-	                
-	            } else {
-	            	
-	                writer.write(',');
-	            }
-	            
-				Object value = iterator.next();
-				
-				if(value == null) {
-					
-					writer.write("null");
-					
-				} else {
-					
-					JSONValue.writeJSONString(value, writer);
-				}
-			}
-			
-			writer.write(']');
-			
-		} else {
-		
-			writer.write("null");
-		}
-	}
-	
-	@Override
-	public void writeJSONString(Writer writer) throws IOException {
-		
-		JSONArray.writeJSONString(this, writer);
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(byte[] array, Writer writer) throws IOException {
-		
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(short[] array, Writer writer) throws IOException {
-
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(int[] array, Writer writer) throws IOException {
-
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(long[] array, Writer writer) throws IOException {
-
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(float[] array, Writer writer) throws IOException {
-
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(double[] array, Writer writer) throws IOException {
-
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(boolean[] array, Writer writer) throws IOException {
-
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(char[] array, Writer writer) throws IOException {
-
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			writer.write(""+ array[0]);
-			
-			for(int index = 1; index < array.length; index++) {
-				
-				writer.write(",");
-				writer.write("" + array[index]);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-    /**
-     * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param array the array which should be written on the {@linkplain Writer}
-     * @param writer the {@linkplain Writer} to write to
-     * @param <T> type of the array
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final <T>void writeJSONString(T[] array, Writer writer) throws IOException {
-		
-		if(array == null){
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
-			
-			writer.write("[]");
-			
-		} else {
-			
-			writer.write("[");
-			JSONValue.writeJSONString(array[0], writer);
-			
-			for(int i = 1; i < array.length; i++){
-				
-				writer.write(",");
-				JSONValue.writeJSONString(array[i], writer);
-			}
-			
-			writer.write("]");
-		}
-	}
-	
-	/**
-	 * Convert a {@linkplain Collection} to JSON text. The result is a JSON array. 
-	 * If this {@linkplain Collection} is also a {@linkplain JSONAware}, {@linkplain JSONAware} specific behaviors will be omitted at this top level.
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param collection the {@linkplain Collection} to convert
-	 * @return JSON text, or "null" if the {@linkplain Collection} is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(Collection<?> collection) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(collection, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(byte[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(short[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(int[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(long[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(float[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(double[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(boolean[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(char[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	/**
-	 * Convert an array to JSON text. The result is a JSON array. 
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param array the array to convert
-	 * @param <T> type of the array
-	 * @return JSON text, or "null" if array is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final <T>String toJSONString(T[] array) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONArray.writeJSONString(array, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	@Override
-	public String toJSONString(){
-		
-		return JSONArray.toJSONString(this);
+		Util.write(this, writer);
 	}
 
 	/**
@@ -968,7 +422,16 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	@Override
 	public String toString() {
 		
-		return this.toJSONString();
+		try(StringWriter writer = new StringWriter()) {
+			
+			Util.write(this, writer);
+			return writer.toString();
+			
+		} catch(IOException exception) {
+
+			// WILL NEVER HAPPEN!
+			throw new RuntimeException(exception);
+		}
 	}
 	
 	/**
@@ -981,7 +444,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public JSONObject getObject(int index) {
 		
-		return JSONValue.getObject(this.get(index));
+		return Util.getObject(this.get(index));
 	}
 	
 	/**
@@ -995,7 +458,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public JSONArray getArray(int index) {
 		
-		return JSONValue.getArray(this.get(index));
+		return Util.getArray(this.get(index));
 	}
 	
 	/**
@@ -1009,7 +472,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Boolean getBoolean(int index) {
 		
-		return JSONValue.getBoolean(this.get(index));
+		return Util.getBoolean(this.get(index));
 	}
 	
 	/**
@@ -1023,7 +486,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Byte getByte(int index) {
 		
-		return JSONValue.getByte(this.get(index));
+		return Util.getByte(this.get(index));
 	}
 	
 	/**
@@ -1037,7 +500,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Short getShort(int index) {
 		
-		return JSONValue.getShort(this.get(index));
+		return Util.getShort(this.get(index));
 	}
 	
 	/**
@@ -1051,7 +514,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Integer getInteger(int index) {
 		
-		return JSONValue.getInteger(this.get(index));
+		return Util.getInteger(this.get(index));
 	}
 	
 	/**
@@ -1065,7 +528,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Long getLong(int index) {
 		
-		return JSONValue.getLong(this.get(index));
+		return Util.getLong(this.get(index));
 	}
 	
 	/**
@@ -1079,7 +542,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Float getFloat(int index) {
 		
-		return JSONValue.getFloat(this.get(index));
+		return Util.getFloat(this.get(index));
 	}
 	
 	/**
@@ -1093,7 +556,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Double getDouble(int index) {
 		
-		return JSONValue.getDouble(this.get(index));
+		return Util.getDouble(this.get(index));
 	}
 	
 	/**
@@ -1105,7 +568,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public String getString(int index) {
 		
-		return JSONValue.getString(this.get(index));
+		return Util.getString(this.get(index));
 	}
 
 	/**
@@ -1121,7 +584,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	 */
 	public Date getDate(int index, DateFormat format) throws ParseException {
 		
-		return JSONValue.getDate(this.get(index), format);
+		return Util.getDate(this.get(index), format);
 	}
 	
 	/**
@@ -1137,7 +600,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 	@SuppressWarnings("rawtypes")
 	public <T extends Enum>T getEnum(int index, Class<T> type) {
 		
-		return JSONValue.getEnum(this.get(index), type);
+		return Util.getEnum(this.get(index), type);
 	}
 
 	/**

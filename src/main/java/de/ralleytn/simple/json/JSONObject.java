@@ -214,14 +214,21 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import de.ralleytn.simple.json.internal.Util;
+
 /**
  * Represents a JSON object.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.1.0
+ * @version 2.0.0
  * @since 1.0.0
  */
-public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAware, JSONStreamAware {
+public class JSONObject extends LinkedHashMap<Object, Object> {
+	
+	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	// -	Removed the interfaces JSONAware and JSONStreamAware
+	// -	Renamed the "writeJSONString" method to simply "write"
+	// ====
 	
 	private static final long serialVersionUID = -503443796854799292L;
 	
@@ -254,85 +261,20 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	}
 	
 	/**
-	 * Constructs a {@linkplain JSONObject} from JSON data read from a {@linkplain Reader}.
-	 * @param jsonReader the {@linkplain Reader} with the JSON data
+	 * Constructs a {@linkplain JSONObject} with JSON data from a {@linkplain Reader}.
+	 * @param reader the {@linkplain Reader} with the JSON data
 	 * @throws IOException if an I/O error occurred
-	 * @throws JSONParseException if the JSON data is invalid
+	 * @throws JSONParseException if the JSON is invalid
 	 * @since 1.0.0
 	 */
-	public JSONObject(Reader jsonReader) throws IOException, JSONParseException {
+	public JSONObject(Reader reader) throws IOException, JSONParseException {
 		
-		super((JSONObject)new JSONParser().parse(jsonReader));
+		super((JSONObject)new JSONParser().parse(reader));
 	}
 
-    /**
-     * Encode a {@linkplain Map} into JSON text and write it to out. This method will not close or flush the given {@linkplain Writer}!
-     * If this {@linkplain Map} is also a {@linkplain JSONAware} or {@linkplain JSONStreamAware}, {@linkplain JSONAware} or {@linkplain JSONStreamAware} specific behaviors will be ignored at this top level.
-     * @see de.ralleytn.simple.json.JSONValue#writeJSONString(Object, Writer)
-     * @param map the {@linkplain Map} to write
-     * @param writer the {@linkplain Writer} to which the {@linkplain Map} should be written to
-     * @throws IOException if an I/O error occurs
-     * @since 1.0.0
-     */
-	public static final void writeJSONString(Map<?, ?> map, Writer writer) throws IOException {
+	public void write(Writer writer) throws IOException {
 		
-		if(map != null) {
-			
-			boolean first = true;
-			writer.write('{');
-
-			for(Map.Entry<?, ?> entry : map.entrySet()) {
-				
-				if(first) {
-					
-	                first = false;
-	                
-				} else {
-					
-	                writer.write(',');
-				}
-				
-	            writer.write('\"');
-	            writer.write(JSONValue.escape(String.valueOf(entry.getKey())));
-	            writer.write('\"');
-	            writer.write(':');
-	            
-				JSONValue.writeJSONString(entry.getValue(), writer);
-			}
-			
-			writer.write('}');
-			
-		} else {
-			
-			writer.write("null");
-		}
-	}
-
-	@Override
-	public void writeJSONString(Writer writer) throws IOException {
-		
-		JSONObject.writeJSONString(this, writer);
-	}
-
-	/**
-	 * Convert a {@linkplain Map} to JSON text. The result is a JSON object. 
-	 * If this {@linkplain Map} is also a {@linkplain JSONAware}, {@linkplain JSONAware} specific behaviors will be omitted at this top level.
-	 * @see de.ralleytn.simple.json.JSONValue#toJSONString(Object)
-	 * @param map the {@linkplain Map} to convert
-	 * @return JSON text, or "null" if the {@linkplain Map} is {@code null}.
-	 * @since 1.0.0
-	 */
-	public static final String toJSONString(Map<?, ?> map) {
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONObject.writeJSONString(map, writer);
-			return writer.toString();
-			
-		} catch(IOException exception) {
-
-			throw new RuntimeException(exception);
-		}
+		Util.write(this, writer);
 	}
 	
 	/**
@@ -354,22 +296,6 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 		return object;
 	}
 	
-	@Override
-	public String toJSONString() {
-		
-		return JSONObject.toJSONString(this);
-	}
-	
-	/**
-	 * @return a {@linkplain String} representation of this {@linkplain JSONObject}. This is equivalent to calling {@link JSONObject#toJSONString()}.
-	 * @since 1.0.0
-	 */
-	@Override
-	public String toString() {
-		
-		return this.toJSONString();
-	}
-	
 	/**
 	 * If the value is a {@linkplain JSONObject} already, it will be casted and returned.
 	 * If the value is a {@linkplain Map}, it will be wrapped in a {@linkplain JSONObject}. The wrapped {@linkplain Map} will be returned.
@@ -380,7 +306,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public JSONObject getObject(String key) {
 		
-		return JSONValue.getObject(this.get(key));
+		return Util.getObject(this.get(key));
 	}
 	
 	/**
@@ -394,7 +320,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public JSONArray getArray(String key) {
 		
-		return JSONValue.getArray(this.get(key));
+		return Util.getArray(this.get(key));
 	}
 	
 	/**
@@ -408,7 +334,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Boolean getBoolean(String key) {
 		
-		return JSONValue.getBoolean(this.get(key));
+		return Util.getBoolean(this.get(key));
 	}
 	
 	/**
@@ -422,7 +348,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Byte getByte(String key) {
 		
-		return JSONValue.getByte(this.get(key));
+		return Util.getByte(this.get(key));
 	}
 	
 	/**
@@ -436,7 +362,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Short getShort(String key) {
 		
-		return JSONValue.getShort(this.get(key));
+		return Util.getShort(this.get(key));
 	}
 	
 	/**
@@ -450,7 +376,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Integer getInteger(String key) {
 		
-		return JSONValue.getInteger(this.get(key));
+		return Util.getInteger(this.get(key));
 	}
 	
 	/**
@@ -464,7 +390,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Long getLong(String key) {
 		
-		return JSONValue.getLong(this.get(key));
+		return Util.getLong(this.get(key));
 	}
 	
 	/**
@@ -478,7 +404,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Float getFloat(String key) {
 		
-		return JSONValue.getFloat(this.get(key));
+		return Util.getFloat(this.get(key));
 	}
 	
 	/**
@@ -492,7 +418,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Double getDouble(String key) {
 		
-		return JSONValue.getDouble(this.get(key));
+		return Util.getDouble(this.get(key));
 	}
 	
 	/**
@@ -504,7 +430,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public String getString(String key) {
 		
-		return JSONValue.getString(this.get(key));
+		return Util.getString(this.get(key));
 	}
 
 	/**
@@ -520,7 +446,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	 */
 	public Date getDate(String key, DateFormat format) throws ParseException {
 		
-		return JSONValue.getDate(this.get(key), format);
+		return Util.getDate(this.get(key), format);
 	}
 	
 	/**
@@ -536,7 +462,26 @@ public class JSONObject extends LinkedHashMap<Object, Object> implements JSONAwa
 	@SuppressWarnings("rawtypes")
 	public <T extends Enum>T getEnum(String key, Class<T> type) {
 		
-		return JSONValue.getEnum(this.get(key), type);
+		return Util.getEnum(this.get(key), type);
+	}
+	
+	/**
+	 * @return a {@linkplain String} representation of this {@linkplain JSONObject}. This is equivalent to calling {@link JSONObject#toJSONString()}.
+	 * @since 1.0.0
+	 */
+	@Override
+	public String toString() {
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			Util.write(this, writer);
+			return writer.toString();
+			
+		} catch(IOException exception) {
+
+			// WILL NEVER HAPPEN!
+			throw new RuntimeException(exception);
+		}
 	}
 
 	/**

@@ -10,23 +10,34 @@ This list only applies to version 1.0.0 of this library!
 - The packages of the original are merged into one
 - All public classes now have `JSON` in front of their name. This makes it easier to tell which classes come from that library. Also clears a conflict with the `java.text.ParseException`.
 - The `JSONParser` now uses actual stacks
-- The `JSONParser` now uses `if-else` instead of `switch-case` because it is faster.
-- Updated the documentation.
-- Fixed a bug that made it impossible to parse valid JSON with white spaces leading and/or trailing.
+- The `JSONParser` now uses `if-else` instead of `switch-case` because it is faster
+- Updated the documentation
+- Fixed a bug that made it impossible to parse valid JSON with white spaces leading and/or trailing
 - Made it possible to serialize and deserialize JSON
-- Added the `JSONFormatter` class which makes it possible to format minimized or minimize formatted JSON data.
+- Added the `JSONFormatter` class which makes it possible to format minimized or minimize formatted JSON data
 - Added more constructors to the `JSONArray` class
-- Added constructors to the `JSONObject` and `JSONArray` class which allows direct and type safe parsing of JSON data.
-- Added getter methods to `JSONObject` and `JSONArray` which allow type safe reading of data.
-- Deleted all unneeded and deprecated methods.
-- Fixed a bug that would not quote non-JSON type values.
+- Added constructors to the `JSONObject` and `JSONArray` class which allows direct and type safe parsing of JSON data
+- Added getter methods to `JSONObject` and `JSONArray` which allow type safe reading of data
+- Deleted all unneeded and deprecated methods
+- Fixed a bug that would not quote non-JSON type values
 
 ## Changelog
 
-### Version 2.0.0
+### Version 2.0.0 (incompatible with older versions of the library)
 
 - Made the library Java 9 compatible
 - `Yylex` and `Yytoken` were moved to the new `de.ralleytn.simple.json.internal` package
+- Fixed a bug in `JSONFormatter` that caused the `minimize` methods not to remove the `\r` character
+- The `JSONValue` class was renamed to `Util` and moved to the `de.ralleytn.simple.json.internal` package
+- The `JSONFormatter` class is no longer static and its methods no longer final
+- The classes `JSONSerializer`, `JSONTypeSerializationHandler`, `JSONRoot` and `JSONAttrbute` were moved to the new `de.ralleytn.simple.json.serialization` package
+- Made Unit-Tests that cover 100% of the code
+- Updated the documentation
+- Moved the static `writeJSONString` methods to the internal `Util` class
+- Renamed the non static `writeJSONString` methods to `write`
+- Removed the `toJSONString` methods; use `toString` instead
+- Removed the interfaces `JSONAware` and `JSONStreamAware`
+- Created a new class `JSONUtil` for utility methods that should be publicly visible
 
 ### Version 1.1.0
 

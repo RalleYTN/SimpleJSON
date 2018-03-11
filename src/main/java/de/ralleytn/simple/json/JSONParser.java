@@ -218,10 +218,14 @@ import de.ralleytn.simple.json.internal.Yytoken;
  * Parser for JSON text. Please note that JSONParser is NOT thread-safe.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class JSONParser {
+	
+	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	// -	Removed the ContainerFactory
+	// ====
 	
 	private static final int S_INIT = 0;
 	private static final int S_IN_FINISHED_VALUE = 1;
@@ -270,7 +274,7 @@ public class JSONParser {
 	
 	/**
 	 * Parses JSON data.
-	 * @param string text with the JSON data
+	 * @param json the JSON data
 	 * @return An instance of:
 	 * <ul>
 	 * <li>{@linkplain JSONObject}</li>
@@ -283,64 +287,22 @@ public class JSONParser {
 	 * @throws JSONParseException if the JSON data is invalid
 	 * @since 1.0.0
 	 */
-	public Object parse(String string) throws JSONParseException {
+	public Object parse(String json) throws JSONParseException {
 		
-		return parse(string != null ? string.trim() : null, (JSONContainerFactory)null);
-	}
-	
-	/**
-	 * Parses JSON data using a custom {@linkplain JSONContainerFactory}.
-	 * @param string text with the JSON data
-	 * @param containerFactory the custom {@linkplain JSONContainerFactory}
-	 * @return An instance of:
-	 * <ul>
-	 * <li>{@linkplain JSONObject}</li>
-	 * <li>{@linkplain JSONArray}</li>
-	 * <li>{@linkplain String}</li>
-	 * <li>{@linkplain Number}</li>
-	 * <li>{@linkplain Boolean}</li>
-	 * <li>{@code null}</li>
-	 * </ul>
-	 * @throws JSONParseException if the JSON data is invalid
-	 * @since 1.0.0
-	 */
-	public Object parse(String string, JSONContainerFactory containerFactory) throws JSONParseException {
-		
-		try(StringReader reader = new StringReader(string != null ? string.trim() : null)) {
+		try(StringReader reader = new StringReader(json)) {
 			
-			return this.parse(reader, containerFactory);
-		
-		} catch(IOException exception){
-
-			throw new JSONParseException(-1, JSONParseException.ERROR_UNEXPECTED_EXCEPTION, exception);
+			return this.parse(reader);
+			
+		} catch(IOException exception) {
+			
+			// WILL NEVER HAPPEN!
+			throw new RuntimeException(exception);
 		}
 	}
 	
 	/**
-	 * Parses JSON data.
-	 * @param reader the {@linkplain Reader} from which the JSON data comes
-	 * @return An instance of:
-	 * <ul>
-	 * <li>{@linkplain JSONObject}</li>
-	 * <li>{@linkplain JSONArray}</li>
-	 * <li>{@linkplain String}</li>
-	 * <li>{@linkplain Number}</li>
-	 * <li>{@linkplain Boolean}</li>
-	 * <li>{@code null}</li>
-	 * </ul>
-	 * @throws IOException if an I/O error occurs
-	 * @throws JSONParseException if the JSON data is invalid
-	 * @since 1.0.0
-	 */
-	public Object parse(Reader reader) throws IOException, JSONParseException {
-		
-		return this.parse(reader, (JSONContainerFactory)null);
-	}
-	
-	/**
-	 * Parses JSON data using a custom {@linkplain JSONContainerFactory}.
-	 * @param reader the {@linkplain Reader} from which the JSON data comes
-     * @param containerFactory the custom {@linkplain JSONContainerFactory}
+	 * Parses JSON data from a {@linkplain Reader}.
+	 * @param reader the {@linkplain Reader}
 	 * @return An instance of:
 	 * <ul>
 	 * <li>{@linkplain JSONObject}</li>
@@ -355,7 +317,7 @@ public class JSONParser {
 	 * @since 1.0.0
 	 */
 	@SuppressWarnings("unchecked")
-	public Object parse(Reader reader, JSONContainerFactory containerFactory) throws IOException, JSONParseException {
+	public Object parse(Reader reader) throws IOException, JSONParseException {
 		
 		this.reset(reader);
 		Stack<Object> statusStack = new Stack<>();
@@ -379,13 +341,13 @@ public class JSONParser {
 						
 						this.status = JSONParser.S_IN_OBJECT;
 						statusStack.push(this.status);
-						valueStack.push(this.createObjectContainer(containerFactory));
+						valueStack.push(new JSONObject());
 						
 					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
 						
 						this.status = JSONParser.S_IN_ARRAY;
 						statusStack.push(this.status);
-						valueStack.push(this.createArrayContainer(containerFactory));
+						valueStack.push(new JSONArray());
 						
 					} else {
 						
@@ -452,7 +414,7 @@ public class JSONParser {
 						statusStack.pop();
 						String key = (String)valueStack.pop();
 						Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-						List<Object> newArray = (List<Object>)createArrayContainer(containerFactory);
+						List<Object> newArray = new JSONArray();
 						parent.put(key, newArray);
 						this.status = JSONParser.S_IN_ARRAY;
 						statusStack.push(this.status);
@@ -463,7 +425,7 @@ public class JSONParser {
 						statusStack.pop();
 						String key = (String)valueStack.pop();
 						Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-						Map<Object, Object> newObject = (Map<Object, Object>)createObjectContainer(containerFactory);
+						Map<Object, Object> newObject = new JSONObject();
 						parent.put(key, newObject);
 						this.status = JSONParser.S_IN_OBJECT;
 						statusStack.push(this.status);
@@ -497,7 +459,7 @@ public class JSONParser {
 					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
 						
 						List<Object> val = (List<Object>)valueStack.peek();
-						Map<Object, Object> newObject = this.createObjectContainer(containerFactory);
+						Map<Object, Object> newObject = new JSONObject();
 						val.add(newObject);
 						this.status = JSONParser.S_IN_OBJECT;
 						statusStack.push(this.status);
@@ -506,7 +468,7 @@ public class JSONParser {
 					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
 						
 						List<Object> val=(List<Object>)valueStack.peek();
-						List<Object> newArray = this.createArrayContainer(containerFactory);
+						List<Object> newArray = new JSONArray();
 						val.add(newArray);
 						this.status = JSONParser.S_IN_ARRAY;
 						statusStack.push(this.status);
@@ -541,40 +503,6 @@ public class JSONParser {
 			
 			this.token = new Yytoken(Yytoken.TYPE_EOF, null);
 		}
-	}
-	
-	private final Map<Object, Object> createObjectContainer(JSONContainerFactory containerFactory) {
-
-		if(containerFactory == null) {
-			
-			return new JSONObject();
-		}
-			
-		Map<Object, Object> map = containerFactory.createObjectContainer();
-		
-		if(map == null) {
-			
-			return new JSONObject();
-		}
-			
-		return map;
-	}
-	
-	private final List<Object> createArrayContainer(JSONContainerFactory containerFactory) {
-		
-		if(containerFactory == null) {
-			
-			return new JSONArray();
-		}
-			
-		List<Object> list = containerFactory.creatArrayContainer();
-		
-		if(list == null) {
-			
-			return new JSONArray();
-		}
-			
-		return list;
 	}
 	
 	/**

@@ -201,24 +201,57 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json;
+package de.ralleytn.simple.json.serialization;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Beans that support customized output of JSON text to a {@linkplain Writer} shall implement this interface.  
- * @author FangYidong(fangyidong@yahoo.com.cn)
- * @version 1.0.0
+ * Marks a JSON attribute for serialization.
+ * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+ * @version 2.0.0
  * @since 1.0.0
  */
-public interface JSONStreamAware {
-	
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
+public @interface JSONAttribute {
+
 	/**
-	 * Writes a JSON encoded string on a {@linkplain Writer}.
-	 * @param writer the {@linkplain Writer} to write on
-	 * @throws IOException if an I/O error occurs
+	 * @return the name of the attribute
 	 * @since 1.0.0
 	 */
-	public void writeJSONString(Writer writer) throws IOException;
+	public String name();
+	
+	/**
+	 * {@link Type#GETTER} is used for serializing an object. If it is used on a method, it is not allowed to have any parameters!
+	 * {@link Type#SETTER} is used for deserializing an object. If it is used on a method, it can only have one parameter!
+	 * If this {@linkplain Annotation} is used on a field, it has to be accessible!
+	 * @return the attribute type
+	 * @since 1.0.0
+	 */
+	public Type[] type() default {Type.GETTER, Type.SETTER};
+	
+	/**
+	 * Represents the type of an attribute. Not the data type but more if it's read only or not.
+	 * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 */
+	public static enum Type {
+		
+		/**
+		 * Marks the attribute for reading.
+		 * @since 1.0.0
+		 */
+		GETTER,
+		
+		/**
+		 * Marks the attribute for writing.
+		 * @since 1.0.0
+		 */
+		SETTER;
+	}
 }

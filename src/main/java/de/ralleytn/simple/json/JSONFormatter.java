@@ -205,65 +205,87 @@ package de.ralleytn.simple.json;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 
 /**
- * Provides static methods for formatting and minimizing JSON data.
+ * Can format and minimize JSON data.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class JSONFormatter {
-
-	private JSONFormatter() {}
+	
+	// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	// -	Refactored some of the parameter names from "jsonReader" to "reader"
+	// 		and from "formattedWriter" and "minimizedWriter" to "writer"
+	// -	Decided that it would be better to not make this class static. The formatting has some flags that would be better
+	// 		as class attributes. It is a pain in the ass to always give the methods 4 or more parameters.
+	// ====
+	
+	private boolean crlf;
+	private boolean tabs;
+	private int indent;
 	
 	/**
-	 * Calls {@link #format(Reader, Writer, int, boolean, boolean)}.
-	 * UNIX line breaks and tabs will be used. The indent is {@code 1}.
-	 * @param jsonReader the {@linkplain Reader} from which the JSON data to format comes
-	 * @param formattedWriter the {@linkplain Writer} on which the formatted JSON data will be written
-	 * @throws IOException if an I/O error occurs
-	 * @since 1.0.0
+	 * Constructs a new {@linkplain JSONFormatter}.
+	 * Default indent is {@code 1} and tabulators will be used for the indent.
+	 * @since 2.0.0
 	 */
-	public static final void format(Reader jsonReader, Writer formattedWriter) throws IOException {
+	public JSONFormatter() {
 		
-		JSONFormatter.format(jsonReader, formattedWriter, 1, true, false);
+		this.indent = 1;
+		this.tabs = true;
 	}
 	
 	/**
-	 * Calls {@link #format(Reader, Writer, int, boolean, boolean)}.
-	 * UNIX line breaks and spaces will be used.
-	 * @param jsonReader the {@linkplain Reader} from which the JSON data to format comes
-	 * @param formattedWriter the {@linkplain Writer} on which the formatted JSON data will be written
-	 * @param indent number of characters used for one level of indent
-	 * @throws IOException if an I/O error occurs
-	 * @since 1.0.0
+	 * Sets whether a CRLF or a LF line break should be used.
+	 * @param crlf {@code true} = CRLF, {@code false} = LF
+	 * @since 2.0.0
 	 */
-	public static final void format(Reader jsonReader, Writer formattedWriter, int indent) throws IOException {
+	public void setUseCRLF(boolean crlf) {
 		
-		JSONFormatter.format(jsonReader, formattedWriter, indent, false, false);
+		this.crlf = crlf;
 	}
 	
 	/**
-	 * Reads the JSON data from the {@linkplain Reader}, formats it according to the parameters and writes it on the {@linkplain Writer}.
-	 * @param jsonReader the {@linkplain Reader} from which the JSON data to format comes
-	 * @param formattedWriter the {@linkplain Writer} on which the formatted JSON data will be written
-	 * @param indent number of characters used for one level of indent
-	 * @param useTabs if {@code true} tabs will be used to for indent, else white spaces will
-	 * @param windowsLineBreak if {@code true} {@code "\r\n"} will be used for line breaks, else {@code "\n"} will
+	 * Sets whether a tabulator or space should be used for the indent.
+	 * @param tabs {@code true} = tabulator, {@code false} = space
+	 * @since 2.0.0
+	 */
+	public void setUseTabs(boolean tabs) {
+		
+		this.tabs = tabs;
+	}
+	
+	/**
+	 * Sets the indent.
+	 * @param indent the indent
+	 * @since 2.0.0
+	 */
+	public void setIndent(int indent) {
+		
+		this.indent = indent;
+	}
+	
+	/**
+	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
+	 * @param reader the {@linkplain Reader} with the JSON data
+	 * @param writer the {@linkplain Writer} on which the formatted JSON data should be written
 	 * @throws IOException if an I/O error occurs
 	 * @since 1.0.0
 	 */
-	public static final void format(Reader jsonReader, Writer formattedWriter, int indent, boolean useTabs, boolean windowsLineBreak) throws IOException {
+	public void format(Reader reader, Writer writer) throws IOException {
 		
 		int level = 0;
 		boolean inString = false;
-		char space = useTabs ? '\t' : ' ';
-		String lineBreak = windowsLineBreak ? "\r\n" : "\n";
+		char space = this.tabs ? '\t' : ' ';
+		String lineBreak = this.crlf ? "\r\n" : "\n";
 		int read = -1;
 		char lastChar = '\0';
 		
-		while((read = jsonReader.read()) != -1) {
+		while((read = reader.read()) != -1) {
 			
 			char character = (char)read;
 			
@@ -276,15 +298,15 @@ public class JSONFormatter {
 				
 				if(character == '{' || character == '[') {
 					
-					formattedWriter.write(character);
-					formattedWriter.write(lineBreak);
+					writer.write(character);
+					writer.write(lineBreak);
 					level++;
 					
 					for(int l = 0; l < level; l++) {
 						
-						for(int ind = 0; ind < indent; ind++) {
+						for(int ind = 0; ind < this.indent; ind++) {
 							
-							formattedWriter.write(space);
+							writer.write(space);
 						}
 					}
 					
@@ -292,30 +314,30 @@ public class JSONFormatter {
 					
 				} else if(character == '}' || character == ']') {
 					
-					formattedWriter.write(lineBreak);
+					writer.write(lineBreak);
 					level--;
 					
 					for(int l = 0; l < level; l++) {
 						
-						for(int ind = 0; ind < indent; ind++) {
+						for(int ind = 0; ind < this.indent; ind++) {
 							
-							formattedWriter.write(space);
+							writer.write(space);
 						}
 					}
 					
-					formattedWriter.write(character);
+					writer.write(character);
 					continue;
 					
 				} else if(character == ',') {
 					
-					formattedWriter.write(character);
-					formattedWriter.write(lineBreak);
+					writer.write(character);
+					writer.write(lineBreak);
 					
 					for(int l = 0; l < level; l++) {
 						
-						for(int ind = 0; ind < indent; ind++) {
+						for(int ind = 0; ind < this.indent; ind++) {
 							
-							formattedWriter.write(space);
+							writer.write(space);
 						}
 					}
 					
@@ -323,152 +345,66 @@ public class JSONFormatter {
 					
 				} else if(character == ':') {
 					
-					formattedWriter.write(character);
-					formattedWriter.write(' ');
+					writer.write(character);
+					writer.write(' ');
 					continue;
 				}
 			}
 			
-			formattedWriter.write(character);
+			writer.write(character);
 			lastChar = character;
 		}
 	}
 	
 	/**
-	 * Calls {@link #format(String, int, boolean, boolean)}.
-	 * UNIX line breaks and tabs are used. The indent is {@code 1}.
-	 * @param json the JSON data to format
+	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
+	 * @param json the JSON data that should be formatted
 	 * @return the formatted JSON data
 	 * @since 1.0.0
 	 */
-	public static final String format(String json) {
+	public String format(String json) {
 		
-		return JSONFormatter.format(json, 1, true, false);
-	}
-	
-	/**
-	 * Call {@link #format(String, int, boolean, boolean)}.
-	 * UNIX line breaks and white spaces are used.
-	 * @param json the JSON data to format
-	 * @param indent number of characters used for one level of indent
-	 * @return the formatted JSON data
-	 * @since 1.0.0
-	 */
-	public static final String format(String json, int indent) {
+		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// Method now calls #format(Reader,Writer) because it is less code to maintain
+		// ====
 		
-		return JSONFormatter.format(json, indent, false, false);
-	}
-	
-	/**
-	 * Formats JSON data according to the parameters with which this method was called.
-	 * @param json the JSON data to format
-	 * @param indent number of characters used for one level of indent
-	 * @param useTabs if {@code true} tabs will be used to for indent, else white spaces will
-	 * @param windowsLineBreak if {@code true} {@code "\r\n"} will be used for line breaks, else {@code "\n"} will
-	 * @return the formatted JSON data
-	 * @since 1.0.0
-	 */
-	public static final String format(String json, int indent, boolean useTabs, boolean windowsLineBreak) {
-		
-		StringBuilder builder = new StringBuilder();
-		int level = 0;
-		boolean inString = false;
-		char space = useTabs ? '\t' : ' ';
-		String lineBreak = windowsLineBreak ? "\r\n" : "\n";
-		
-		for(int index = 0; index < json.length(); index++) {
+		try(StringReader reader = new StringReader(json);
+			StringWriter writer = new StringWriter()) {
 			
-			char character = json.charAt(index);
+			this.format(reader, writer);
+			return writer.toString();
 			
-			if(character == '"') {
-				
-				inString = !(inString && !(index > 1 && json.charAt(index - 1) == '\\'));
-			}
+		} catch(IOException exception) {
 			
-			if(!inString) {
-				
-				if(character == '{' || character == '[') {
-					
-					builder.append(character);
-					builder.append(lineBreak);
-					level++;
-					
-					for(int l = 0; l < level; l++) {
-						
-						for(int ind = 0; ind < indent; ind++) {
-							
-							builder.append(space);
-						}
-					}
-					
-					continue;
-					
-				} else if(character == '}' || character == ']') {
-					
-					builder.append(lineBreak);
-					level--;
-					
-					for(int l = 0; l < level; l++) {
-						
-						for(int ind = 0; ind < indent; ind++) {
-							
-							builder.append(space);
-						}
-					}
-					
-					builder.append(character);
-					continue;
-					
-				} else if(character == ',') {
-					
-					builder.append(character);
-					builder.append(lineBreak);
-					
-					for(int l = 0; l < level; l++) {
-						
-						for(int ind = 0; ind < indent; ind++) {
-							
-							builder.append(space);
-						}
-					}
-					
-					continue;
-					
-				} else if(character == ':') {
-					
-					builder.append(character);
-					builder.append(' ');
-					continue;
-				}
-			}
-			
-			builder.append(character);
+			// WILL NEVER HAPPEN!
+			throw new RuntimeException(exception);
 		}
-		
-		return builder.toString();
 	}
 	
 	/**
-	 * Minimizes formatted JSON data to the bare minimum of what it needs to be valid.
-	 * Can be useful for I/O operations to reduce the data that is transfered.
-	 * The result of {@link JSONAware#toJSONString()} already returns minimized JSON data.
-	 * @param jsonReader the {@linkplain Reader} from which the JSON data to minimize should be read from
-	 * @param minimizedWriter the {@linkplain Writer} to which the minimized JSON data should be written
-	 * @throws IOException  if an I/O error occurs
+	 * Minimizes formatted JSON data.
+	 * @param reader the {@linkplain Reader} with the formatted JSON data
+	 * @param writer the {@linkplain Writer} on which the minimized JSON data should be written
+	 * @throws IOException if an I/O error occurs
 	 * @since 1.0.0
 	 */
-	public static final void minimize(Reader jsonReader, Writer minimizedWriter) throws IOException {
+	public void minimize(Reader reader, Writer writer) throws IOException {
+		
+		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// Forgot to remove \r from the JSON
+		// ====
 		
 		boolean inString = false;
 		char lastChar = '\0';
 		int read = -1;
 		
-		while((read = jsonReader.read()) != -1) {
+		while((read = reader.read()) != -1) {
 			
 			char character = (char)read;
 			
 			if(character != '\n' &&
 			   character != '\t' &&
+			   character != '\r' &&
 			   character != '\b' &&
 			   character != '\0' &&
 			   character != '\f') {
@@ -480,7 +416,7 @@ public class JSONFormatter {
 				
 				if(!(character == ' ' && !inString)) {
 					
-					minimizedWriter.write(character);
+					writer.write(character);
 				}
 			}
 			
@@ -489,40 +425,54 @@ public class JSONFormatter {
 	}
 	
 	/**
-	 * Minimizes formatted JSON data to the bare minimum of what it needs to be valid.
-	 * Can be useful for I/O operations to reduce the data that is transfered.
-	 * The result of {@link JSONAware#toJSONString()} already returns minimized JSON data.
-	 * @param json the JSON data that should be minimized
+	 * Minimizes formatted JSON data.
+	 * @param json the formatted JSON data
 	 * @return the minimized JSON data
 	 * @since 1.0.0
 	 */
-	public static final String minimize(String json) {
+	public String minimize(String json) {
 		
-		StringBuilder builder = new StringBuilder();
-		boolean inString = false;
+		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// Method now calls #minimize(Reader,Writer) because it is less code to maintain
+		// ====
 		
-		for(int index = 0; index < json.length(); index++) {
+		try(StringReader reader = new StringReader(json);
+			StringWriter writer = new StringWriter()) {
 			
-			char character = json.charAt(index);
+			this.minimize(reader, writer);
+			return writer.toString();
 			
-			if(character != '\n' &&
-			   character != '\t' &&
-			   character != '\b' &&
-			   character != '\0' &&
-			   character != '\f') {
-				
-				if(character == '"') {
-					
-					inString = !(inString && !(index > 1 && json.charAt(index - 1) == '\\'));
-				}
-				
-				if(!(character == ' ' && !inString)) {
-					
-					builder.append(character);
-				}
-			}
+		} catch(IOException exception) {
+			
+			// WILL NEVER HAPPEN!
+			throw new RuntimeException(exception);
 		}
+	}
+	
+	/**
+	 * @return {@code true} when CRLF line breaks are used for formatting, else {@code false}
+	 * @since 2.0.0
+	 */
+	public boolean usesCRLF() {
 		
-		return builder.toString();
+		return this.crlf;
+	}
+	
+	/**
+	 * @return {@code true} if tabulators are used for the indent, else {@code false}
+	 * @since 2.0.0
+	 */
+	public boolean usesTabs() {
+		
+		return this.tabs;
+	}
+	
+	/**
+	 * @return the indent
+	 * @since 2.0.0
+	 */
+	public int getIndent() {
+		
+		return this.indent;
 	}
 }

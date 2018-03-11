@@ -201,42 +201,444 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json;
+package de.ralleytn.simple.json.internal;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
+
+import de.ralleytn.simple.json.JSONArray;
+import de.ralleytn.simple.json.JSONObject;
+import de.ralleytn.simple.json.JSONUtil;
 
 /**
  * Contains a few static methods for JSON values.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
-public final class JSONValue {
+public final class Util {
 
-	private JSONValue() {}
+	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	// -	Removed the "toJSONString" method because it was dead code
+	// -	Moved the method "escape(String)" to the class "JSONUtil"
+	// -	Renamed all "writeJSONString" methods to simply "write"
+	// ====
+	
+	private Util() {}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(byte[] array, Writer writer) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(short[] array, Writer writer) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(int[] array, Writer writer) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(long[] array, Writer writer) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(float[] array, Writer writer) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(double[] array, Writer writer) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(boolean[] array, Writer writer) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(char[] array, Writer writer) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			writer.write(""+ array[0]);
+			
+			for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write("" + array[index]);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode an array into JSON text and write it to a {@linkplain Writer}.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param array the array which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @param <T> type of the array
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final <T>void write(T[] array, Writer writer) throws IOException {
+		
+		if(array == null){
+			
+			writer.write("null");
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+			
+			writer.write("[");
+			Util.write(array[0], writer);
+			
+			for(int i = 1; i < array.length; i++){
+				
+				writer.write(",");
+				Util.write(array[i], writer);
+			}
+			
+			writer.write("]");
+		}
+	}
+	
+    /**
+     * Encode a {@linkplain Collection} into JSON text and write it to a {@linkplain Writer}. 
+     * If this list is also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} and {@linkplain JSONAware} specific behaviors will be ignored at this top level.
+     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @param collection the {@linkplain Collection} which should be written on the {@linkplain Writer}
+     * @param writer the {@linkplain Writer} to write to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(Collection<?> collection, Writer writer) throws IOException {
+		
+		if(collection != null) {
+			
+			boolean first = true;
+			Iterator<?> iterator = collection.iterator();
+	        writer.write('[');
+	        
+			while(iterator.hasNext()) {
+				
+	            if(first) {
+	            	
+	                first = false;
+	                
+	            } else {
+	            	
+	                writer.write(',');
+	            }
+	            
+				Object value = iterator.next();
+				
+				if(value == null) {
+					
+					writer.write("null");
+					
+				} else {
+					
+					Util.write(value, writer);
+				}
+			}
+			
+			writer.write(']');
+			
+		} else {
+		
+			writer.write("null");
+		}
+	}
+	
+    /**
+     * Convert a {@linkplain Map} to a JSON string and write it on a {@linkplain Writer}. This method will not close or flush the given {@linkplain Writer}!
+     * If this {@linkplain Map} is also a {@linkplain JSONAware} or {@linkplain JSONStreamAware}, {@linkplain JSONAware} or {@linkplain JSONStreamAware} specific behaviors will be ignored at this top level.
+     * @param map the {@linkplain Map} to write
+     * @param writer the {@linkplain Writer} to which the {@linkplain Map} should be written to
+     * @throws IOException if an I/O error occurs
+     * @since 1.0.0
+     */
+	public static final void write(Map<?, ?> map, Writer writer) throws IOException {
+		
+		if(map != null) {
+			
+			boolean first = true;
+			writer.write('{');
+
+			for(Map.Entry<?, ?> entry : map.entrySet()) {
+				
+				if(first) {
+					
+	                first = false;
+	                
+				} else {
+					
+	                writer.write(',');
+				}
+				
+	            writer.write('\"');
+	            writer.write(JSONUtil.escape(String.valueOf(entry.getKey())));
+	            writer.write('\"');
+	            writer.write(':');
+	            
+				Util.write(entry.getValue(), writer);
+			}
+			
+			writer.write('}');
+			
+		} else {
+			
+			writer.write("null");
+		}
+	}
 	
     /**
      * Encode an {@linkplain Object} into JSON text and write it to a {@linkplain Writer}.
      * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain Collection}, and it's also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} or {@linkplain JSONAware} will be considered firstly.<p>
      * DO NOT call this method from {@link JSONStreamAware#writeJSONString(Writer)} of a class that implements both {@linkplain JSONStreamAware} and ({@linkplain Map} or {@linkplain Collection}) with 
-     * "this" as the first parameter, use {@link JSONObject#writeJSONString(Map, Writer)} or {@link JSONArray#writeJSONString(Collection, Writer)} instead. 
-     * @see de.ralleytn.simple.json.JSONObject#writeJSONString(Map, Writer)
-     * @see de.ralleytn.simple.json.JSONArray#writeJSONString(Collection, Writer)
+     * "this" as the first parameter, use {@link JSONObject#write(Map, Writer)} or {@link JSONArray#write(Collection, Writer)} instead. 
+     * @see de.ralleytn.simple.json.JSONObject#write(Map, Writer)
+     * @see de.ralleytn.simple.json.JSONArray#write(Collection, Writer)
      * @param value the {@linkplain Object} to write on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write on.
      * @throws IOException if an I/O error occurs
      * @since 1.0.0
      */
 	@SuppressWarnings("unchecked")
-	public static void writeJSONString(Object value, Writer writer) throws IOException {
+	public static final void write(Object value, Writer writer) throws IOException {
+		
+		// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// -	Made this method final
+		// ====
 		
 		if(value == null) {
 			
@@ -245,59 +647,41 @@ public final class JSONValue {
 		} else if(value instanceof String) {
 			
             writer.write('\"');
-			writer.write(JSONValue.escape((String)value));
+			writer.write(JSONUtil.escape((String)value));
             writer.write('\"');
             
 		} else if(value instanceof Double)            {writer.write(((Double)value).isInfinite() || ((Double)value).isNaN() ? "null" : value.toString());
 		} else if(value instanceof Float)             {writer.write(((Float)value).isInfinite() || ((Float)value).isNaN() ? "null" : value.toString());
 		} else if(value instanceof Number)            {writer.write(value.toString());
 		} else if(value instanceof Boolean)           {writer.write(value.toString());
-		} else if((value instanceof JSONStreamAware)) {((JSONStreamAware)value).writeJSONString(writer);
-		} else if((value instanceof JSONAware))       {writer.write(((JSONAware)value).toJSONString());
-		} else if(value instanceof Map)               {JSONObject.writeJSONString((Map<Object, Object>)value, writer);
-		} else if(value instanceof Collection)        {JSONArray.writeJSONString((Collection<Object>)value, writer);
-		} else if(value instanceof byte[])            {JSONArray.writeJSONString((byte[])value, writer);
-		} else if(value instanceof short[])           {JSONArray.writeJSONString((short[])value, writer);
-		} else if(value instanceof int[])             {JSONArray.writeJSONString((int[])value, writer);
-		} else if(value instanceof long[])            {JSONArray.writeJSONString((long[])value, writer);
-		} else if(value instanceof float[])           {JSONArray.writeJSONString((float[])value, writer);
-		} else if(value instanceof double[])          {JSONArray.writeJSONString((double[])value, writer);
-		} else if(value instanceof boolean[])         {JSONArray.writeJSONString((boolean[])value, writer);
-		} else if(value instanceof char[])            {JSONArray.writeJSONString((char[])value, writer);
-		} else if(value.getClass().isArray())         {JSONArray.writeJSONString((Object[])value, writer);
+		} else if(value instanceof JSONObject)        {((JSONObject)value).write(writer);
+		} else if(value instanceof JSONArray)         {((JSONArray)value).write(writer);
+		} else if(value instanceof Map)               {Util.write((Map<Object, Object>)value, writer);
+		} else if(value instanceof Collection)        {Util.write((Collection<Object>)value, writer);
+		} else if(value instanceof byte[])            {Util.write((byte[])value, writer);
+		} else if(value instanceof short[])           {Util.write((short[])value, writer);
+		} else if(value instanceof int[])             {Util.write((int[])value, writer);
+		} else if(value instanceof long[])            {Util.write((long[])value, writer);
+		} else if(value instanceof float[])           {Util.write((float[])value, writer);
+		} else if(value instanceof double[])          {Util.write((double[])value, writer);
+		} else if(value instanceof boolean[])         {Util.write((boolean[])value, writer);
+		} else if(value instanceof char[])            {Util.write((char[])value, writer);
+		} else if(value.getClass().isArray())         {Util.write((Object[])value, writer);
 		} else {
 			
 			writer.write('"');
-			writer.write(JSONValue.escape(value.toString()));
+			writer.write(JSONUtil.escape(value.toString()));
 			writer.write('"');
 		}
 	}
-
+	
 	/**
-	 * Convert an {@linkplain Object} to JSON text.
-	 * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain Collection}, and it's also a {@linkplain JSONAware}, {@linkplain JSONAware} it will be considered first.<p>
-	 * DO NOT call this method from {@link JSONAware#toJSONString()} of a class that implements both {@linkplain JSONAware} and {@linkplain Map} or {@linkplain Collection} with 
-	 * "this" as the parameter, use {@link JSONObject#toJSONString(Map)} or {@link JSONArray#toJSONString(Collection)} instead. 
-	 * @see de.ralleytn.simple.json.JSONObject#toJSONString(Map)
-	 * @see de.ralleytn.simple.json.JSONArray#toJSONString(Collection)
-	 * @param value the {@linkplain Object} to convert
-	 * @return JSON text, or "null" if the {@linkplain Object} is {@code null} or it's an {@code NaN} or an infinite number.
+	 * 
+	 * @param value
+	 * @return
 	 * @since 1.0.0
 	 */
-	public static final String toJSONString(Object value){
-
-		try(StringWriter writer = new StringWriter()) {
-			
-			JSONValue.writeJSONString(value, writer);
-			return writer.toString();
-			
-		} catch(IOException exception){
-
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	static final JSONObject getObject(Object value) {
+	public static final JSONObject getObject(Object value) {
 
 		if(value != null) {
 			
@@ -309,7 +693,13 @@ public final class JSONValue {
 		return null;
 	}
 	
-	static final JSONArray getArray(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final JSONArray getArray(Object value) {
 
 		if(value != null) {
 			
@@ -330,7 +720,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final Boolean getBoolean(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final Boolean getBoolean(Object value) {
 
 		if(value != null) {
 			
@@ -343,7 +739,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final Byte getByte(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final Byte getByte(Object value) {
 		
 		if(value != null) {
 			
@@ -356,7 +758,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final Short getShort(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final Short getShort(Object value) {
 
 		if(value != null) {
 			
@@ -369,7 +777,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final Integer getInteger(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final Integer getInteger(Object value) {
 		
 		if(value != null) {
 			
@@ -382,7 +796,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final Long getLong(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final Long getLong(Object value) {
 
 		if(value != null) {
 			
@@ -395,7 +815,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final Float getFloat(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final Float getFloat(Object value) {
 
 		if(value != null) {
 			
@@ -408,7 +834,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final Double getDouble(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final Double getDouble(Object value) {
 		
 		if(value != null) {
 			
@@ -421,7 +853,13 @@ public final class JSONValue {
 		return null;
 	}
 
-	static final String getString(Object value) {
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @since 1.0.0
+	 */
+	public static final String getString(Object value) {
 
 		if(value != null) {
 			
@@ -431,7 +869,15 @@ public final class JSONValue {
 		return null;
 	}
 	
-	static final Date getDate(Object value, DateFormat format) throws ParseException {
+	/**
+	 * 
+	 * @param value
+	 * @param format
+	 * @return
+	 * @throws ParseException
+	 * @since 1.0.0
+	 */
+	public static final Date getDate(Object value, DateFormat format) throws ParseException {
 
 		if(value != null) {
 			
@@ -441,8 +887,15 @@ public final class JSONValue {
 		return null;
 	}
 	
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	static final <T extends Enum>T getEnum(Object value, Class<T> type) {
+	/**
+	 * 
+	 * @param value
+	 * @param type
+	 * @return
+	 * @since 1.0.0
+	 */
+	@SuppressWarnings("unchecked")
+	public static final <T extends Enum<?>>T getEnum(Object value, Class<T> type) {
 		
 		if(value != null) {
 			
@@ -459,24 +912,12 @@ public final class JSONValue {
 	}
 
 	/**
-	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
-	 * @param string the {@linkplain String} you want to escape
-	 * @return the escaped {@linkplain String}
+	 * 
+	 * @param string
+	 * @param builder
 	 * @since 1.0.0
 	 */
-	public static final String escape(String string) {
-		
-		if(string != null) {
-			
-			StringBuilder builder = new StringBuilder();
-	        JSONValue.escape(string, builder);
-	        return builder.toString();
-		}
-
-		return null;
-    }
-
-    static void escape(String string, StringBuilder builder) {
+    public static void escape(String string, StringBuilder builder) {
     	
     	for(int index = 0; index < string.length(); index++) {
     		
