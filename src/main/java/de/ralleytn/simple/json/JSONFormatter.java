@@ -222,6 +222,7 @@ public class JSONFormatter {
 	// 		and from "formattedWriter" and "minimizedWriter" to "writer"
 	// -	Decided that it would be better to not make this class static. The formatting has some flags that would be better
 	// 		as class attributes. It is a pain in the ass to always give the methods 4 or more parameters.
+	// -	Updated the documentation
 	// ====
 	
 	private boolean crlf;

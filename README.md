@@ -24,7 +24,7 @@ Parsing JSON:
 try {
 
 	JSONObject object = new JSONObject(myJSONString);
-	int id = oject.getInteger("id");
+	int id = object.getInteger("id");
 	
 	JSONArray array = new JSONArray(myJSONArrayString);
 	
@@ -67,14 +67,18 @@ This list only applies to version 1.0.0 of this library!
 - The `JSONValue` class was renamed to `Util` and moved to the `de.ralleytn.simple.json.internal` package
 - The `JSONFormatter` class is no longer static and its methods no longer final
 - The classes `JSONSerializer`, `JSONTypeSerializationHandler`, `JSONRoot` and `JSONAttrbute` were moved to the new `de.ralleytn.simple.json.serialization` package
-- Made Unit-Tests that cover 100% of the code
+- Made Unit-Tests that cover basically all of the reachable code
 - Updated the documentation
 - Moved the static `writeJSONString` methods to the internal `Util` class
 - Renamed the non static `writeJSONString` methods to `write`
 - Removed the `toJSONString` methods; use `toString` instead
 - Removed the interfaces `JSONAware` and `JSONStreamAware`
 - Created a new class `JSONUtil` for utility methods that should be publicly visible
-- Improved the performance
+- Improved the performance of the Lexer
+- `JSONArray` will no longer throw an exception if an object that isn't an array was given to the constructor; An empty `JSONArray` will be created instead
+- `JSONObject` and `JSONArray` now override the `equals(Object)` method
+- Added methods that allow for a conversion from `JSONArray` to primitive arrays
+- Removed the setters from the `JSONParseException` class
 
 ### Version 1.1.0
 

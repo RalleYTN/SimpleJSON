@@ -203,34 +203,57 @@
  */
 package de.ralleytn.simple.json;
 
+import de.ralleytn.simple.json.internal.Yytoken;
+
 /**
- * ParseException explains why and where the error occurs in source JSON text.
- * 
+ * Is thrown when an error occurs while parsing JSON data.
+ * Explains what the problem is.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public class JSONParseException extends Exception {
 	
+	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	// -	Updated the documentation
+	// ====
+	
 	private static final long serialVersionUID = -7880698968187728547L;
 	
-	public static final int ERROR_UNEXPECTED_CHAR = 0;
-	public static final int ERROR_UNEXPECTED_TOKEN = 1;
-	public static final int ERROR_UNEXPECTED_EXCEPTION = 2;
+	/** @since 1.0.0 */ public static final int ERROR_UNEXPECTED_CHAR = 0;
+	/** @since 1.0.0 */ public static final int ERROR_UNEXPECTED_TOKEN = 1;
+	/** @since 1.0.0 */ public static final int ERROR_UNEXPECTED_EXCEPTION = 2;
 
 	private int errorType;
 	private Object unexpectedObject;
 	private int position;
 	
+	/**
+	 * @param errorType the error type
+	 * @since 1.0.0
+	 */
 	public JSONParseException(int errorType) {
 		
 		this(-1, errorType, null);
 	}
 	
+	/**
+	 * @param errorType the error type
+	 * @param unexpectedObject the object that represents what was unexpected
+	 * @since 1.0.0
+	 */
 	public JSONParseException(int errorType, Object unexpectedObject) {
 		
 		this(-1, errorType, unexpectedObject);
 	}
 	
+	/**
+	 * @param position the character position (starting with 0) of the input where the error occurred
+	 * @param errorType the error type
+	 * @param unexpectedObject the object that represents what was unexpected
+	 * @since 1.0.0
+	 */
 	public JSONParseException(int position, int errorType, Object unexpectedObject) {
 		
 		this.position = position;
@@ -238,47 +261,49 @@ public class JSONParseException extends Exception {
 		this.unexpectedObject = unexpectedObject;
 	}
 	
+	/**
+	 * @return the error type
+	 * @since 1.0.0
+	 */
 	public int getErrorType() {
 		
 		return errorType;
 	}
 	
-	public void setErrorType(int errorType) {
-		
-		this.errorType = errorType;
-	}
-	
 	/**
-	 * @see de.ralleytn.simple.json.JSONParser#getPosition()
-	 * 
-	 * @return The character position (starting with 0) of the input where the error occurs.
+	 * @return the character position (starting with 0) of the input where the error occurred
+	 * @since 1.0.0
 	 */
 	public int getPosition() {
 		
 		return this.position;
 	}
 	
-	public void setPosition(int position) {
-		
-		this.position = position;
-	}
-	
 	/**
-	 * @see de.ralleytn.simple.json.internal.Yytoken
-	 * 
-	 * @return One of the following base on the value of errorType:
-	 * 		   	ERROR_UNEXPECTED_CHAR		java.lang.Character
-	 * 			ERROR_UNEXPECTED_TOKEN		org.json.simple.parser.Yytoken
-	 * 			ERROR_UNEXPECTED_EXCEPTION	java.lang.Exception
+	 * @return one of the following base on the value of errorType:
+	 * <table border=1>
+	 * <tr>
+	 * <th>error type</th>
+	 * <th>object type</th>
+	 * </tr>
+	 * <tr>
+	 * <td>{@link #ERROR_UNEXPECTED_CHAR}</td>
+	 * <td>{@linkplain Character}</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@link #ERROR_UNEXPECTED_TOKEN}</td>
+	 * <td>{@linkplain Yytoken}</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@link #ERROR_UNEXPECTED_EXCEPTION}</td>
+	 * <td>{@linkplain Exception}</td>
+	 * </tr>
+	 * </table>
+	 * @since 1.0.0
 	 */
 	public Object getUnexpectedObject() {
 		
 		return this.unexpectedObject;
-	}
-	
-	public void setUnexpectedObject(Object unexpectedObject) {
-		
-		this.unexpectedObject = unexpectedObject;
 	}
 	
 	@Override

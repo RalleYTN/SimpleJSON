@@ -23,8 +23,59 @@ final class TestUtil {
 	private TestUtil() {}
 	
 	/**
+	 * Creates an instance of {@linkplain JSONArray} filled with some numbers but as strings.
+	 * @return the created array
+	 * @since 2.0.0
+	 */
+	public static final JSONArray createNumberStringArray() {
+		
+		JSONArray array = new JSONArray();
+		array.add("1");
+		array.add("2");
+		array.add("3.5");
+		array.add("0.0001");
+		array.add("99999999999999999");
+		
+		return array;
+	}
+	
+	/**
+	 * Creates an instance of {@linkplain JSONArray} filled with some strings.
+	 * @return the created array
+	 * @since 2.0.0
+	 */
+	public static final JSONArray createStringArray() {
+		
+		JSONArray array = new JSONArray();
+		array.add("A");
+		array.add("AB");
+		array.add("C");
+		array.add("Z");
+		array.add("HHH");
+		
+		return array;
+	}
+	
+	/**
+	 * Creates an instance of {@linkplain JSONArray} filled with some numbers.
+	 * @return the created array
+	 * @since 2.0.0
+	 */
+	public static final JSONArray createNumberArray() {
+		
+		JSONArray array = new JSONArray();
+		array.add(1);
+		array.add(2);
+		array.add(3.5F);
+		array.add(0.0001D);
+		array.add(99999999999999999L);
+		
+		return array;
+	}
+	
+	/**
 	 * Creates an instance of {@linkplain JSONArray} with some sample data.
-	 * @return the created instance
+	 * @return the created array
 	 * @since 2.0.0
 	 */
 	public static final JSONArray createArray() {

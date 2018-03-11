@@ -215,7 +215,7 @@ import de.ralleytn.simple.json.internal.Yytoken;
 
 
 /**
- * Parser for JSON text. Please note that JSONParser is NOT thread-safe.
+ * Parses JSON data (<u>not</u> thread-safe).
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 2.0.0
@@ -225,6 +225,7 @@ public class JSONParser {
 	
 	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
 	// -	Removed the ContainerFactory
+	// -	Updated the documentation
 	// ====
 	
 	private static final int S_INIT = 0;
@@ -245,7 +246,7 @@ public class JSONParser {
      * Resets the parser to the initial state without resetting the underlying reader.
      * @since 1.0.0
      */
-    public void reset(){
+    public void reset() {
     	
         this.token = null;
         this.status = JSONParser.S_INIT;
@@ -254,7 +255,7 @@ public class JSONParser {
     
     /**
      * Resets the parser to the initial state with a new character reader.
-     * @param reader the new character reader.
+     * @param reader the new character reader
      * @since 1.0.0
      */
 	public void reset(Reader reader) {
@@ -264,7 +265,7 @@ public class JSONParser {
 	}
 	
 	/**
-	 * @return the position of the beginning of the current token.
+	 * @return the position where the current token begins
 	 * @since 1.0.0
 	 */
 	public int getPosition() {
@@ -284,7 +285,7 @@ public class JSONParser {
 	 * <li>{@linkplain Boolean}</li>
 	 * <li>{@code null}</li>
 	 * </ul>
-	 * @throws JSONParseException if the JSON data is invalid
+	 * @throws JSONParseException if the JSON is invalid
 	 * @since 1.0.0
 	 */
 	public Object parse(String json) throws JSONParseException {
@@ -313,185 +314,182 @@ public class JSONParser {
 	 * <li>{@code null}</li>
 	 * </ul>
 	 * @throws IOException if an I/O error occurs
-	 * @throws JSONParseException if the JSON data is invalid
+	 * @throws JSONParseException if the JSON is invalid
 	 * @since 1.0.0
 	 */
 	@SuppressWarnings("unchecked")
 	public Object parse(Reader reader) throws IOException, JSONParseException {
 		
+		// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// -	Removed the unnecessary try-catch block
+		// ====
+		
 		this.reset(reader);
 		Stack<Object> statusStack = new Stack<>();
 		Stack<Object> valueStack = new Stack<>();
-		
-		try {
+
+		do {
 			
-			do {
+			this.nextToken();
+			
+			if(this.status == JSONParser.S_INIT) {
 				
-				this.nextToken();
-				
-				if(this.status == JSONParser.S_INIT) {
+				if(this.token.type == Yytoken.TYPE_VALUE) {
 					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
+					this.status = JSONParser.S_IN_FINISHED_VALUE;
+					statusStack.push(this.status);
+					valueStack.push(this.token.value);
+					
+				} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+					
+					this.status = JSONParser.S_IN_OBJECT;
+					statusStack.push(this.status);
+					valueStack.push(new JSONObject());
+					
+				} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+					
+					this.status = JSONParser.S_IN_ARRAY;
+					statusStack.push(this.status);
+					valueStack.push(new JSONArray());
+					
+				} else {
+					
+					this.status = JSONParser.S_IN_ERROR;
+				}
+				
+			} else if(this.status == JSONParser.S_IN_FINISHED_VALUE) {
+				
+				if(this.token.type == Yytoken.TYPE_EOF) {
+					
+					return valueStack.pop();
+					
+				} else {
+					
+					throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+				}
+				
+			} else if(this.status == JSONParser.S_IN_OBJECT) {
+				
+				if(this.token.type == Yytoken.TYPE_VALUE) {
+					
+					if(this.token.value instanceof String) {
 						
-						this.status = JSONParser.S_IN_FINISHED_VALUE;
+						String key = (String)this.token.value;
+						valueStack.push(key);
+						this.status = JSONParser.S_PASSED_PAIR_KEY;
 						statusStack.push(this.status);
-						valueStack.push(this.token.value);
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-						
-						this.status = JSONParser.S_IN_OBJECT;
-						statusStack.push(this.status);
-						valueStack.push(new JSONObject());
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-						
-						this.status = JSONParser.S_IN_ARRAY;
-						statusStack.push(this.status);
-						valueStack.push(new JSONArray());
 						
 					} else {
 						
-						this.status = JSONParser.S_IN_ERROR;
+						this.status = S_IN_ERROR;
 					}
 					
-				} else if(this.status == JSONParser.S_IN_FINISHED_VALUE) {
+				} else if(this.token.type == Yytoken.TYPE_RIGHT_BRACE) {
 					
-					if(this.token.type == Yytoken.TYPE_EOF) {
-						
-						return valueStack.pop();
-						
-					} else {
-						
-						throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
-					}
-					
-				} else if(this.status == JSONParser.S_IN_OBJECT) {
-					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
-						
-						if(this.token.value instanceof String) {
-							
-							String key = (String)this.token.value;
-							valueStack.push(key);
-							this.status = JSONParser.S_PASSED_PAIR_KEY;
-							statusStack.push(this.status);
-							
-						} else {
-							
-							this.status = S_IN_ERROR;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_RIGHT_BRACE) {
-						
-						if(valueStack.size() > 1){
-							
-							statusStack.pop();
-							valueStack.pop();
-							this.status = (int)statusStack.peek();
-							
-						} else {
-							
-							this.status = JSONParser.S_IN_FINISHED_VALUE;
-						}
-						
-					} else if(this.token.type != Yytoken.TYPE_COMMA) {
-						
-						this.status = JSONParser.S_IN_ERROR;
-					}
-					
-				} else if(this.status == JSONParser.S_PASSED_PAIR_KEY) {
-					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
+					if(valueStack.size() > 1){
 						
 						statusStack.pop();
-						String key = (String)valueStack.pop();
-						Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-						parent.put(key, this.token.value);
+						valueStack.pop();
 						this.status = (int)statusStack.peek();
 						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+					} else {
 						
-						statusStack.pop();
-						String key = (String)valueStack.pop();
-						Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-						List<Object> newArray = new JSONArray();
-						parent.put(key, newArray);
-						this.status = JSONParser.S_IN_ARRAY;
-						statusStack.push(this.status);
-						valueStack.push(newArray);
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-						
-						statusStack.pop();
-						String key = (String)valueStack.pop();
-						Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-						Map<Object, Object> newObject = new JSONObject();
-						parent.put(key, newObject);
-						this.status = JSONParser.S_IN_OBJECT;
-						statusStack.push(this.status);
-						valueStack.push(newObject);
-						
-					} else if(this.token.type != Yytoken.TYPE_COLON) {
-						
-						this.status = JSONParser.S_IN_ERROR;
+						this.status = JSONParser.S_IN_FINISHED_VALUE;
 					}
 					
-				} else if(this.status == JSONParser.S_IN_ARRAY) {
+				} else if(this.token.type != Yytoken.TYPE_COMMA) {
 					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
-						
-						List<Object> val = (List<Object>)valueStack.peek();
-						val.add(this.token.value);
-						
-					} else if(this.token.type == Yytoken.TYPE_RIGHT_SQUARE) {
-						
-						if(valueStack.size() > 1) {
-							
-							statusStack.pop();
-							valueStack.pop();
-							this.status = (int)statusStack.peek();
-						
-						} else {
-							
-							this.status = JSONParser.S_IN_FINISHED_VALUE;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-						
-						List<Object> val = (List<Object>)valueStack.peek();
-						Map<Object, Object> newObject = new JSONObject();
-						val.add(newObject);
-						this.status = JSONParser.S_IN_OBJECT;
-						statusStack.push(this.status);
-						valueStack.push(newObject);
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-						
-						List<Object> val=(List<Object>)valueStack.peek();
-						List<Object> newArray = new JSONArray();
-						val.add(newArray);
-						this.status = JSONParser.S_IN_ARRAY;
-						statusStack.push(this.status);
-						valueStack.push(newArray);
-						
-					} else if(this.token.type != Yytoken.TYPE_COMMA) {
-						
-						this.status = JSONParser.S_IN_ERROR;
-					}
+					this.status = JSONParser.S_IN_ERROR;
 				}
 				
-				if(this.status == JSONParser.S_IN_ERROR) {
+			} else if(this.status == JSONParser.S_PASSED_PAIR_KEY) {
+				
+				if(this.token.type == Yytoken.TYPE_VALUE) {
 					
-					throw new JSONParseException(getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, token);
+					statusStack.pop();
+					String key = (String)valueStack.pop();
+					Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
+					parent.put(key, this.token.value);
+					this.status = (int)statusStack.peek();
+					
+				} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+					
+					statusStack.pop();
+					String key = (String)valueStack.pop();
+					Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
+					List<Object> newArray = new JSONArray();
+					parent.put(key, newArray);
+					this.status = JSONParser.S_IN_ARRAY;
+					statusStack.push(this.status);
+					valueStack.push(newArray);
+					
+				} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+					
+					statusStack.pop();
+					String key = (String)valueStack.pop();
+					Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
+					Map<Object, Object> newObject = new JSONObject();
+					parent.put(key, newObject);
+					this.status = JSONParser.S_IN_OBJECT;
+					statusStack.push(this.status);
+					valueStack.push(newObject);
+					
+				} else if(this.token.type != Yytoken.TYPE_COLON) {
+					
+					this.status = JSONParser.S_IN_ERROR;
 				}
-
-			} while(this.token.type != Yytoken.TYPE_EOF);
-		
-		} catch(IOException exception){
+				
+			} else if(this.status == JSONParser.S_IN_ARRAY) {
+				
+				if(this.token.type == Yytoken.TYPE_VALUE) {
+					
+					List<Object> val = (List<Object>)valueStack.peek();
+					val.add(this.token.value);
+					
+				} else if(this.token.type == Yytoken.TYPE_RIGHT_SQUARE) {
+					
+					if(valueStack.size() > 1) {
+						
+						statusStack.pop();
+						valueStack.pop();
+						this.status = (int)statusStack.peek();
+					
+					} else {
+						
+						this.status = JSONParser.S_IN_FINISHED_VALUE;
+					}
+					
+				} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+					
+					List<Object> val = (List<Object>)valueStack.peek();
+					Map<Object, Object> newObject = new JSONObject();
+					val.add(newObject);
+					this.status = JSONParser.S_IN_OBJECT;
+					statusStack.push(this.status);
+					valueStack.push(newObject);
+					
+				} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+					
+					List<Object> val = (List<Object>)valueStack.peek();
+					List<Object> newArray = new JSONArray();
+					val.add(newArray);
+					this.status = JSONParser.S_IN_ARRAY;
+					statusStack.push(this.status);
+					valueStack.push(newArray);
+					
+				} else if(this.token.type != Yytoken.TYPE_COMMA) {
+					
+					this.status = JSONParser.S_IN_ERROR;
+				}
+			}
 			
-			throw exception;
-		}
-		
+			if(this.status == JSONParser.S_IN_ERROR) {
+				
+				throw new JSONParseException(getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, token);
+			}
+	
+		} while(this.token.type != Yytoken.TYPE_EOF);
+
 		throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
 	}
 	
@@ -506,10 +504,10 @@ public class JSONParser {
 	}
 	
 	/**
-	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
-	 * @param string text with the JSON data
+	 * Goes over a JSON string step by step using a {@linkplain JSONContentHandler}.
+	 * @param string the JSON string
 	 * @param contentHandler the {@linkplain JSONContentHandler}
-	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
+	 * @throws JSONParseException if the JSON is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
 	public void parse(String string, JSONContentHandler contentHandler) throws JSONParseException {
@@ -518,11 +516,11 @@ public class JSONParser {
 	}
 	
 	/**
-	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
-	 * @param string text with the JSON data
+	 * Goes over a JSON string step by step using a {@linkplain JSONContentHandler}.
+	 * @param string the JSON string
 	 * @param contentHandler the {@linkplain JSONContentHandler}
-	 * @param resume Indicates if it continues previous parsing operation. If set to {@code true}, resume parsing the old stream, and parameter {@code reader} will be ignored.  If this method is called for the first time in this instance, {@code resume} will be ignored.
-	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
+	 * @param resume Indicates if the previous parsing operation should be continued.
+	 * @throws JSONParseException if the JSON is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
 	public void parse(String string, JSONContentHandler contentHandler, boolean resume) throws JSONParseException {
@@ -539,10 +537,10 @@ public class JSONParser {
 	
 	/**
 	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
-	 * @param reader the {@linkplain Reader} containing the JSON data
+	 * @param reader the {@linkplain Reader}
 	 * @param contentHandler the {@linkplain JSONContentHandler}
 	 * @throws IOException if an I/O error occurs or the {@linkplain JSONContentHandler} throws it
-	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
+	 * @throws JSONParseException if the JSON is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
 	public void parse(Reader reader, JSONContentHandler contentHandler) throws IOException, JSONParseException {
@@ -553,11 +551,11 @@ public class JSONParser {
 	/**
 	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
 	 * @see JSONContentHandler
-	 * @param reader the {@linkplain Reader} containing the JSON data
+	 * @param reader the {@linkplain Reader}
 	 * @param contentHandler the {@linkplain JSONContentHandler}
-	 * @param resume Indicates if it continues previous parsing operation. If set to {@code true}, resume parsing the old stream, and parameter {@code reader} will be ignored.  If this method is called for the first time in this instance, {@code resume} will be ignored.
+	 * @param resume  Indicates if the previous parsing operation should be continued.
 	 * @throws IOException if an I/O error occurs or the {@linkplain JSONContentHandler} throws it
-	 * @throws JSONParseException if the JSON data is invalid or the {@linkplain JSONContentHandler} throws it
+	 * @throws JSONParseException if the JSON is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
 	 */
 	public void parse(Reader reader, JSONContentHandler contentHandler, boolean resume) throws IOException, JSONParseException {

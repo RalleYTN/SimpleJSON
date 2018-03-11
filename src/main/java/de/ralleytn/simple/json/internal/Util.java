@@ -532,9 +532,7 @@ public final class Util {
 	}
 	
     /**
-     * Encode a {@linkplain Collection} into JSON text and write it to a {@linkplain Writer}. 
-     * If this list is also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} and {@linkplain JSONAware} specific behaviors will be ignored at this top level.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * Encode a {@linkplain Collection} into JSON text and write it to a {@linkplain Writer}.
      * @param collection the {@linkplain Collection} which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -581,7 +579,6 @@ public final class Util {
 	
     /**
      * Convert a {@linkplain Map} to a JSON string and write it on a {@linkplain Writer}. This method will not close or flush the given {@linkplain Writer}!
-     * If this {@linkplain Map} is also a {@linkplain JSONAware} or {@linkplain JSONStreamAware}, {@linkplain JSONAware} or {@linkplain JSONStreamAware} specific behaviors will be ignored at this top level.
      * @param map the {@linkplain Map} to write
      * @param writer the {@linkplain Writer} to which the {@linkplain Map} should be written to
      * @throws IOException if an I/O error occurs
@@ -623,11 +620,6 @@ public final class Util {
 	
     /**
      * Encode an {@linkplain Object} into JSON text and write it to a {@linkplain Writer}.
-     * <p>If this {@linkplain Object} is a {@linkplain Map} or a {@linkplain Collection}, and it's also a {@linkplain JSONStreamAware} or a {@linkplain JSONAware}, {@linkplain JSONStreamAware} or {@linkplain JSONAware} will be considered firstly.<p>
-     * DO NOT call this method from {@link JSONStreamAware#writeJSONString(Writer)} of a class that implements both {@linkplain JSONStreamAware} and ({@linkplain Map} or {@linkplain Collection}) with 
-     * "this" as the first parameter, use {@link JSONObject#write(Map, Writer)} or {@link JSONArray#write(Collection, Writer)} instead. 
-     * @see de.ralleytn.simple.json.JSONObject#write(Map, Writer)
-     * @see de.ralleytn.simple.json.JSONArray#write(Collection, Writer)
      * @param value the {@linkplain Object} to write on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write on.
      * @throws IOException if an I/O error occurs
@@ -912,9 +904,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param string
-	 * @param builder
+	 * Escapes a string according to the <a href="https://tools.ietf.org/html/rfc7159#section-8.1">JSON specification</a>.
+	 * @param string the string which should be escaped
+	 * @param builder the {@linkplain StringBuilder} on which the result will be written
 	 * @since 1.0.0
 	 */
     public static void escape(String string, StringBuilder builder) {

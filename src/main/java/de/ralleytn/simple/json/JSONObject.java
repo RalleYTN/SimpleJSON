@@ -466,7 +466,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 	}
 	
 	/**
-	 * @return a {@linkplain String} representation of this {@linkplain JSONObject}. This is equivalent to calling {@link JSONObject#toJSONString()}.
+	 * @return a {@linkplain String} representation of this {@linkplain JSONObject}.
 	 * @since 1.0.0
 	 */
 	@Override
