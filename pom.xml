@@ -5,7 +5,38 @@
 	<artifactId>SimpleJSON</artifactId>
 	<version>2.0.0</version>
 	<name>SimpleJSON</name>
+	<properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <maven.compiler.target>1.9</maven.compiler.target>
+      <maven.compiler.source>1.9</maven.compiler.source>
+	</properties>
 	<description>SimpleJSON is an improved version of https://github.com/fangyidong/json-simple. It adds type safety, serialization, tidy formatting and improved performance.</description>
+	<licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://github.com/RalleYTN/SimpleJSON/blob/master/LICENSE</url>
+        </license>
+	</licenses>
+	<developers>
+        <developer>
+            <id>Yidong</id>
+            <name>Yidong Fang</name>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+		<developer>
+            <id>RalleYTN</id>
+            <name>Ralph Niemitz</name>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+	</developers>
 	<build>
 		<plugins>
 			<plugin>
@@ -15,6 +46,10 @@
 				<configuration>
 					<fork>true</fork>
 					<executable>javac9</executable>
+					<source>9</source>
+                    <target>9</target>
+                    <showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
 		</plugins>
