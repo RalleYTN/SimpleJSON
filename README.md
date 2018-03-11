@@ -3,6 +3,42 @@
 SimpleJSON is an improved version of [json-simple](https://github.com/fangyidong/json-simple).
 It adds type safety, serialization, tidy formatting and improved performance.
 
+### Code example
+
+Creating JSON:
+
+```java
+int[] array = {1, 2, 3, 4, 5, 6, 7};
+
+JSONObject object = new JSONObject();
+object.put("myAttribute", "myValue");
+object.put("mySecondAttrib", 123456);
+object.put("someArray", new JSONArray(array));
+
+System.out.println(object.toString());
+```
+
+Parsing JSON:
+
+```java
+try {
+
+	JSONObject object = new JSONObject(myJSONString);
+	int id = oject.getInteger("id");
+	
+	JSONArray array = new JSONArray(myJSONArrayString);
+	
+	for(Object element : array) {
+	
+		System.out.println(element);
+	}
+
+} catch(JSONParseException exception) {
+
+	exception.printStackTrace();
+}
+```
+
 ## List of changes made to the original library
 
 This list only applies to version 1.0.0 of this library!
@@ -38,6 +74,7 @@ This list only applies to version 1.0.0 of this library!
 - Removed the `toJSONString` methods; use `toString` instead
 - Removed the interfaces `JSONAware` and `JSONStreamAware`
 - Created a new class `JSONUtil` for utility methods that should be publicly visible
+- Improved the performance
 
 ### Version 1.1.0
 
@@ -261,3 +298,4 @@ This list only applies to version 1.0.0 of this library!
 - [Online Documentation](https://ralleytn.github.io/SimpleJSON/)
 - [Download](https://github.com/RalleYTN/SimpleJSON/releases)
 - [Wiki](https://github.com/RalleYTN/SimpleJSON/wiki)
+- [Java 8 Compatible Version](https://github.com/RalleYTN/SimpleJSON/tree/java8)
