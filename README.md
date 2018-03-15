@@ -1,4 +1,6 @@
-![Build Result](https://api.travis-ci.org/RalleYTN/SimpleJSON.svg?branch=master)
+[![Build Result](https://api.travis-ci.org/RalleYTN/SimpleJSON.svg?branch=master)](https://travis-ci.org/RalleYTN/SimpleJSON)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9464994fa30b4eaa9918c6fad4c2008f)](https://www.codacy.com/app/ralph.niemitz/SimpleJSON?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=RalleYTN/SimpleJSON&amp;utm_campaign=Badge_Grade)
+
 
 # Description
 
