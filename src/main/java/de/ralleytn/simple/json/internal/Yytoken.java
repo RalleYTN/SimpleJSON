@@ -240,9 +240,9 @@ public class Yytoken {
 		
 		StringBuilder builder = new StringBuilder();
 		
-		// Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// 01.03.2018
+		// ==== 01.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
 		// Replaced switch-case with if-else because if-else is faster
+		// ====
 		
 		       if(this.type == Yytoken.TYPE_VALUE) {builder.append("VALUE(").append(this.value).append(")");
 		} else if(this.type == Yytoken.TYPE_LEFT_BRACE) {builder.append("LEFT BRACE({)");

@@ -1,3 +1,5 @@
+![Build Result](https://api.travis-ci.org/RalleYTN/SimpleJSON.svg?branch=master)
+
 # Description
 
 SimpleJSON is an improved version of [json-simple](https://github.com/fangyidong/json-simple).

@@ -408,7 +408,7 @@ public class Yylex {
 		return j;
 	}
 
-	public int getPosition(){
+	public int getPosition() {
 
 		return this.yychar;
 	}

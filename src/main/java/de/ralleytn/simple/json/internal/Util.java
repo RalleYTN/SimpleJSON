@@ -235,7 +235,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see  #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -268,7 +268,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -301,7 +301,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -334,7 +334,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -367,7 +367,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -400,7 +400,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -433,7 +433,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -466,7 +466,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @throws IOException if an I/O error occurs
@@ -499,7 +499,7 @@ public final class Util {
 	
     /**
      * Encode an array into JSON text and write it to a {@linkplain Writer}.
-     * @see de.ralleytn.simple.json.internal.Util#write(Object, Writer)
+     * @see #write(Object, Writer)
      * @param array the array which should be written on the {@linkplain Writer}
      * @param writer the {@linkplain Writer} to write to
      * @param <T> type of the array
@@ -668,9 +668,9 @@ public final class Util {
 	}
 	
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain JSONObject}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final JSONObject getObject(Object value) {
@@ -686,9 +686,9 @@ public final class Util {
 	}
 	
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain JSONArray}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final JSONArray getArray(Object value) {
@@ -713,9 +713,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain Boolean}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final Boolean getBoolean(Object value) {
@@ -732,9 +732,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain Byte}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final Byte getByte(Object value) {
@@ -751,9 +751,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain Short}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final Short getShort(Object value) {
@@ -770,9 +770,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain Integer}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final Integer getInteger(Object value) {
@@ -789,9 +789,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain Long}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final Long getLong(Object value) {
@@ -808,9 +808,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain Float}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final Float getFloat(Object value) {
@@ -827,9 +827,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain Double}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final Double getDouble(Object value) {
@@ -846,9 +846,9 @@ public final class Util {
 	}
 
 	/**
-	 * 
-	 * @param value
-	 * @return
+	 * Tries to parse a value to an instance of {@linkplain String}.
+	 * @param value the value that should be parsed
+	 * @return the parsed value, or {@code null} if it could not be parsed
 	 * @since 1.0.0
 	 */
 	public static final String getString(Object value) {
@@ -862,11 +862,11 @@ public final class Util {
 	}
 	
 	/**
-	 * 
-	 * @param value
-	 * @param format
-	 * @return
-	 * @throws ParseException
+	 * Tries to parse a value to an instance of {@linkplain Date}.
+	 * @param value the value that should be parsed
+	 * @param format the {@linkplain DateFormat} that should be used to parse the value
+	 * @return an instance of {@linkplain Date} or {@code null} if the input value was already {@code null}
+	 * @throws ParseException if the value could not be parsed to an instance of {@linkplain Date}
 	 * @since 1.0.0
 	 */
 	public static final Date getDate(Object value, DateFormat format) throws ParseException {
@@ -880,14 +880,15 @@ public final class Util {
 	}
 	
 	/**
-	 * 
-	 * @param value
-	 * @param type
-	 * @return
+	 * Tries to parse a value to an enum.
+	 * @param value the value that should be parsed
+	 * @param type the enum class
+	 * @param <T> the enum type
+	 * @return the enum or {@code null} if the value could not be parsed
 	 * @since 1.0.0
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends Enum<?>>T getEnum(Object value, Class<T> type) {
+	public static final <T extends Enum<T>>T getEnum(Object value, Class<T> type) {
 		
 		if(value != null) {
 			

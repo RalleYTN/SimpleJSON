@@ -15,4 +15,10 @@ class SerializationTest {
 		
 		
 	}
+	
+	@Test
+	void testDeserialize() {
+		
+		
+	}
 }

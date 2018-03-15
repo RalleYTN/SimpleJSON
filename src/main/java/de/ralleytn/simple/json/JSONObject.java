@@ -272,6 +272,12 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 		super((JSONObject)new JSONParser().parse(reader));
 	}
 
+	/**
+	 * Writes this {@linkplain JSONObject} on a given {@linkplain Writer}.
+	 * @param writer the {@linkplain Writer}
+	 * @throws IOException if an I/O error occurred
+	 * @since 1.0.0
+	 */
 	public void write(Writer writer) throws IOException {
 		
 		Util.write(this, writer);
@@ -459,8 +465,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 	 * @return an {@linkplain Enum} or {@code null}
 	 * @since 1.0.0
 	 */
-	@SuppressWarnings("rawtypes")
-	public <T extends Enum>T getEnum(String key, Class<T> type) {
+	public <T extends Enum<T>>T getEnum(String key, Class<T> type) {
 		
 		return Util.getEnum(this.get(key), type);
 	}
@@ -482,6 +487,41 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 			// WILL NEVER HAPPEN!
 			throw new RuntimeException(exception);
 		}
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		
+		if(object != null && object instanceof Map) {
+			
+			Map<?, ?> map = (Map<?, ?>)object;
+			
+			if(this.size() == map.size()) {
+				
+				for(Map.Entry<Object, Object> thisEntry : this.entrySet()) {
+					
+					boolean contains = false;
+					
+					for(Map.Entry<?, ?> mapEntry : map.entrySet()) {
+						
+						if(thisEntry.getKey().equals(mapEntry.getKey()) && thisEntry.getValue().equals(mapEntry.getValue())) {
+							
+							contains = true;
+							break;
+						}
+					}
+					
+					if(!contains) {
+						
+						return false;
+					}
+				}
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**

@@ -18,7 +18,7 @@ import de.ralleytn.simple.json.JSONParseException;
 
 class JSONObjectTest {
 
-	private static final void testParsedObject(JSONObject object) {
+	private static final void checkParsedObject(JSONObject object) {
 		
 		assertNotNull(object);
 		assertFalse(object.isEmpty());
@@ -52,11 +52,11 @@ class JSONObjectTest {
 		assertEquals("ƒ÷‹‰ˆ¸ﬂ", data.get(4));
 	}
 	
-	private static final void testConstructorWithReader(String json) {
+	private static final void checkConstructorWithReader(String json) {
 		
 		try(StringReader reader = new StringReader(json)) {
 			
-			testParsedObject(new JSONObject(reader));
+			checkParsedObject(new JSONObject(reader));
 			
 		} catch(JSONParseException | IOException exception) {
 			
@@ -65,29 +65,73 @@ class JSONObjectTest {
 	}
 	
 	@Test
+	void testEquals() {
+		
+		
+	}
+	
+	@Test
+	void testWrite() {
+		
+		
+	}
+	
+	@Test
+	void testCompact() {
+		
+		
+	}
+	
+	@Test
+	void testGetters() {
+		
+		
+	}
+	
+	@Test
+	void testToXML() {
+		
+		
+	}
+	
+	@Test
 	void testConstructors() {
 		
 		try {
 			
-			// Test the constructor that takes in a string to parse
-			testParsedObject(new JSONObject(TestUtil.JSON_MINIMIZED));
-			testParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_CRLF));
-			testParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_NORMAL));
-			testParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_I2));
-			testParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE));
-			testParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF));
-			testParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_I2));
-			testParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2));
+			// TEST CONSTRUCTORS THAT TAKE IN A STRING TO PARSE
+			checkParsedObject(new JSONObject(TestUtil.JSON_MINIMIZED));
+			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_CRLF));
+			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_NORMAL));
+			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_I2));
+			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE));
+			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF));
+			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_I2));
+			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2));
 			
-			// Test the constructor that takes in a reader with json data to parse
-			testConstructorWithReader(TestUtil.JSON_MINIMIZED);
-			testConstructorWithReader(TestUtil.JSON_FORMATTED_CRLF);
-			testConstructorWithReader(TestUtil.JSON_FORMATTED_NORMAL);
-			testConstructorWithReader(TestUtil.JSON_FORMATTED_I2);
-			testConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE);
-			testConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_CRLF);
-			testConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_I2);
-			testConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2);
+			// TEST CONSTRUCTORS THAT TAKE IN ANOTHER MAP
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_MINIMIZED)));
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_CRLF)));
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_NORMAL)));
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_I2)));
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE)));
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF)));
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_I2)));
+			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2)));
+			
+			// TEST CONSTRUCTORS THAT TAKE IN A READER WITH JSON DATA TO PARSE
+			checkConstructorWithReader(TestUtil.JSON_MINIMIZED);
+			checkConstructorWithReader(TestUtil.JSON_FORMATTED_CRLF);
+			checkConstructorWithReader(TestUtil.JSON_FORMATTED_NORMAL);
+			checkConstructorWithReader(TestUtil.JSON_FORMATTED_I2);
+			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE);
+			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_CRLF);
+			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_I2);
+			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2);
+			
+			// TEST EMPTY CONSTRUCTOR
+			JSONObject object = new JSONObject();
+			assertTrue(object.isEmpty());
 			
 		} catch(JSONParseException exception) {
 			

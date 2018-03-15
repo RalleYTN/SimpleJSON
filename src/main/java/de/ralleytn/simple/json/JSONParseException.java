@@ -210,7 +210,7 @@ import de.ralleytn.simple.json.internal.Yytoken;
  * Explains what the problem is.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class JSONParseException extends Exception {
