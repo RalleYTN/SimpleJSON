@@ -49,7 +49,7 @@ class JSONObjectTest {
 		assertEquals("Hello World", data.get(0));
 		assertTrue(data.get(1) instanceof JSONObject);
 		assertEquals((Integer)999, data.getInteger(3));
-		assertEquals("ÄÖÜäöüß", data.get(4));
+		assertEquals("Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸ", data.get(4));
 	}
 	
 	private static final void checkConstructorWithReader(String json) {
