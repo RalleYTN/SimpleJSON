@@ -20,9 +20,9 @@ class JSONArrayTest {
 	private static final String EXPECTED_NUMBER_ARRAY = "[1,2,3.5,1.0E-4,99999999999999999]";
 	private static final String EXPECTED_NUMBER_STRING_ARRAY = "[\"1\",\"2\",\"3.5\",\"0.0001\",\"99999999999999999\"]";
 	private static final String EXPECTED_STRING_ARRAY = "[\"A\",\"AB\",\"C\",\"Z\",\"HHH\"]";
-	private static final String EXPECTED_ARRAY = "[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ƒ÷‹‰ˆ¸ﬂ\"]";
+	private static final String EXPECTED_ARRAY = "[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"√Ñ√ñ√ú√§√∂√º√ü\"]";
 	
-	private static final String EXPECTED_XML_ARRAY = "<array length=5><item>Hello World</item><item><att1>Hello World!</att1><att2>Hello World! 2</att2></item><item></item><item>999</item><item>ƒ÷‹‰ˆ¸ﬂ</item></array>";
+	private static final String EXPECTED_XML_ARRAY = "<array length=5><item>Hello World</item><item><att1>Hello World!</att1><att2>Hello World! 2</att2></item><item></item><item>999</item><item>√Ñ√ñ√ú√§√∂√º√ü</item></array>";
 	private static final String EXPECTED_XML_NUMBER_ARRAY = "<array length=5><item>1</item><item>2</item><item>3.5</item><item>1.0E-4</item><item>99999999999999999</item></array>";
 	private static final String EXPECTED_XML_STRING_ARRAY = "<array length=5><item>A</item><item>AB</item><item>C</item><item>Z</item><item>HHH</item></array>";
 	private static final String EXPECTED_XML_NUMBER_STRING_ARRAY = "<array length=5><item>1</item><item>2</item><item>3.5</item><item>0.0001</item><item>99999999999999999</item></array>";

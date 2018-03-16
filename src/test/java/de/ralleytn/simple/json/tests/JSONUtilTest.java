@@ -23,8 +23,8 @@ import de.ralleytn.simple.json.JSONUtil;
  */
 class JSONUtilTest {
 
-	private static final String UNESCAPED = "ÄÖÜäöüß²³\r\n\b\t\0\\\"'\f/Hello World!";
-	private static final String ESCAPED = "ÄÖÜäöüß²³\\r\\n\\b\\t\\u0000\\\\\\\"'\\f\\/Hello World!";
+	private static final String UNESCAPED = "Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸÂ²Â³\r\n\b\t\0\\\"'\f/Hello World!";
+	private static final String ESCAPED = "Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸÂ²Â³\\r\\n\\b\\t\\u0000\\\\\\\"'\\f\\/Hello World!";
 	
 	/**
 	 * Tests {@link JSONUtil#escape(String)}.
