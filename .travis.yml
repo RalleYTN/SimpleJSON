@@ -2,7 +2,10 @@ language: java
 sudo: false
 
 jdk:
-  - oraclejdk9
+    - oraclejdk9
 
 scripts:
-  - mvn clean
+    - mvn clean
+
+after_success:
+    - mvn clean test jacoco:report coveralls:report
