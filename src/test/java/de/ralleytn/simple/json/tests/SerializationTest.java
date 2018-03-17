@@ -211,6 +211,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
@@ -270,7 +271,7 @@ class SerializationTest {
 	
 	private static final JSONObject readTestObject() {
 		
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(SerializationTest.class.getClassLoader().getResourceAsStream("de/ralleytn/simple/json/tests/test-person.json")))) {
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(SerializationTest.class.getClassLoader().getResourceAsStream("de/ralleytn/simple/json/tests/test-person.json"), StandardCharsets.UTF_8))) {
 			
 			return new JSONObject(reader);
 		
