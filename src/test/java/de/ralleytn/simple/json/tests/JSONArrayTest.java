@@ -28,19 +28,19 @@ class JSONArrayTest {
 	private static final String EXPECTED_XML_NUMBER_STRING_ARRAY = "<array length=5><item>1</item><item>2</item><item>3.5</item><item>0.0001</item><item>99999999999999999</item></array>";
 	
 	@Test
-	void testGetters() {
+	public void testGetters() {
 		
 		
 	}
 	
 	@Test
-	void testConversions() {
+	public void testConversions() {
 		
 		
 	}
 	
 	@Test
-	void testToXML() {
+	public void testToXML() {
 		
 		assertEquals(EXPECTED_XML_ARRAY, TestUtil.createArray().toXML("array"));
 		assertEquals(EXPECTED_XML_STRING_ARRAY, TestUtil.createStringArray().toXML("array"));
@@ -49,13 +49,13 @@ class JSONArrayTest {
 	}
 	
 	@Test
-	void testConstructors() {
+	public void testConstructors() {
 		
 		
 	}
 	
 	@Test
-	void testEquals() {
+	public void testEquals() {
 		
 		// correct
 		float[] arrayCorrect = {0, 1, 2, 3, 4};
@@ -87,7 +87,7 @@ class JSONArrayTest {
 	}
 	
 	@Test
-	void testWrite() {
+	public void testWrite() {
 		
 		try(StringWriter writer = new StringWriter()) {
 			
@@ -101,7 +101,7 @@ class JSONArrayTest {
 	}
 	
 	@Test
-	void testToString() {
+	public void testToString() {
 		
 		assertEquals(EXPECTED_ARRAY, TestUtil.createArray().toString());
 		assertEquals(EXPECTED_STRING_ARRAY, TestUtil.createStringArray().toString());

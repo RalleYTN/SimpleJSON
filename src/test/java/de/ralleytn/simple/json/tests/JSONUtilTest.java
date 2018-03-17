@@ -31,7 +31,7 @@ class JSONUtilTest {
 	 * @since 2.0.0
 	 */
 	@Test
-	void testEscape() {
+	public void testEscape() {
 		
 		assertEquals(ESCAPED, JSONUtil.escape(UNESCAPED));
 		assertNull(JSONUtil.escape(null));
@@ -42,7 +42,7 @@ class JSONUtilTest {
 	 * @since 2.0.0
 	 */
 	@Test
-	void testIsJSONType() {
+	public void testIsJSONType() {
 		
 		assertTrue(JSONUtil.isJSONType(null));
 		assertTrue(JSONUtil.isJSONType(new JSONObject()));

@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 class SerializationTest {
 
 	@Test
-	void testSerialize() {
+	public void testSerialize() {
 		
 		
 	}
 	
 	@Test
-	void testDeserialize() {
+	public void testDeserialize() {
 		
 		
 	}

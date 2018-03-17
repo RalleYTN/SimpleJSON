@@ -65,37 +65,37 @@ class JSONObjectTest {
 	}
 	
 	@Test
-	void testEquals() {
+	public void testEquals() {
 		
 		
 	}
 	
 	@Test
-	void testWrite() {
+	public void testWrite() {
 		
 		
 	}
 	
 	@Test
-	void testCompact() {
+	public void testCompact() {
 		
 		
 	}
 	
 	@Test
-	void testGetters() {
+	public void testGetters() {
 		
 		
 	}
 	
 	@Test
-	void testToXML() {
+	public void testToXML() {
 		
 		
 	}
 	
 	@Test
-	void testConstructors() {
+	public void testConstructors() {
 		
 		try {
 			
@@ -140,7 +140,7 @@ class JSONObjectTest {
 	}
 	
 	@Test
-	void testToString() {
+	public void testToString() {
 		
 		assertEquals(TestUtil.JSON_MINIMIZED, TestUtil.createObject().toString());
 	}

@@ -316,7 +316,6 @@ public class Yylex {
 	};
 	
 	private Reader zzReader;
-	private int zzState;
 	private int zzLexicalState = Yylex.YYINITIAL;
 	private char zzBuffer[] = new char[Yylex.ZZ_BUFFERSIZE];
 	private int zzMarkedPos;
@@ -444,7 +443,7 @@ public class Yylex {
 		return map;
 	}
 
-	private boolean zzRefill() throws java.io.IOException {
+	private boolean zzRefill() throws IOException {
 
 		if(this.zzStartRead > 0) {
 
@@ -548,6 +547,11 @@ public class Yylex {
 			message = Yylex.ZZ_ERROR_MSG[Yylex.ZZ_UNKNOWN_ERROR];
 		}
 
+		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// DO NOT CHANGE!
+		// Even if Codacy says so.
+		// ====
+		
 		throw new Error(message);
 	} 
 
@@ -580,7 +584,7 @@ public class Yylex {
 			this.yychar += zzMarkedPosL - this.zzStartRead;
 			zzAction = -1;
 			zzCurrentPosL = this.zzCurrentPos = this.zzStartRead = zzMarkedPosL;
-			this.zzState = Yylex.ZZ_LEXSTATE[this.zzLexicalState];
+			int zzState = Yylex.ZZ_LEXSTATE[this.zzLexicalState];
 
 			zzForAction: {
         
@@ -619,20 +623,20 @@ public class Yylex {
 						}
 					}
 					
-					int zzNext = zzTransL[zzRowMapL[this.zzState] + zzCMapL[zzInput]];
+					int zzNext = zzTransL[zzRowMapL[zzState] + zzCMapL[zzInput]];
           
 					if(zzNext == -1) {
         	  
 						break zzForAction;
 					}
 					
-					this.zzState = zzNext;
+					zzState = zzNext;
 
-					int zzAttributes = zzAttrL[this.zzState];
+					int zzAttributes = zzAttrL[zzState];
           
 					if((zzAttributes & 1) == 1) {
             
-						zzAction = this.zzState;
+						zzAction = zzState;
 						zzMarkedPosL = zzCurrentPosL;
 						
 						if((zzAttributes & 8) == 8) {
@@ -647,130 +651,129 @@ public class Yylex {
 			this.zzMarkedPos = zzMarkedPosL;
 			int value = zzAction < 0 ? zzAction : ZZ_ACTION[zzAction];
 			
-			if(value >= 25 && value <= 48) {
+			if(value < 25 || value > 48) {
 				
-				// DO NOTHING!
-				
-			} else if(value == 11) {
-				
-				this.sb.append(this.yytext());
-				
-			} else if(value == 4) {
-				
-				this.sb = new StringBuffer();
-				this.yybegin(Yylex.STRING_BEGIN);
-				
-			} else if(value == 16) {
-				
-				this.sb.append('\b');
-				
-			} else if(value == 6) {
-				
-				return new Yytoken(Yytoken.TYPE_RIGHT_BRACE, null);
-			
-			} else if(value == 23) {
-				
-				return new Yytoken(Yytoken.TYPE_VALUE, Boolean.valueOf(this.yytext()));
-			
-			} else if(value == 22) {
-				
-				return new Yytoken(Yytoken.TYPE_VALUE, null);
-				
-			} else if(value == 13) {
-				
-				this.yybegin(Yylex.YYINITIAL);
-				return new Yytoken(Yytoken.TYPE_VALUE, this.sb.toString());
-				
-			} else if(value == 12) {
-				
-				this.sb.append('\\');
-				
-			} else if(value == 21) {
-				
-				return new Yytoken(Yytoken.TYPE_VALUE, Double.valueOf(yytext()));
-			
-			} else if(value == 1) {
-				
-				throw new JSONParseException(this.yychar, JSONParseException.ERROR_UNEXPECTED_CHAR, this.yycharat(0));
-			
-			} else if(value == 8) {
-				
-				return new Yytoken(Yytoken.TYPE_RIGHT_SQUARE, null);
-				
-			} else if(value == 19) {
-				
-				this.sb.append('\r');
-			
-			} else if(value == 15) {
-				
-				this.sb.append('/');
-				
-			} else if(value == 10) {
-				
-				return new Yytoken(Yytoken.TYPE_COLON, null);
-				
-			} else if(value == 14) {
-				
-				this.sb.append('"');
-				
-			} else if(value == 5) {
-				
-				return new Yytoken(Yytoken.TYPE_LEFT_BRACE, null);
-				
-			} else if(value == 17) {
-				
-				this.sb.append('\f');
-				
-			} else if(value == 24) {
-				
-				try {
+				if(value == 11) {
 					
-					int ch = Integer.parseInt(this.yytext().substring(2), 16);
-					this.sb.append((char)ch);
+					this.sb.append(this.yytext());
 					
-				} catch(Exception exception) {
+				} else if(value == 4) {
 					
-					throw new JSONParseException(this.yychar, JSONParseException.ERROR_UNEXPECTED_EXCEPTION, exception);
-				}
+					this.sb = new StringBuffer();
+					this.yybegin(Yylex.STRING_BEGIN);
+					
+				} else if(value == 16) {
+					
+					this.sb.append('\b');
+					
+				} else if(value == 6) {
+					
+					return new Yytoken(Yytoken.TYPE_RIGHT_BRACE, null);
 				
-			} else if(value == 20) {
+				} else if(value == 23) {
+					
+					return new Yytoken(Yytoken.TYPE_VALUE, Boolean.valueOf(this.yytext()));
 				
-				this.sb.append('\t');
+				} else if(value == 22) {
+					
+					return new Yytoken(Yytoken.TYPE_VALUE, null);
+					
+				} else if(value == 13) {
+					
+					this.yybegin(Yylex.YYINITIAL);
+					return new Yytoken(Yytoken.TYPE_VALUE, this.sb.toString());
+					
+				} else if(value == 12) {
+					
+					this.sb.append('\\');
+					
+				} else if(value == 21) {
+					
+					return new Yytoken(Yytoken.TYPE_VALUE, Double.valueOf(yytext()));
 				
-			} else if(value == 7) {
+				} else if(value == 1) {
+					
+					throw new JSONParseException(this.yychar, JSONParseException.ERROR_UNEXPECTED_CHAR, this.yycharat(0));
 				
-				return new Yytoken(Yytoken.TYPE_LEFT_SQUARE, null);
+				} else if(value == 8) {
+					
+					return new Yytoken(Yytoken.TYPE_RIGHT_SQUARE, null);
+					
+				} else if(value == 19) {
+					
+					this.sb.append('\r');
 				
-			} else if(value == 2) {
-				
-				return new Yytoken(Yytoken.TYPE_VALUE, Long.valueOf(this.yytext()));
-				
-			} else if(value == 18) {
-				
-				this.sb.append('\n');
-				
-			} else if(value == 9) {
-				
-				return new Yytoken(Yytoken.TYPE_COMMA, null);
-				
-			} else if(value == 3) {
-				
-				// TODO
-				// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-				// For some reason this is empty.
-				// Please find out why.
-				// ====
-				
-			} else {
-			
-				if(zzInput == Yylex.YYEOF && this.zzStartRead == this.zzCurrentPos) {
-		        
-					this.zzAtEOF = true;
-					return null;
+				} else if(value == 15) {
+					
+					this.sb.append('/');
+					
+				} else if(value == 10) {
+					
+					return new Yytoken(Yytoken.TYPE_COLON, null);
+					
+				} else if(value == 14) {
+					
+					this.sb.append('"');
+					
+				} else if(value == 5) {
+					
+					return new Yytoken(Yytoken.TYPE_LEFT_BRACE, null);
+					
+				} else if(value == 17) {
+					
+					this.sb.append('\f');
+					
+				} else if(value == 24) {
+					
+					try {
+						
+						int ch = Integer.parseInt(this.yytext().substring(2), 16);
+						this.sb.append((char)ch);
+						
+					} catch(Exception exception) {
+						
+						throw new JSONParseException(this.yychar, JSONParseException.ERROR_UNEXPECTED_EXCEPTION, exception);
+					}
+					
+				} else if(value == 20) {
+					
+					this.sb.append('\t');
+					
+				} else if(value == 7) {
+					
+					return new Yytoken(Yytoken.TYPE_LEFT_SQUARE, null);
+					
+				} else if(value == 2) {
+					
+					return new Yytoken(Yytoken.TYPE_VALUE, Long.valueOf(this.yytext()));
+					
+				} else if(value == 18) {
+					
+					this.sb.append('\n');
+					
+				} else if(value == 9) {
+					
+					return new Yytoken(Yytoken.TYPE_COMMA, null);
+					
+				} else if(value == 3) {
+					
+					// TODO
+					// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+					// For some reason this is empty.
+					// Please find out why.
+					// ====
 					
 				} else {
+				
+					if(zzInput == Yylex.YYEOF && this.zzStartRead == this.zzCurrentPos) {
+			        
+						this.zzAtEOF = true;
+						return null;
+						
+					} else {
 
-					this.zzScanError(Yylex.ZZ_NO_MATCH);
+						this.zzScanError(Yylex.ZZ_NO_MATCH);
+					}
 				}
 			}
 		}

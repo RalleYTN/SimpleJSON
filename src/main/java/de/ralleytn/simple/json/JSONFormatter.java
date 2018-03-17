@@ -217,6 +217,9 @@ import java.io.Writer;
  */
 public class JSONFormatter {
 	
+	private static final String CRLF = "\r\n";
+	private static final String LF = "\n";
+	
 	// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
 	// -	Refactored some of the parameter names from "jsonReader" to "reader"
 	// 		and from "formattedWriter" and "minimizedWriter" to "writer"
@@ -225,9 +228,9 @@ public class JSONFormatter {
 	// -	Updated the documentation
 	// ====
 	
-	private boolean crlf;
-	private boolean tabs;
 	private int indent;
+	private char indentCharacter;
+	private String lineBreak;
 	
 	/**
 	 * Constructs a new {@linkplain JSONFormatter}.
@@ -237,7 +240,18 @@ public class JSONFormatter {
 	public JSONFormatter() {
 		
 		this.indent = 1;
-		this.tabs = true;
+		this.setUseTabs(true);
+	}
+	
+	private final void writeIndent(int level, Writer writer) throws IOException {
+		
+		for(int currentLevel = 0; currentLevel < level; currentLevel++) {
+			
+			for(int indent = 0; indent < this.indent; indent++) {
+				
+				writer.write(this.indentCharacter);
+			}
+		}
 	}
 	
 	/**
@@ -247,7 +261,7 @@ public class JSONFormatter {
 	 */
 	public void setUseCRLF(boolean crlf) {
 		
-		this.crlf = crlf;
+		this.lineBreak = crlf ? JSONFormatter.CRLF : JSONFormatter.LF;
 	}
 	
 	/**
@@ -257,7 +271,7 @@ public class JSONFormatter {
 	 */
 	public void setUseTabs(boolean tabs) {
 		
-		this.tabs = tabs;
+		this.indentCharacter = tabs ? '\t' : ' ';
 	}
 	
 	/**
@@ -281,8 +295,6 @@ public class JSONFormatter {
 		
 		int level = 0;
 		boolean inString = false;
-		char space = this.tabs ? '\t' : ' ';
-		String lineBreak = this.crlf ? "\r\n" : "\n";
 		int read = -1;
 		char lastChar = '\0';
 		
@@ -292,7 +304,7 @@ public class JSONFormatter {
 			
 			if(character == '"') {
 				
-				inString = !(inString && !(lastChar == '\\'));
+				inString = !(inString && lastChar != '\\');
 			}
 			
 			if(!inString) {
@@ -300,48 +312,24 @@ public class JSONFormatter {
 				if(character == '{' || character == '[') {
 					
 					writer.write(character);
-					writer.write(lineBreak);
+					writer.write(this.lineBreak);
 					level++;
-					
-					for(int l = 0; l < level; l++) {
-						
-						for(int ind = 0; ind < this.indent; ind++) {
-							
-							writer.write(space);
-						}
-					}
-					
+					this.writeIndent(level, writer);
 					continue;
 					
 				} else if(character == '}' || character == ']') {
 					
-					writer.write(lineBreak);
+					writer.write(this.lineBreak);
 					level--;
-					
-					for(int l = 0; l < level; l++) {
-						
-						for(int ind = 0; ind < this.indent; ind++) {
-							
-							writer.write(space);
-						}
-					}
-					
+					this.writeIndent(level, writer);
 					writer.write(character);
 					continue;
 					
 				} else if(character == ',') {
 					
 					writer.write(character);
-					writer.write(lineBreak);
-					
-					for(int l = 0; l < level; l++) {
-						
-						for(int ind = 0; ind < this.indent; ind++) {
-							
-							writer.write(space);
-						}
-					}
-					
+					writer.write(this.lineBreak);
+					this.writeIndent(level, writer);
 					continue;
 					
 				} else if(character == ':') {
@@ -378,8 +366,10 @@ public class JSONFormatter {
 		} catch(IOException exception) {
 			
 			// WILL NEVER HAPPEN!
-			throw new RuntimeException(exception);
+			// DO NOTHING!
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -446,8 +436,10 @@ public class JSONFormatter {
 		} catch(IOException exception) {
 			
 			// WILL NEVER HAPPEN!
-			throw new RuntimeException(exception);
+			// DO NOTHING!
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -456,7 +448,7 @@ public class JSONFormatter {
 	 */
 	public boolean usesCRLF() {
 		
-		return this.crlf;
+		return JSONFormatter.CRLF.equals(this.lineBreak);
 	}
 	
 	/**
@@ -465,7 +457,7 @@ public class JSONFormatter {
 	 */
 	public boolean usesTabs() {
 		
-		return this.tabs;
+		return this.indentCharacter == '\t';
 	}
 	
 	/**

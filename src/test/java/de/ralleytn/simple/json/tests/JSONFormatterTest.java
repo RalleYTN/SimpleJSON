@@ -90,7 +90,7 @@ class JSONFormatterTest {
 	 * @since 1.0.0
 	 */
 	@Test
-	void testFormat() {
+	public void testFormat() {
 
 		testFormat(TestUtil.JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL", false, true, 1);
 		testFormat(TestUtil.JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF", true, true, 1);
@@ -106,7 +106,7 @@ class JSONFormatterTest {
 	 * @since 2.0.0
 	 */
 	@Test
-	void testMinimize() {
+	public void testMinimize() {
 		
 		testMinimize(TestUtil.JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL");
 		testMinimize(TestUtil.JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF");

@@ -383,16 +383,13 @@ public class JSONArray extends ArrayList<Object> {
 		//		An empty array will be constructed instead.
 		// ====
 		
-		if(array != null) {
+		if(array != null && array.getClass().isArray()) {
 			
-			if(array.getClass().isArray()) {
+			int length = Array.getLength(array);
+			
+			for(int index = 0; index < length; index++) {
 				
-				int length = Array.getLength(array);
-				
-				for(int index = 0; index < length; index++) {
-					
-					this.add(Array.get(array, index));
-				}
+				this.add(Array.get(array, index));
 			}
 		}
 	}
@@ -447,8 +444,10 @@ public class JSONArray extends ArrayList<Object> {
 		} catch(IOException exception) {
 
 			// WILL NEVER HAPPEN!
-			throw new RuntimeException(exception);
+			// DO NOTHING!
 		}
+		
+		return null;
 	}
 	
 	@Override

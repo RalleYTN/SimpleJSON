@@ -485,8 +485,10 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 		} catch(IOException exception) {
 
 			// WILL NEVER HAPPEN!
-			throw new RuntimeException(exception);
+			// DO NOTHING!
 		}
+		
+		return null;
 	}
 	
 	@Override

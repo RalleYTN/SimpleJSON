@@ -817,7 +817,7 @@ public final class JSONSerializer {
 		
 		for(JSONAttribute.Type value : attribute.type()) {
 			
-			if(type == value) {
+			if(value.equals(type)) {
 				
 				return true;
 			}

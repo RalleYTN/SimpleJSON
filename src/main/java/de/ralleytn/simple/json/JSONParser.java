@@ -242,6 +242,173 @@ public class JSONParser {
 	private Yytoken token;
 	private int status = JSONParser.S_INIT;
 	
+	private final void nextToken() throws JSONParseException, IOException {
+		
+		this.token = this.lexer.yylex();
+		
+		if(this.token == null) {
+			
+			this.token = new Yytoken(Yytoken.TYPE_EOF, null);
+		}
+	}
+	
+	private final void init(Stack<Object> statusStack, Stack<Object> valueStack) {
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			this.status = JSONParser.S_IN_FINISHED_VALUE;
+			statusStack.push(this.status);
+			valueStack.push(this.token.value);
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+			
+			this.status = JSONParser.S_IN_OBJECT;
+			statusStack.push(this.status);
+			valueStack.push(new JSONObject());
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+			
+			this.status = JSONParser.S_IN_ARRAY;
+			statusStack.push(this.status);
+			valueStack.push(new JSONArray());
+			
+		} else {
+			
+			this.status = JSONParser.S_IN_ERROR;
+		}
+	}
+	
+	private final Object inFinishedValue(Stack<Object> valueStack) throws JSONParseException {
+		
+		if(this.token.type == Yytoken.TYPE_EOF) {
+			
+			return valueStack.pop();
+			
+		} else {
+			
+			throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+		}
+	}
+	
+	private final void inObject(Stack<Object> statusStack, Stack<Object> valueStack) {
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			if(this.token.value instanceof String) {
+				
+				String key = (String)this.token.value;
+				valueStack.push(key);
+				this.status = JSONParser.S_PASSED_PAIR_KEY;
+				statusStack.push(this.status);
+				
+			} else {
+				
+				this.status = S_IN_ERROR;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_RIGHT_BRACE) {
+			
+			if(valueStack.size() > 1){
+				
+				statusStack.pop();
+				valueStack.pop();
+				this.status = (int)statusStack.peek();
+				
+			} else {
+				
+				this.status = JSONParser.S_IN_FINISHED_VALUE;
+			}
+			
+		} else if(this.token.type != Yytoken.TYPE_COMMA) {
+			
+			this.status = JSONParser.S_IN_ERROR;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private final void inPassedPairKey(Stack<Object> statusStack, Stack<Object> valueStack) {
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			statusStack.pop();
+			String key = (String)valueStack.pop();
+			Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
+			parent.put(key, this.token.value);
+			this.status = (int)statusStack.peek();
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+			
+			statusStack.pop();
+			String key = (String)valueStack.pop();
+			Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
+			List<Object> newArray = new JSONArray();
+			parent.put(key, newArray);
+			this.status = JSONParser.S_IN_ARRAY;
+			statusStack.push(this.status);
+			valueStack.push(newArray);
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+			
+			statusStack.pop();
+			String key = (String)valueStack.pop();
+			Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
+			Map<Object, Object> newObject = new JSONObject();
+			parent.put(key, newObject);
+			this.status = JSONParser.S_IN_OBJECT;
+			statusStack.push(this.status);
+			valueStack.push(newObject);
+			
+		} else if(this.token.type != Yytoken.TYPE_COLON) {
+			
+			this.status = JSONParser.S_IN_ERROR;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private final void inArray(Stack<Object> statusStack, Stack<Object> valueStack) {
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			List<Object> val = (List<Object>)valueStack.peek();
+			val.add(this.token.value);
+			
+		} else if(this.token.type == Yytoken.TYPE_RIGHT_SQUARE) {
+			
+			if(valueStack.size() > 1) {
+				
+				statusStack.pop();
+				valueStack.pop();
+				this.status = (int)statusStack.peek();
+			
+			} else {
+				
+				this.status = JSONParser.S_IN_FINISHED_VALUE;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+			
+			List<Object> val = (List<Object>)valueStack.peek();
+			Map<Object, Object> newObject = new JSONObject();
+			val.add(newObject);
+			this.status = JSONParser.S_IN_OBJECT;
+			statusStack.push(this.status);
+			valueStack.push(newObject);
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+			
+			List<Object> val = (List<Object>)valueStack.peek();
+			List<Object> newArray = new JSONArray();
+			val.add(newArray);
+			this.status = JSONParser.S_IN_ARRAY;
+			statusStack.push(this.status);
+			valueStack.push(newArray);
+			
+		} else if(this.token.type != Yytoken.TYPE_COMMA) {
+			
+			this.status = JSONParser.S_IN_ERROR;
+		}
+	}
+	
     /**
      * Resets the parser to the initial state without resetting the underlying reader.
      * @since 1.0.0
@@ -317,7 +484,6 @@ public class JSONParser {
 	 * @throws JSONParseException if the JSON is invalid
 	 * @since 1.0.0
 	 */
-	@SuppressWarnings("unchecked")
 	public Object parse(Reader reader) throws IOException, JSONParseException {
 		
 		// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
@@ -332,155 +498,11 @@ public class JSONParser {
 			
 			this.nextToken();
 			
-			if(this.status == JSONParser.S_INIT) {
-				
-				if(this.token.type == Yytoken.TYPE_VALUE) {
-					
-					this.status = JSONParser.S_IN_FINISHED_VALUE;
-					statusStack.push(this.status);
-					valueStack.push(this.token.value);
-					
-				} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-					
-					this.status = JSONParser.S_IN_OBJECT;
-					statusStack.push(this.status);
-					valueStack.push(new JSONObject());
-					
-				} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-					
-					this.status = JSONParser.S_IN_ARRAY;
-					statusStack.push(this.status);
-					valueStack.push(new JSONArray());
-					
-				} else {
-					
-					this.status = JSONParser.S_IN_ERROR;
-				}
-				
-			} else if(this.status == JSONParser.S_IN_FINISHED_VALUE) {
-				
-				if(this.token.type == Yytoken.TYPE_EOF) {
-					
-					return valueStack.pop();
-					
-				} else {
-					
-					throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
-				}
-				
-			} else if(this.status == JSONParser.S_IN_OBJECT) {
-				
-				if(this.token.type == Yytoken.TYPE_VALUE) {
-					
-					if(this.token.value instanceof String) {
-						
-						String key = (String)this.token.value;
-						valueStack.push(key);
-						this.status = JSONParser.S_PASSED_PAIR_KEY;
-						statusStack.push(this.status);
-						
-					} else {
-						
-						this.status = S_IN_ERROR;
-					}
-					
-				} else if(this.token.type == Yytoken.TYPE_RIGHT_BRACE) {
-					
-					if(valueStack.size() > 1){
-						
-						statusStack.pop();
-						valueStack.pop();
-						this.status = (int)statusStack.peek();
-						
-					} else {
-						
-						this.status = JSONParser.S_IN_FINISHED_VALUE;
-					}
-					
-				} else if(this.token.type != Yytoken.TYPE_COMMA) {
-					
-					this.status = JSONParser.S_IN_ERROR;
-				}
-				
-			} else if(this.status == JSONParser.S_PASSED_PAIR_KEY) {
-				
-				if(this.token.type == Yytoken.TYPE_VALUE) {
-					
-					statusStack.pop();
-					String key = (String)valueStack.pop();
-					Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-					parent.put(key, this.token.value);
-					this.status = (int)statusStack.peek();
-					
-				} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-					
-					statusStack.pop();
-					String key = (String)valueStack.pop();
-					Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-					List<Object> newArray = new JSONArray();
-					parent.put(key, newArray);
-					this.status = JSONParser.S_IN_ARRAY;
-					statusStack.push(this.status);
-					valueStack.push(newArray);
-					
-				} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-					
-					statusStack.pop();
-					String key = (String)valueStack.pop();
-					Map<Object, Object> parent = (Map<Object, Object>)valueStack.peek();
-					Map<Object, Object> newObject = new JSONObject();
-					parent.put(key, newObject);
-					this.status = JSONParser.S_IN_OBJECT;
-					statusStack.push(this.status);
-					valueStack.push(newObject);
-					
-				} else if(this.token.type != Yytoken.TYPE_COLON) {
-					
-					this.status = JSONParser.S_IN_ERROR;
-				}
-				
-			} else if(this.status == JSONParser.S_IN_ARRAY) {
-				
-				if(this.token.type == Yytoken.TYPE_VALUE) {
-					
-					List<Object> val = (List<Object>)valueStack.peek();
-					val.add(this.token.value);
-					
-				} else if(this.token.type == Yytoken.TYPE_RIGHT_SQUARE) {
-					
-					if(valueStack.size() > 1) {
-						
-						statusStack.pop();
-						valueStack.pop();
-						this.status = (int)statusStack.peek();
-					
-					} else {
-						
-						this.status = JSONParser.S_IN_FINISHED_VALUE;
-					}
-					
-				} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-					
-					List<Object> val = (List<Object>)valueStack.peek();
-					Map<Object, Object> newObject = new JSONObject();
-					val.add(newObject);
-					this.status = JSONParser.S_IN_OBJECT;
-					statusStack.push(this.status);
-					valueStack.push(newObject);
-					
-				} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-					
-					List<Object> val = (List<Object>)valueStack.peek();
-					List<Object> newArray = new JSONArray();
-					val.add(newArray);
-					this.status = JSONParser.S_IN_ARRAY;
-					statusStack.push(this.status);
-					valueStack.push(newArray);
-					
-				} else if(this.token.type != Yytoken.TYPE_COMMA) {
-					
-					this.status = JSONParser.S_IN_ERROR;
-				}
+				   if(this.status == JSONParser.S_INIT)              {this.init(statusStack, valueStack);
+			} else if(this.status == JSONParser.S_IN_FINISHED_VALUE) {return this.inFinishedValue(valueStack);
+			} else if(this.status == JSONParser.S_IN_OBJECT)         {this.inObject(statusStack, valueStack);
+			} else if(this.status == JSONParser.S_PASSED_PAIR_KEY)   {this.inPassedPairKey(statusStack, valueStack);
+			} else if(this.status == JSONParser.S_IN_ARRAY)          {this.inArray(statusStack, valueStack);
 			}
 			
 			if(this.status == JSONParser.S_IN_ERROR) {
@@ -491,16 +513,6 @@ public class JSONParser {
 		} while(this.token.type != Yytoken.TYPE_EOF);
 
 		throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
-	}
-	
-	private final void nextToken() throws JSONParseException, IOException {
-		
-		this.token = this.lexer.yylex();
-		
-		if(this.token == null) {
-			
-			this.token = new Yytoken(Yytoken.TYPE_EOF, null);
-		}
 	}
 	
 	/**
@@ -553,7 +565,7 @@ public class JSONParser {
 	 * @see JSONContentHandler
 	 * @param reader the {@linkplain Reader}
 	 * @param contentHandler the {@linkplain JSONContentHandler}
-	 * @param resume  Indicates if the previous parsing operation should be continued.
+	 * @param resume Indicates if the previous parsing operation should be continued.
 	 * @throws IOException if an I/O error occurs or the {@linkplain JSONContentHandler} throws it
 	 * @throws JSONParseException if the JSON is invalid or the {@linkplain JSONContentHandler} throws it
 	 * @since 1.0.0
@@ -567,7 +579,6 @@ public class JSONParser {
 		
 		} else if(this.handlerStatusStack == null) {
 				
-			resume = false;
 			this.reset(reader);
 			this.handlerStatusStack = new Stack<>();
 		}
@@ -660,7 +671,7 @@ public class JSONParser {
 						if(statusStack.size() > 1) {
 							
 							statusStack.pop();
-							status = (int)statusStack.peek();
+							this.status = (int)statusStack.peek();
 							
 						} else {
 							
@@ -686,7 +697,7 @@ public class JSONParser {
 						statusStack.pop();
 						this.status = (int)statusStack.peek();
 						
-						if(!contentHandler.primitive(token.value) || !contentHandler.endObjectEntry()) {
+						if(!contentHandler.primitive(this.token.value) || !contentHandler.endObjectEntry()) {
 							
 							return;
 						}
@@ -707,7 +718,7 @@ public class JSONParser {
 						
 						statusStack.pop();
 						statusStack.push(JSONParser.S_IN_PAIR_VALUE);
-						status = JSONParser.S_IN_OBJECT;
+						this.status = JSONParser.S_IN_OBJECT;
 						statusStack.push(this.status);
 						
 						if(!contentHandler.startObject()) {
