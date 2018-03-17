@@ -227,7 +227,7 @@ import de.ralleytn.simple.json.tests.beans.Person;
 class SerializationTest {
 
 	private static final String[] FIRST_NAMES = {"Ralph", "Tim", "Uwe", "Peter", "Hans", "Patrick", "Sven", "Dennis", "Josh", "Anna", "Isabell", "Veronika", "Sarah", "Stella"};
-	private static final String[] LAST_NAMES = {"Müller", "Schmidt", "Steinberg", "König", "Niemitz", "Steinhauer"};
+	private static final String[] LAST_NAMES = {"MÃ¼ller", "Schmidt", "Steinberg", "KÃ¶nig", "Niemitz", "Steinhauer"};
 	private static final String[] CITIES = {"Braunschweig", "Hannover", "Bremen"};
 	private static final LocalDate CURRENT_DATE = LocalDate.of(2018, Month.MARCH, 17);
 	private static final Person TEST_PERSON = generateTestPerson();
