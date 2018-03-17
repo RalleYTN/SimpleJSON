@@ -35,7 +35,7 @@
 									"birth_date": "1964-09-18",
 									"city": "Braunschweig",
 									"first_name": "Patrick",
-									"last_name": "König",
+									"last_name": "KÃ¶nig",
 									"age": 53,
 									"friends": [
 										
@@ -48,7 +48,7 @@
 							"birth_date": "1996-01-23",
 							"city": "Hannover",
 							"first_name": "Anna",
-							"last_name": "König",
+							"last_name": "KÃ¶nig",
 							"age": 22,
 							"friends": [
 								{
@@ -75,7 +75,7 @@
 											"birth_date": "2002-04-21",
 											"city": "Braunschweig",
 											"first_name": "Dennis",
-											"last_name": "Müller",
+											"last_name": "MÃ¼ller",
 											"age": 15,
 											"friends": [
 												{
@@ -83,7 +83,7 @@
 													"birth_date": "1971-04-13",
 													"city": "Hannover",
 													"first_name": "Patrick",
-													"last_name": "Müller",
+													"last_name": "MÃ¼ller",
 													"age": 46,
 													"friends": [
 														{
