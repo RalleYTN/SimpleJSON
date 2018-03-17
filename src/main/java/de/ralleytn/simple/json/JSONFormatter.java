@@ -240,6 +240,7 @@ public class JSONFormatter {
 	public JSONFormatter() {
 		
 		this.indent = 1;
+		this.lineBreak = JSONFormatter.LF;
 		this.setUseTabs(true);
 	}
 	
@@ -402,7 +403,7 @@ public class JSONFormatter {
 				
 				if(character == '"') {
 					
-					inString = !(inString && !(lastChar == '\\'));
+					inString = !(inString && lastChar != '\\');
 				}
 				
 				if(!(character == ' ' && !inString)) {

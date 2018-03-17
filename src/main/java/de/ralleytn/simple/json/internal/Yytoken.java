@@ -235,7 +235,11 @@ public class Yytoken {
 		this.value = value;
 	}
 	
-	@Override
+	// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	// Since this is an internal class and no classes inside this library use this method, it is dead code.
+	// ====
+	
+	/*@Override
 	public String toString() {
 		
 		StringBuilder builder = new StringBuilder();
@@ -255,5 +259,5 @@ public class Yytoken {
 		}
 
 		return builder.toString();
-	}
+	}*/
 }

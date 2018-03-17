@@ -494,6 +494,10 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 	@Override
 	public boolean equals(Object object) {
 		
+		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+		// -	Fixed some weird behavior
+		// ====
+		
 		if(object != null && object instanceof Map) {
 			
 			Map<?, ?> map = (Map<?, ?>)object;
@@ -502,19 +506,14 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 				
 				for(Map.Entry<Object, Object> thisEntry : this.entrySet()) {
 					
-					boolean contains = false;
+					Object key = thisEntry.getKey();
+					Object value = thisEntry.getValue();
 					
-					for(Map.Entry<?, ?> mapEntry : map.entrySet()) {
+					if(!map.containsKey(key) || !value.equals(map.get(key))) {
 						
-						if(thisEntry.getKey().equals(mapEntry.getKey()) && thisEntry.getValue().equals(mapEntry.getValue())) {
-							
-							contains = true;
-							break;
-						}
-					}
-					
-					if(!contains) {
-						
+						System.out.println(key);
+						System.out.println(map.get(key));
+						System.out.println(value);
 						return false;
 					}
 				}

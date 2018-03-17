@@ -84,6 +84,8 @@ This list only applies to version 1.0.0 of this library!
 - `JSONObject` and `JSONArray` now override the `equals(Object)` method
 - Added methods that allow for a conversion from `JSONArray` to primitive arrays
 - Removed the setters from the `JSONParseException` class
+- Numbers now always get converted to `Long` when being serialized
+- Deserialization will now throw an `Exception` if a setter has an interface type because interface types cannot be instantiated
 
 ### Version 1.1.0
 
