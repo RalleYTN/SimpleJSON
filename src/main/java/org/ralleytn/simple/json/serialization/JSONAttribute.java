@@ -201,368 +201,57 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json;
+package org.ralleytn.simple.json.serialization;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import de.ralleytn.simple.json.internal.Util;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Represents a JSON object.
- * @author FangYidong(fangyidong@yahoo.com.cn)
+ * Marks a JSON attribute for serialization.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 2.0.0
  * @since 1.0.0
  */
-public class JSONObject extends LinkedHashMap<Object, Object> {
-	
-	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Removed the interfaces JSONAware and JSONStreamAware
-	// -	Renamed the "writeJSONString" method to simply "write"
-	// ====
-	
-	private static final long serialVersionUID = -503443796854799292L;
-	
-	/**
-	 * Constructs an empty {@linkplain JSONObject}
-	 * @since 1.0.0
-	 */
-	public JSONObject() {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
+public @interface JSONAttribute {
 
 	/**
-	 * Allows creation of a {@linkplain JSONObject} from a {@linkplain Map}. After that, both the
-	 * generated {@linkplain JSONObject} and the {@linkplain Map} can be modified independently.
-	 * @param map the {@linkplain Map} from which the {@linkplain JSONObject} should be created
+	 * @return the name of the attribute
 	 * @since 1.0.0
 	 */
-	public JSONObject(Map<?, ?> map) {
-		
-		super(map);
-	}
+	public String name();
 	
 	/**
-	 * Constructs a {@linkplain JSONObject} from JSON data.
-	 * @param json the JSON data
-	 * @throws JSONParseException if the JSON data is invalid
+	 * {@link Type#GETTER} is used for serializing an object. If it is used on a method, it is not allowed to have any parameters!
+	 * {@link Type#SETTER} is used for deserializing an object. If it is used on a method, it can only have one parameter!
+	 * If this {@linkplain Annotation} is used on a field, it has to be accessible!
+	 * @return the attribute type
 	 * @since 1.0.0
 	 */
-	public JSONObject(String json) throws JSONParseException {
-		
-		super((JSONObject)new JSONParser().parse(json));
-	}
+	public Type[] type() default {Type.GETTER, Type.SETTER};
 	
 	/**
-	 * Constructs a {@linkplain JSONObject} with JSON data from a {@linkplain Reader}.
-	 * @param reader the {@linkplain Reader} with the JSON data
-	 * @throws IOException if an I/O error occurred
-	 * @throws JSONParseException if the JSON is invalid
+	 * Represents the type of an attribute. Not the data type but more if it's read only or not.
+	 * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
+	 * @version 1.0.0
 	 * @since 1.0.0
 	 */
-	public JSONObject(Reader reader) throws IOException, JSONParseException {
+	public static enum Type {
 		
-		super((JSONObject)new JSONParser().parse(reader));
-	}
-
-	/**
-	 * Writes this {@linkplain JSONObject} on a given {@linkplain Writer}.
-	 * @param writer the {@linkplain Writer}
-	 * @throws IOException if an I/O error occurred
-	 * @since 1.0.0
-	 */
-	public void write(Writer writer) throws IOException {
+		/**
+		 * Marks the attribute for reading.
+		 * @since 1.0.0
+		 */
+		GETTER,
 		
-		Util.write(this, writer);
-	}
-	
-	/**
-	 * @return a new {@linkplain JSONObject} without any {@code null} values
-	 * @since 1.1.0
-	 */
-	public JSONObject compact() {
-		
-		JSONObject object = new JSONObject();
-		
-		this.forEach((key, value) -> {
-			
-			if(value != null) {
-				
-				object.put(key, value);
-			}
-		});
-		
-		return object;
-	}
-	
-	/**
-	 * If the value is a {@linkplain JSONObject} already, it will be casted and returned.
-	 * If the value is a {@linkplain Map}, it will be wrapped in a {@linkplain JSONObject}. The wrapped {@linkplain Map} will be returned.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain JSONObject} or {@code null}
-	 * @since 1.0.0
-	 */
-	public JSONObject getObject(String key) {
-		
-		return Util.getObject(this.get(key));
-	}
-	
-	/**
-	 * If the value already is a {@linkplain JSONArray}, it will be casted and returned.
-	 * If the value is an array or {@linkplain Collection}, it will be wrapped in a {@linkplain JSONArray}.
-	 * The result is returned.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain JSONArray} or {@code null}
-	 * @since 1.0.0
-	 */
-	public JSONArray getArray(String key) {
-		
-		return Util.getArray(this.get(key));
-	}
-	
-	/**
-	 * If the value is already a {@linkplain Boolean}, it will be casted and returned.
-	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
-	 * If the value is a {@linkplain Number}, this method will return {@code true} in case its {@code long} value is {@code 1}.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain Boolean} or {@code null}
-	 * @since 1.0.0
-	 */
-	public Boolean getBoolean(String key) {
-		
-		return Util.getBoolean(this.get(key));
-	}
-	
-	/**
-	 * If the value is a {@linkplain Number}, its {@code byte} value is returned.
-	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
-	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain Byte} or {@code null}
-	 * @since 1.0.0
-	 */
-	public Byte getByte(String key) {
-		
-		return Util.getByte(this.get(key));
-	}
-	
-	/**
-	 * If the value is a {@linkplain Number}, its {@code short} value is returned.
-	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
-	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain Short} or {@code null}
-	 * @since 1.0.0
-	 */
-	public Short getShort(String key) {
-		
-		return Util.getShort(this.get(key));
-	}
-	
-	/**
-	 * If the value is a {@linkplain Number}, its {@code int} value is returned.
-	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
-	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain Integer} or {@code null}
-	 * @since 1.0.0
-	 */
-	public Integer getInteger(String key) {
-		
-		return Util.getInteger(this.get(key));
-	}
-	
-	/**
-	 * If the value is a {@linkplain Number}, its {@code long} value is returned.
-	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
-	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain Long} or {@code null}
-	 * @since 1.0.0
-	 */
-	public Long getLong(String key) {
-		
-		return Util.getLong(this.get(key));
-	}
-	
-	/**
-	 * If the value is a {@linkplain Number}, its {@code float} value is returned.
-	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
-	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain Float} or {@code null}
-	 * @since 1.0.0
-	 */
-	public Float getFloat(String key) {
-		
-		return Util.getFloat(this.get(key));
-	}
-	
-	/**
-	 * If the value is a {@linkplain Number}, its {@code double} value is returned.
-	 * If the value is a {@linkplain String}, it will be parsed. The result is returned.
-	 * If the value is a {@linkplain Boolean}, this method returns {@code 1} in case the value is {@code true} otherwise {@code 0}.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain Double} or {@code null}
-	 * @since 1.0.0
-	 */
-	public Double getDouble(String key) {
-		
-		return Util.getDouble(this.get(key));
-	}
-	
-	/**
-	 * Returns the same as the value's {@link Object#toString()} method.
-	 * If the actual value is {@code null}, this method will return {@code null}.
-	 * @param key key of the value
-	 * @return a {@linkplain String} or {@code null}
-	 * @since 1.0.0
-	 */
-	public String getString(String key) {
-		
-		return Util.getString(this.get(key));
-	}
-
-	/**
-	 * If the value already is a {@linkplain Date}, it will be casted and returned.
-	 * Otherwise the result of the value's {@link Object#toString()} will be parsed by the given
-	 * {@linkplain DateFormat}. The result is returned.
-	 * If the actual value is {@code null}, this method will return {@code null}.
-	 * @param key key of the value
-	 * @param format the {@linkplain DateFormat} to parse the date with
-	 * @return a {@linkplain Date} or {@code null}
-	 * @throws ParseException if the date could not be parsed
-	 * @since 1.0.0
-	 */
-	public Date getDate(String key, DateFormat format) throws ParseException {
-		
-		return Util.getDate(this.get(key), format);
-	}
-	
-	/**
-	 * If the {@linkplain String} representation of the value equals the name of the enum constant
-	 * in the given enum type, it will return the enum constant.
-	 * In any other case this method returns {@code null}.
-	 * @param key key of the value
-	 * @param type the enum type
-	 * @param <T> the generic return type
-	 * @return an {@linkplain Enum} or {@code null}
-	 * @since 1.0.0
-	 */
-	public <T extends Enum<T>>T getEnum(String key, Class<T> type) {
-		
-		return Util.getEnum(this.get(key), type);
-	}
-	
-	/**
-	 * @return a {@linkplain String} representation of this {@linkplain JSONObject}.
-	 * @since 1.0.0
-	 */
-	@Override
-	public String toString() {
-		
-		try(StringWriter writer = new StringWriter()) {
-			
-			Util.write(this, writer);
-			return writer.toString();
-			
-		} catch(IOException exception) {
-
-			// WILL NEVER HAPPEN!
-			// DO NOTHING!
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public boolean equals(Object object) {
-		
-		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// -	Fixed some weird behavior
-		// ====
-		
-		if(object != null && object instanceof Map) {
-			
-			Map<?, ?> map = (Map<?, ?>)object;
-			
-			if(this.size() == map.size()) {
-				
-				for(Map.Entry<Object, Object> thisEntry : this.entrySet()) {
-					
-					Object key = thisEntry.getKey();
-					Object value = thisEntry.getValue();
-					
-					if(!map.containsKey(key) || !value.equals(map.get(key))) {
-						
-						System.out.println(key);
-						System.out.println(map.get(key));
-						System.out.println(value);
-						return false;
-					}
-				}
-				
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	/**
-	 * @param rootName the name of the root element
-	 * @return this JSON Object in XML
-	 * @since 1.1.0
-	 */
-	public String toXML(String rootName) {
-		
-		StringBuilder builder = new StringBuilder();
-		
-		builder.append('<');
-		builder.append(rootName);
-		builder.append('>');
-		
-		this.forEach((key, value) -> {
-			
-			       if(value instanceof JSONObject) {builder.append(((JSONObject)value).toXML(key.toString()));
-			} else if(value instanceof JSONArray)  {builder.append(((JSONArray)value).toXML(key.toString()));
-			} else {
-				
-				builder.append('<');
-				builder.append(key);
-				builder.append('>');
-				
-				if(value != null) {
-					
-					builder.append(String.valueOf(value));
-				}
-				
-				builder.append("</");
-				builder.append(key);
-				builder.append('>');
-			}
-		});
-		
-		builder.append("</");
-		builder.append(rootName);
-		builder.append('>');
-		
-		return builder.toString();
+		/**
+		 * Marks the attribute for writing.
+		 * @since 1.0.0
+		 */
+		SETTER;
 	}
 }

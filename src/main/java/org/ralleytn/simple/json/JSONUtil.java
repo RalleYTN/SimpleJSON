@@ -201,272 +201,166 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json;
+package org.ralleytn.simple.json;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.util.Collection;
+import java.util.Map;
+
+import org.ralleytn.simple.json.internal.Util;
+
+import com.evilnotch.lib.util.JavaUtil;
 
 /**
- * Can format and minimize JSON data.
+ * Contains some utility methods for JSON related stuff.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 2.0.0
- * @since 1.0.0
+ * @since 2.0.0
  */
-public class JSONFormatter {
-	
-	private static final String CRLF = "\r\n";
-	private static final String LF = "\n";
-	
-	// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Refactored some of the parameter names from "jsonReader" to "reader"
-	// 		and from "formattedWriter" and "minimizedWriter" to "writer"
-	// -	Decided that it would be better to not make this class static. The formatting has some flags that would be better
-	// 		as class attributes. It is a pain in the ass to always give the methods 4 or more parameters.
-	// -	Updated the documentation
-	// ====
-	
-	private int indent;
-	private char indentCharacter;
-	private String lineBreak;
+public final class JSONUtil {
+
+	private JSONUtil() {}
 	
 	/**
-	 * Constructs a new {@linkplain JSONFormatter}.
-	 * Default indent is {@code 1} and tabulators will be used for the indent.
-	 * @since 2.0.0
-	 */
-	public JSONFormatter() {
-		
-		this.indent = 1;
-		this.lineBreak = JSONFormatter.LF;
-		this.setUseTabs(true);
-	}
-	
-	private final void writeIndent(int level, Writer writer) throws IOException {
-		
-		for(int currentLevel = 0; currentLevel < level; currentLevel++) {
-			
-			for(int indent = 0; indent < this.indent; indent++) {
-				
-				writer.write(this.indentCharacter);
-			}
-		}
-	}
-	
-	/**
-	 * Sets whether a CRLF or a LF line break should be used.
-	 * @param crlf {@code true} = CRLF, {@code false} = LF
-	 * @since 2.0.0
-	 */
-	public void setUseCRLF(boolean crlf) {
-		
-		this.lineBreak = crlf ? JSONFormatter.CRLF : JSONFormatter.LF;
-	}
-	
-	/**
-	 * Sets whether a tabulator or space should be used for the indent.
-	 * @param tabs {@code true} = tabulator, {@code false} = space
-	 * @since 2.0.0
-	 */
-	public void setUseTabs(boolean tabs) {
-		
-		this.indentCharacter = tabs ? '\t' : ' ';
-	}
-	
-	/**
-	 * Sets the indent.
-	 * @param indent the indent
-	 * @since 2.0.0
-	 */
-	public void setIndent(int indent) {
-		
-		this.indent = indent;
-	}
-	
-	/**
-	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
-	 * @param reader the {@linkplain Reader} with the JSON data
-	 * @param writer the {@linkplain Writer} on which the formatted JSON data should be written
-	 * @throws IOException if an I/O error occurs
+	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
+	 * @param string the {@linkplain String} you want to escape
+	 * @return the escaped {@linkplain String}
 	 * @since 1.0.0
 	 */
-	public void format(Reader reader, Writer writer) throws IOException {
+	public static final String escape(String string) {
 		
-		int level = 0;
-		boolean inString = false;
-		int read = -1;
-		char lastChar = '\0';
-		
-		while((read = reader.read()) != -1) {
+		if(string != null) {
 			
-			char character = (char)read;
-			
-			if(character == '"') {
-				
-				inString = !(inString && lastChar != '\\');
-			}
-			
-			if(!inString) {
-				
-				if(character == '{' || character == '[') {
-					
-					writer.write(character);
-					writer.write(this.lineBreak);
-					level++;
-					this.writeIndent(level, writer);
-					continue;
-					
-				} else if(character == '}' || character == ']') {
-					
-					writer.write(this.lineBreak);
-					level--;
-					this.writeIndent(level, writer);
-					writer.write(character);
-					continue;
-					
-				} else if(character == ',') {
-					
-					writer.write(character);
-					writer.write(this.lineBreak);
-					this.writeIndent(level, writer);
-					continue;
-					
-				} else if(character == ':') {
-					
-					writer.write(character);
-					writer.write(' ');
-					continue;
-				}
-			}
-			
-			writer.write(character);
-			lastChar = character;
+			StringBuilder builder = new StringBuilder();
+	        Util.escape(string, builder);
+	        return builder.toString();
 		}
-	}
-	
-	/**
-	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
-	 * @param json the JSON data that should be formatted
-	 * @return the formatted JSON data
-	 * @since 1.0.0
-	 */
-	public String format(String json) {
-		
-		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// Method now calls #format(Reader,Writer) because it is less code to maintain
-		// ====
-		
-		try(StringReader reader = new StringReader(json);
-			StringWriter writer = new StringWriter()) {
-			
-			this.format(reader, writer);
-			return writer.toString();
-			
-		} catch(IOException exception) {
-			
-			// WILL NEVER HAPPEN!
-			// DO NOTHING!
-		}
-		
+
 		return null;
+    }
+	
+	/**
+	 * Checks if a value is a JSON compatible type.
+	 * @param value the value that should be checked
+	 * @return {@code true} if the given value is a JSON compatible type, else {@code false}
+	 * @since 2.0.0
+	 */
+	public static final boolean isJSONType(Object value) {
+		return canPut(value);
 	}
 	
 	/**
-	 * Minimizes formatted JSON data.
-	 * @param reader the {@linkplain Reader} with the formatted JSON data
-	 * @param writer the {@linkplain Writer} on which the minimized JSON data should be written
-	 * @throws IOException if an I/O error occurs
-	 * @since 1.0.0
+	 * fixes any objects before inserting them into a json. Doesn't support static or dynamic arrays
 	 */
-	public void minimize(Reader reader, Writer writer) throws IOException {
+	public static Object getValidJsonValue(Object value) 
+	{
+		if(JavaUtil.isStaticArray(value))
+			throw new IllegalArgumentException("Use JSONArray Objects for non primitive values");
+		else if(value instanceof Map && !(value instanceof JSONObject) || value instanceof Collection && !(value instanceof JSONArray))
+			throw new IllegalArgumentException("Inserted Maps must be JSONObject and Inserted Collections Must be JSONArray");
 		
-		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// Forgot to remove \r from the JSON
-		// ====
-		
-		boolean inString = false;
-		char lastChar = '\0';
-		int read = -1;
-		
-		while((read = reader.read()) != -1) {
-			
-			char character = (char)read;
-			
-			if(character != '\n' &&
-			   character != '\t' &&
-			   character != '\r' &&
-			   character != '\b' &&
-			   character != '\0' &&
-			   character != '\f') {
-				
-				if(character == '"') {
-					
-					inString = !(inString && lastChar != '\\');
-				}
-				
-				if(!(character == ' ' && !inString)) {
-					
-					writer.write(character);
-				}
-			}
-			
-			lastChar = character;
+		return canPut(value) ? value : value.toString();
+	}
+	
+	/**
+	 * can the object without modifications be inputted into the json object/json array
+	 */
+	public static boolean canPut(Object value) 
+	{
+		return value == null ||
+			 value instanceof String ||
+			 value instanceof Number || 
+			 value instanceof Boolean ||
+			 value instanceof JSONObject || 
+			 value instanceof JSONArray;
+	}
+	
+	public static String[] getStringArray(JSONArray json)
+	{
+		String[] value = new String[json.size()];
+		for(int index=0;index<json.size();index++)
+		{
+			value[index] = json.getString(index);
 		}
+		return value;
 	}
 	
-	/**
-	 * Minimizes formatted JSON data.
-	 * @param json the formatted JSON data
-	 * @return the minimized JSON data
-	 * @since 1.0.0
-	 */
-	public String minimize(String json) {
-		
-		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// Method now calls #minimize(Reader,Writer) because it is less code to maintain
-		// ====
-		
-		try(StringReader reader = new StringReader(json);
-			StringWriter writer = new StringWriter()) {
-			
-			this.minimize(reader, writer);
-			return writer.toString();
-			
-		} catch(IOException exception) {
-			
-			// WILL NEVER HAPPEN!
-			// DO NOTHING!
+	public static long[] getLongArray(JSONArray arr)
+	{
+		long[] value = new long[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getLong(index);
 		}
-		
-		return null;
+		return value;
 	}
 	
-	/**
-	 * @return {@code true} when CRLF line breaks are used for formatting, else {@code false}
-	 * @since 2.0.0
-	 */
-	public boolean usesCRLF() {
-		
-		return JSONFormatter.CRLF.equals(this.lineBreak);
+	public static int[] getIntArray(JSONArray arr)
+	{
+		int[] value = new int[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getInt(index);
+		}
+		return value;
 	}
-	
-	/**
-	 * @return {@code true} if tabulators are used for the indent, else {@code false}
-	 * @since 2.0.0
-	 */
-	public boolean usesTabs() {
-		
-		return this.indentCharacter == '\t';
+
+	public static short[] getShortArray(JSONArray arr) 
+	{
+		short[] value = new short[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getShort(index);
+		}
+		return value;
 	}
-	
-	/**
-	 * @return the indent
-	 * @since 2.0.0
-	 */
-	public int getIndent() {
-		
-		return this.indent;
+
+	public static byte[] getByteArray(JSONArray arr) 
+	{
+		byte[] value = new byte[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getByte(index);
+		}
+		return value;
+	}
+
+	public static double[] getDoubleArray(JSONArray arr) 
+	{
+		double[] value = new double[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getDouble(index);
+		}
+		return value;
+	}
+
+	public static float[] getFloatArray(JSONArray arr)
+	{
+		float[] value = new float[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getFloat(index);
+		}
+		return value;
+	}
+
+	public static boolean[] getBooleanArray(JSONArray arr) 
+	{
+		boolean[] value = new boolean[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getBoolean(index);
+		}
+		return value;
+	}
+
+	public static char[] getCharArray(JSONArray arr) 
+	{
+		char[] value = new char[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getChar(index);
+		}
+		return value;
 	}
 }
