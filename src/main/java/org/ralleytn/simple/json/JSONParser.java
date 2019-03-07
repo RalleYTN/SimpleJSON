@@ -201,7 +201,7 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json;
+package org.ralleytn.simple.json;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -210,8 +210,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import de.ralleytn.simple.json.internal.Yylex;
-import de.ralleytn.simple.json.internal.Yytoken;
+import org.ralleytn.simple.json.internal.Yylex;
+import org.ralleytn.simple.json.internal.Yytoken;
 
 
 /**
@@ -439,6 +439,22 @@ public class JSONParser {
 		
 		return this.lexer.getPosition();
 	}
+	
+	public JSONObject parseJSONObject(String s) throws JSONParseException{
+		return (JSONObject) this.parse(s);
+	}
+	
+	public JSONObject parseJSONObject(Reader in) throws IOException, JSONParseException{
+		return (JSONObject) this.parse(in);
+	}
+	
+	public JSONArray parseJSONArray(String s) throws JSONParseException{
+		return (JSONArray) this.parse(s);
+	}
+	
+	public JSONArray parseJSONArray(Reader in) throws IOException, JSONParseException{
+		return (JSONArray) this.parse(in);
+	} 
 	
 	/**
 	 * Parses JSON data.

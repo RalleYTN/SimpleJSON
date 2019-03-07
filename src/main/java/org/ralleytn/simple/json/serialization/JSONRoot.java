@@ -201,55 +201,19 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json;
+package org.ralleytn.simple.json.serialization;
 
-import java.util.Collection;
-import java.util.Map;
-
-import de.ralleytn.simple.json.internal.Util;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Contains some utility methods for JSON related stuff.
+ * Marks an class for serialization.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
  * @version 2.0.0
- * @since 2.0.0
+ * @since 1.0.0
  */
-public final class JSONUtil {
-
-	private JSONUtil() {}
-	
-	/**
-	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
-	 * @param string the {@linkplain String} you want to escape
-	 * @return the escaped {@linkplain String}
-	 * @since 1.0.0
-	 */
-	public static final String escape(String string) {
-		
-		if(string != null) {
-			
-			StringBuilder builder = new StringBuilder();
-	        Util.escape(string, builder);
-	        return builder.toString();
-		}
-
-		return null;
-    }
-	
-	/**
-	 * Checks if a value is a JSON compatible type.
-	 * @param value the value that should be checked
-	 * @return {@code true} if the given value is a JSON compatible type, else {@code false}
-	 * @since 2.0.0
-	 */
-	public static final boolean isJSONType(Object value) {
-		
-		return value == null ||
-			   value instanceof Number ||
-			   value instanceof String ||
-			   value instanceof Boolean ||
-			   value instanceof Collection ||
-			   value instanceof Map ||
-			   value.getClass().isArray();
-	}
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface JSONRoot {}

@@ -201,7 +201,7 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.serialization;
+package org.ralleytn.simple.json.serialization;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -211,8 +211,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import de.ralleytn.simple.json.JSONArray;
-import de.ralleytn.simple.json.JSONObject;
+import org.ralleytn.simple.json.JSONArray;
+import org.ralleytn.simple.json.JSONObject;
 
 /**
  * Provides static methods which allow you to convert Java objects into {@linkplain JSONObject}s

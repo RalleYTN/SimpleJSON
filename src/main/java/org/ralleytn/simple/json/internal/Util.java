@@ -201,7 +201,7 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.internal;
+package org.ralleytn.simple.json.internal;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -212,9 +212,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
-import de.ralleytn.simple.json.JSONArray;
-import de.ralleytn.simple.json.JSONObject;
-import de.ralleytn.simple.json.JSONUtil;
+import org.ralleytn.simple.json.JSONArray;
+import org.ralleytn.simple.json.JSONObject;
+import org.ralleytn.simple.json.JSONUtil;
 
 /**
  * Contains a few static methods for JSON values.
@@ -705,7 +705,7 @@ public final class Util {
 			} else if(value instanceof float[])    {return new JSONArray((float[])value);
 			} else if(value instanceof double[])   {return new JSONArray((double[])value);
 			} else if(value instanceof Collection) {return new JSONArray((Collection<?>)value);
-			} else if(value.getClass().isArray())  {return new JSONArray(value);
+			} else if(value.getClass().isArray())  {return new JSONArray((Object[])value);
 			}
 		}
 		
@@ -873,7 +873,7 @@ public final class Util {
 
 		if(value != null) {
 			
-			return value instanceof Date ? (Date)value : format.parse(value.toString());
+			return format.parse(value.toString());
 		}
 		
 		return null;
