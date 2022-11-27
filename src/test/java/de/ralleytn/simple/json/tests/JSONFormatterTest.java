@@ -213,6 +213,7 @@ import java.io.StringWriter;
 import org.junit.jupiter.api.Test;
 
 import de.ralleytn.simple.json.JSONFormatter;
+import de.ralleytn.simple.json.JSONObject;
 
 class JSONFormatterTest {
 
@@ -297,6 +298,42 @@ class JSONFormatterTest {
 		testFormat(TestUtil.JSON_FORMATTED_SPACE_I2, "JSON_FORMATTED_SPACE_I2", false, false, 2);
 		testFormat(TestUtil.JSON_FORMATTED_SPACE_CRLF, "JSON_FORMATTED_SPACE_CRLF", true, false, 1);
 		testFormat(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2, "JSON_FORMATTED_SPACE_CRLF_I2", true, false, 2);
+	}
+	
+	@Test
+	public void testStreamedFormat() {
+		
+		String expected =
+				  "{\n"
+				+ "	\"status\": {\n"
+				+ "		\"code\": 200,\n"
+				+ "		\"message\": \"OK\",\n"
+				+ "		\"error\": null\n"
+				+ "	},\n"
+				+ "	\"data\": [\n"
+				+ "		\"Hello World\",\n"
+				+ "		{\n"
+				+ "			\"att1\": \"Hello World!\",\n"
+				+ "			\"att2\": \"Hello World! 2\"\n"
+				+ "		},\n"
+				+ "		null,\n"
+				+ "		999,\n"
+				+ "		\"ÄÖÜäöüß\"\n"
+				+ "	]\n"
+				+ "}";
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			JSONObject json1 = TestUtil.createObject();
+			formatter.format(json1, writer);
+			assertEquals(expected, writer.toString());
+			
+		} catch(IOException exception) {}
 	}
 	
 	@Test

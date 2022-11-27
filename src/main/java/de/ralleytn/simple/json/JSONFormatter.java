@@ -208,11 +208,14 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Can format and minimize JSON data.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public class JSONFormatter {
@@ -283,6 +286,473 @@ public class JSONFormatter {
 	public void setIndent(int indent) {
 		
 		this.indent = indent;
+	}
+	
+	/**
+	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
+	 * @param object The JSON object that is meant to be formatted
+	 * @param writer The writer on which the formatted JSON string will be written
+	 * @throws IOException if an I/O error occurs
+	 * @since 2.1.0
+	 */
+	public void format(JSONObject object, Writer writer) throws IOException {
+
+		int level = 0;
+		this.formatObject(object, writer, level);
+	}
+	
+	/**
+	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
+	 * @param array The JSON array that is meant to be formatted
+	 * @param writer The writer on which the formatted JSON string will be written
+	 * @throws IOException if an I/O error occurs
+	 * @since 2.1.0
+	 */
+	public void format(JSONArray array, Writer writer) throws IOException {
+
+		int level = 0;
+		this.formatArray(array, writer, level);
+	}
+	
+	private final void formatObject(Map<?, ?> map, Writer writer, int level) throws IOException {
+		
+		if(map != null) {
+			
+			boolean first = true;
+			writer.write('{');
+			writer.write(this.lineBreak);
+			level++;
+			
+			for(Map.Entry<?, ?> entry : map.entrySet()) {
+				
+				if(first) {
+					
+	                first = false;
+	                
+				} else {
+					
+	                writer.write(',');
+	                writer.write(this.lineBreak);
+				}
+				
+				this.writeIndent(level, writer);
+	            writer.write('\"');
+	            writer.write(JSONUtil.escape(String.valueOf(entry.getKey())));
+	            writer.write("\": ");
+
+				this.formatValue(entry.getValue(), writer, level);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write('}');
+			
+		} else {
+			
+			writer.write("null");
+		}
+	}
+	
+	private final void formatArray(Collection<?> array, Writer writer, int level) throws IOException {
+
+		if(array == null) {
+			
+			writer.write("null");
+			
+		} else if(array.isEmpty()) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+			boolean first = true;
+			Iterator<?> iterator = array.iterator();
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+			while(iterator.hasNext()) {
+				
+	            if(first) {
+	            	
+	                first = false;
+	                
+	            } else {
+	            	
+	                writer.write(',');
+	                writer.write(this.lineBreak);
+	            }
+	            
+	            this.writeIndent(level, writer);
+				Object value = iterator.next();
+				
+				if(value == null) {
+					
+					writer.write("null");
+					
+				} else {
+					
+					this.formatValue(value, writer, level);
+				}
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(byte[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(short[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(int[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(long[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(float[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(double[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(boolean[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final void formatArray(char[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	private final <T>void formatArray(T[] array, Writer writer, int level) throws IOException {
+		
+		if(array == null) {
+			
+			writer.write("null");
+			
+			
+		} else if(array.length == 0) {
+			
+			writer.write("[]");
+			
+		} else {
+		
+	        writer.write('[');
+	        writer.write(this.lineBreak);
+	        level++;
+	        
+	        this.writeIndent(level, writer);
+	        writer.write("" + array[0]);
+	        
+	        for(int index = 1; index < array.length; index++) {
+				
+				writer.write(",");
+				writer.write(this.lineBreak);
+				this.writeIndent(level, writer);
+				writer.write("" + array[index]);
+			}
+			
+			level--;
+			writer.write(this.lineBreak);
+			this.writeIndent(level, writer);
+			writer.write(']');
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private final void formatValue(Object value, Writer writer, int level) throws IOException {
+		
+		if(value == null) {
+			
+			writer.write("null");
+			
+		} else if(value instanceof String) {
+			
+            writer.write('\"');
+			writer.write(JSONUtil.escape((String)value));
+            writer.write('\"');
+            
+		} else if(value instanceof Double)            {writer.write(((Double)value).isInfinite() || ((Double)value).isNaN() ? "null" : value.toString());
+		} else if(value instanceof Float)             {writer.write(((Float)value).isInfinite() || ((Float)value).isNaN() ? "null" : value.toString());
+		} else if(value instanceof Number)            {writer.write(value.toString());
+		} else if(value instanceof Boolean)           {writer.write(value.toString());
+		} else if(value instanceof Map)               {this.formatObject((Map<Object, Object>)value, writer, level);
+		} else if(value instanceof Collection)        {this.formatArray((Collection<Object>)value, writer, level);
+		} else if(value instanceof byte[])            {this.formatArray((byte[])value, writer, level);
+		} else if(value instanceof short[])           {this.formatArray((short[])value, writer, level);
+		} else if(value instanceof int[])             {this.formatArray((int[])value, writer, level);
+		} else if(value instanceof long[])            {this.formatArray((long[])value, writer, level);
+		} else if(value instanceof float[])           {this.formatArray((float[])value, writer, level);
+		} else if(value instanceof double[])          {this.formatArray((double[])value, writer, level);
+		} else if(value instanceof boolean[])         {this.formatArray((boolean[])value, writer, level);
+		} else if(value instanceof char[])            {this.formatArray((char[])value, writer, level);
+		} else if(value.getClass().isArray())         {this.formatArray((Object[])value, writer, level);
+		} else {
+			
+			writer.write('"');
+			writer.write(JSONUtil.escape(value.toString()));
+			writer.write('"');
+		}
 	}
 	
 	/**

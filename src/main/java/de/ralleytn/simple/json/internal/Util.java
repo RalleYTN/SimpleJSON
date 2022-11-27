@@ -254,7 +254,7 @@ public final class Util {
 		} else {
 			
 			writer.write("[");
-			writer.write(""+ array[0]);
+			writer.write("" + array[0]);
 			
 			for(int index = 1; index < array.length; index++) {
 				
@@ -539,7 +539,7 @@ public final class Util {
      * @since 1.0.0
      */
 	public static final void write(Collection<?> collection, Writer writer) throws IOException {
-		
+
 		if(collection != null) {
 			
 			boolean first = true;
