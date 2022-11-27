@@ -286,10 +286,8 @@ class JSONFormatterTest {
 	@Test
 	public void testFormat() {
 
-		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
 		// This method calls assert and fail implicitly.
 		// Codacy tells bullshit on this one.
-		// ====
 		
 		testFormat(TestUtil.JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL", false, true, 1);
 		testFormat(TestUtil.JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF", true, true, 1);
@@ -339,10 +337,8 @@ class JSONFormatterTest {
 	@Test
 	public void testMinimize() {
 		
-		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
 		// This method calls assert and fail implicitly.
 		// Codacy tells bullshit on this one.
-		// ====
 		
 		testMinimize(TestUtil.JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL");
 		testMinimize(TestUtil.JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF");

@@ -224,12 +224,7 @@ import de.ralleytn.simple.json.internal.Util;
  * @since 1.0.0
  */
 public class JSONObject extends LinkedHashMap<Object, Object> {
-	
-	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Removed the interfaces JSONAware and JSONStreamAware
-	// -	Renamed the "writeJSONString" method to simply "write"
-	// ====
-	
+
 	private static final long serialVersionUID = -503443796854799292L;
 	
 	/**
@@ -493,11 +488,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 	
 	@Override
 	public boolean equals(Object object) {
-		
-		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// -	Fixed some weird behavior
-		// ====
-		
+
 		if(object != null && object instanceof Map) {
 			
 			Map<?, ?> map = (Map<?, ?>)object;

@@ -225,12 +225,6 @@ import de.ralleytn.simple.json.JSONUtil;
  */
 public final class Util {
 
-	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Removed the "toJSONString" method because it was dead code
-	// -	Moved the method "escape(String)" to the class "JSONUtil"
-	// -	Renamed all "writeJSONString" methods to simply "write"
-	// ====
-	
 	private Util() {}
 	
     /**
@@ -627,11 +621,7 @@ public final class Util {
      */
 	@SuppressWarnings("unchecked")
 	public static final void write(Object value, Writer writer) throws IOException {
-		
-		// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// -	Made this method final
-		// ====
-		
+
 		if(value == null) {
 			
 			writer.write("null");

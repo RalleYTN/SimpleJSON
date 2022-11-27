@@ -220,11 +220,6 @@ import de.ralleytn.simple.json.JSONParseException;
  */
 public class Yylex {
 
-	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Properly formatted this class
-	// -	Replaced switch-case block with if-else blocks because they are faster
-	// ====
-	
 	public static final int YYINITIAL = 0;
 	public static final int STRING_BEGIN = 2;
 	public static final int YYEOF = -1;
@@ -547,10 +542,8 @@ public class Yylex {
 			message = Yylex.ZZ_ERROR_MSG[Yylex.ZZ_UNKNOWN_ERROR];
 		}
 
-		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
 		// DO NOT CHANGE!
 		// Even if Codacy says so.
-		// ====
 		
 		throw new Error(message);
 	} 

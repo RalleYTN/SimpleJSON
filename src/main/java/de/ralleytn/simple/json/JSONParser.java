@@ -223,11 +223,6 @@ import de.ralleytn.simple.json.internal.Yytoken;
  */
 public class JSONParser {
 	
-	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Removed the ContainerFactory
-	// -	Updated the documentation
-	// ====
-	
 	private static final int S_INIT = 0;
 	private static final int S_IN_FINISHED_VALUE = 1;
 	private static final int S_IN_OBJECT = 2;
@@ -440,6 +435,7 @@ public class JSONParser {
 		return this.lexer.getPosition();
 	}
 	
+	// TODO Add a method that allows for conservative parsing
 	/**
 	 * Parses JSON data.
 	 * @param json the JSON data
@@ -485,10 +481,6 @@ public class JSONParser {
 	 * @since 1.0.0
 	 */
 	public Object parse(Reader reader) throws IOException, JSONParseException {
-		
-		// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// -	Removed the unnecessary try-catch block
-		// ====
 		
 		this.reset(reader);
 		Stack<Object> statusStack = new Stack<>();

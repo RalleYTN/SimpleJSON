@@ -235,10 +235,8 @@ public class Yytoken {
 		this.value = value;
 	}
 	
-	// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// Since this is an internal class and no classes inside this library use this method, it is dead code.
-	// ====
-	
+	// Code is preserved in case it is needed at some point
+	// TODO someone should do an analysis to find out if this code can be removed
 	/*@Override
 	public String toString() {
 		

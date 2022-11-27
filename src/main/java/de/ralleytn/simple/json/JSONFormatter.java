@@ -223,14 +223,6 @@ public class JSONFormatter {
 	private static final String CRLF = "\r\n";
 	private static final String LF = "\n";
 	
-	// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Refactored some of the parameter names from "jsonReader" to "reader"
-	// 		and from "formattedWriter" and "minimizedWriter" to "writer"
-	// -	Decided that it would be better to not make this class static. The formatting has some flags that would be better
-	// 		as class attributes. It is a pain in the ass to always give the methods 4 or more parameters.
-	// -	Updated the documentation
-	// ====
-	
 	private int indent;
 	private char indentCharacter;
 	private String lineBreak;
@@ -823,11 +815,7 @@ public class JSONFormatter {
 	 * @since 1.0.0
 	 */
 	public String format(String json) {
-		
-		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// Method now calls #format(Reader,Writer) because it is less code to maintain
-		// ====
-		
+
 		try(StringReader reader = new StringReader(json);
 			StringWriter writer = new StringWriter()) {
 			
@@ -851,10 +839,6 @@ public class JSONFormatter {
 	 * @since 1.0.0
 	 */
 	public void minimize(Reader reader, Writer writer) throws IOException {
-		
-		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// Forgot to remove \r from the JSON
-		// ====
 		
 		boolean inString = false;
 		char lastChar = '\0';
@@ -893,10 +877,6 @@ public class JSONFormatter {
 	 * @since 1.0.0
 	 */
 	public String minimize(String json) {
-		
-		// ==== 10.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// Method now calls #minimize(Reader,Writer) because it is less code to maintain
-		// ====
 		
 		try(StringReader reader = new StringReader(json);
 			StringWriter writer = new StringWriter()) {

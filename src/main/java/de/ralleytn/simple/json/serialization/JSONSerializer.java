@@ -713,11 +713,7 @@ public final class JSONSerializer {
 	}
 	
 	private static final void serialize(JSONObject json, Class<?> clazz, Object classObject, Class<?> type, Object value, JSONAttribute annotation) throws Exception {
-		
-		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// -	Numbers now always get converted to longs
-		// ====
-		
+
 		       if(value instanceof String || value instanceof Boolean) {json.put(annotation.name(), value);
 		} else if(value instanceof Number) {json.put(annotation.name(), value != null ? ((Number)value).longValue() : null);
 		} else if(value instanceof boolean[]) {json.put(annotation.name(), new JSONArray((boolean[])value));

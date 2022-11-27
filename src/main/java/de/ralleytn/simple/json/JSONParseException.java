@@ -214,11 +214,7 @@ import de.ralleytn.simple.json.internal.Yytoken;
  * @since 1.0.0
  */
 public class JSONParseException extends Exception {
-	
-	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Updated the documentation
-	// ====
-	
+
 	private static final long serialVersionUID = -7880698968187728547L;
 	
 	/** @since 1.0.0 */ public static final int ERROR_UNEXPECTED_CHAR = 0;

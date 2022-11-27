@@ -225,15 +225,7 @@ import de.ralleytn.simple.json.internal.Util;
  * @since 1.0.0
  */
 public class JSONArray extends ArrayList<Object> {
-	
-	// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-	// -	Removed the interfaces JSONAware and JSONStreamAware
-	// -	Moved all static "writeJSONString" methods to the Util class
-	// -	Removed all "toJSONString" methods
-	// -	Renamed the "writeJSONString" method to simply "write"
-	// -	Updated documentation
-	// ====
-	
+
 	private static final long serialVersionUID = 3957988303675231981L;
 	
 	/**
@@ -377,12 +369,7 @@ public class JSONArray extends ArrayList<Object> {
 	 * @since 1.0.0
 	 */
 	public JSONArray(Object array) {
-		
-		// ==== 11.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// -	Will no longer throw an exception if an object that isn't an array is given.
-		//		An empty array will be constructed instead.
-		// ====
-		
+
 		if(array != null && array.getClass().isArray()) {
 			
 			int length = Array.getLength(array);

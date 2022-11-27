@@ -286,6 +286,11 @@ class SerializationTest {
 	@Test
 	public void testSerialize() {
 
+		// FIXME
+		// This test fails for some reason
+		// Apparently the serialize method itself throws an exception
+		// Did this happen because of updates in Java or was this my mistake?
+		
 		try {
 			
 			JSONObject object = JSONSerializer.serialize(TEST_PERSON);
@@ -309,11 +314,9 @@ class SerializationTest {
 			JSONSerializer.deserialize(TEST_OBJECT, person);
 			
 			// FIXME
-			// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
 			// It is not possible to correctly deserialize collections at the moment.
 			// In this example 'friends' that is declared as a list of 'Person' is actually a list of 'JSONObject'.
 			// If you try to retrieve one object you get a ClassCastException.
-			// ====
 			
 			assertFalse(TEST_PERSON.equals(person));
 			
