@@ -1,8 +1,3 @@
-[![Build Result](https://api.travis-ci.org/RalleYTN/SimpleJSON.svg?branch=master)](https://travis-ci.org/RalleYTN/SimpleJSON)
-[![Coverage Status](https://coveralls.io/repos/github/RalleYTN/SimpleJSON/badge.svg?branch=master)](https://coveralls.io/github/RalleYTN/SimpleJSON?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9464994fa30b4eaa9918c6fad4c2008f)](https://www.codacy.com/app/ralph.niemitz/SimpleJSON?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=RalleYTN/SimpleJSON&amp;utm_campaign=Badge_Grade)
-
-
 # Description
 
 SimpleJSON is an improved version of [json-simple](https://github.com/fangyidong/json-simple).
@@ -309,4 +304,4 @@ This list only applies to version 1.0.0 of this library!
 - [Online Documentation](https://ralleytn.github.io/SimpleJSON/)
 - [Download](https://github.com/RalleYTN/SimpleJSON/releases)
 - [Wiki](https://github.com/RalleYTN/SimpleJSON/wiki)
-- [Java 8 Compatible Version](https://github.com/RalleYTN/SimpleJSON/tree/java8)
+- [Java 8 Compatible Version (no longer maintained)](https://github.com/RalleYTN/SimpleJSON/tree/java8)
