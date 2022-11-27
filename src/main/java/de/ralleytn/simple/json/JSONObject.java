@@ -279,6 +279,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 	}
 	
 	/**
+	 * Removes all keys which have a {@code null} value.
 	 * @return a new {@linkplain JSONObject} without any {@code null} values
 	 * @since 1.1.0
 	 */
@@ -502,9 +503,6 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 					
 					if(!map.containsKey(key) || !value.equals(map.get(key))) {
 						
-						System.out.println(key);
-						System.out.println(map.get(key));
-						System.out.println(value);
 						return false;
 					}
 				}
