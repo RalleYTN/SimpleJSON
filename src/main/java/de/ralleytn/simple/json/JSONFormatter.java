@@ -234,9 +234,21 @@ public class JSONFormatter {
 	 */
 	public JSONFormatter() {
 		
-		this.indent = 1;
-		this.lineBreak = JSONFormatter.LF;
-		this.setUseTabs(true);
+		this(1, false, true);
+	}
+	
+	/**
+	 * Constructs a new {@linkplain JSONFormatter}.
+	 * @param indent the character count of spaces/tabs used for the indent
+	 * @param useCRLF {@code true} = CRLF (Windows linebreak), {@code false} = LF (Unix linebreak)
+	 * @param useTabs {@code true} = tabulator, {@code false} = space
+	 * @since 2.1.0
+	 */
+	public JSONFormatter(int indent, boolean useCRLF, boolean useTabs) {
+		
+		this.setIndent(indent);
+		this.setUseCRLF(useCRLF);
+		this.setUseTabs(useTabs);
 	}
 	
 	private final void writeIndent(int level, Writer writer) throws IOException {
@@ -252,7 +264,7 @@ public class JSONFormatter {
 	
 	/**
 	 * Sets whether a CRLF or a LF line break should be used.
-	 * @param crlf {@code true} = CRLF, {@code false} = LF
+	 * @param crlf {@code true} = CRLF (Windows linebreak), {@code false} = LF (Unix linebreak)
 	 * @since 2.0.0
 	 */
 	public void setUseCRLF(boolean crlf) {
@@ -272,7 +284,7 @@ public class JSONFormatter {
 	
 	/**
 	 * Sets the indent.
-	 * @param indent the indent
+	 * @param indent the character count of spaces/tabs used for the indent
 	 * @since 2.0.0
 	 */
 	public void setIndent(int indent) {
@@ -395,6 +407,10 @@ public class JSONFormatter {
 			writer.write(']');
 		}
 	}
+	
+	// FIXME
+	// PLEASE FOR THE LOVE OF GOD DOES SOMEONE HAVE AN EASIER WAY OF DOING THIS!?
+	// I DONT WANT TO MAINTAIN 8 COPIES OF THE SAME CODE!!!
 	
 	private final void formatArray(byte[] array, Writer writer, int level) throws IOException {
 		
