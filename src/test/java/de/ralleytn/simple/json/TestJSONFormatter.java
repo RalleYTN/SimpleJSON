@@ -201,7 +201,7 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.tests;
+package de.ralleytn.simple.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -212,76 +212,7 @@ import java.io.StringWriter;
 
 import org.junit.jupiter.api.Test;
 
-import de.ralleytn.simple.json.JSONFormatter;
-import de.ralleytn.simple.json.JSONObject;
-
-class JSONFormatterTest {
-
-	private static final void testMinimize(String formatted, String message) {
-		
-		// Test minimize(String)
-		assertEquals(TestUtil.JSON_MINIMIZED, new JSONFormatter().minimize(formatted));
-		
-		// Test minimize(Reader,Writer)
-		try(StringReader reader = new StringReader(formatted)) {
-			
-			try(StringWriter writer = new StringWriter()) {
-				
-				new JSONFormatter().minimize(reader, writer);
-				assertEquals(TestUtil.JSON_MINIMIZED, writer.toString(), message);
-				
-			} catch(IOException exception) {
-				
-				fail(exception);
-			}
-		}
-	}
-	
-	private static final void printError(String expected, String result) {
-		
-		for(int index = 0; index < (result.length() < expected.length() ? result.length() : expected.length()); index++) {
-			
-			if(result.charAt(index) != expected.charAt(index)) {
-				
-				System.err.println("The expected result and the actual result are unqual at index " + index + "!");
-				System.err.println(result.substring(0, result.length() - index + 1));
-			}
-		}
-	}
-	
-	private static final void testFormat(String expected, String message, boolean crlf, boolean tabs, int indent) {
-		
-		// Test the JSONFormatter setters and getters
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(indent);
-		formatter.setUseCRLF(crlf);
-		formatter.setUseTabs(tabs);
-		
-		assertEquals(indent, formatter.getIndent(), "Either setIndent(int) or getIndent() doesn't work!");
-		assertEquals(crlf, formatter.usesCRLF(), "Either setUseCRLF(boolean) or usesCRLF() doesn't work!");
-		assertEquals(tabs, formatter.usesTabs(), "Either setUseTabs(boolean) or usesTabs() doesn't work!");
-		
-		// Test format(String)
-		String result = formatter.format(TestUtil.JSON_MINIMIZED);
-		printError(expected, result);
-		assertEquals(expected, result, message);
-		
-		// Test format(Reader,Writer)
-		try(StringReader reader = new StringReader(TestUtil.JSON_MINIMIZED)) {
-			
-			try(StringWriter writer = new StringWriter()) {
-				
-				formatter.format(reader, writer);
-				result = writer.toString();
-				printError(expected, result);
-				assertEquals(expected, result, message);
-				
-			} catch(IOException exception) {
-				
-				fail(exception);
-			}
-		}
-	}
+class TestJSONFormatter {
 	
 	@Test
 	public void testFormat() {
@@ -296,6 +227,35 @@ class JSONFormatterTest {
 		testFormat(TestUtil.JSON_FORMATTED_SPACE_I2, "JSON_FORMATTED_SPACE_I2", false, false, 2);
 		testFormat(TestUtil.JSON_FORMATTED_SPACE_CRLF, "JSON_FORMATTED_SPACE_CRLF", true, false, 1);
 		testFormat(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2, "JSON_FORMATTED_SPACE_CRLF_I2", true, false, 2);
+	}
+	
+	private static final void testFormat(String expected, String message, boolean crlf, boolean tabs, int indent) {
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(indent);
+		formatter.setUseCRLF(crlf);
+		formatter.setUseTabs(tabs);
+		
+		assertEquals(indent, formatter.getIndent(), "Either setIndent(int) or getIndent() doesn't work!");
+		assertEquals(crlf, formatter.usesCRLF(), "Either setUseCRLF(boolean) or usesCRLF() doesn't work!");
+		assertEquals(tabs, formatter.usesTabs(), "Either setUseTabs(boolean) or usesTabs() doesn't work!");
+		
+		String result = formatter.format(TestUtil.JSON_MINIMIZED);
+		assertEquals(expected, result, message);
+		
+		try(StringReader reader = new StringReader(TestUtil.JSON_MINIMIZED)) {
+			
+			try(StringWriter writer = new StringWriter()) {
+				
+				formatter.format(reader, writer);
+				result = writer.toString();
+				assertEquals(expected, result, message);
+				
+			} catch(IOException exception) {
+				
+				fail(exception);
+			}
+		}
 	}
 	
 	@Test
@@ -347,5 +307,23 @@ class JSONFormatterTest {
 		testMinimize(TestUtil.JSON_FORMATTED_SPACE_I2, "JSON_FORMATTED_SPACE_I2");
 		testMinimize(TestUtil.JSON_FORMATTED_SPACE_CRLF, "JSON_FORMATTED_SPACE_CRLF");
 		testMinimize(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2, "JSON_FORMATTED_SPACE_CRLF_I2");
+	}
+	
+	private static final void testMinimize(String formatted, String message) {
+		
+		assertEquals(TestUtil.JSON_MINIMIZED, new JSONFormatter().minimize(formatted));
+		
+		try(StringReader reader = new StringReader(formatted)) {
+			
+			try(StringWriter writer = new StringWriter()) {
+				
+				new JSONFormatter().minimize(reader, writer);
+				assertEquals(TestUtil.JSON_MINIMIZED, writer.toString(), message);
+				
+			} catch(IOException exception) {
+				
+				fail(exception);
+			}
+		}
 	}
 }

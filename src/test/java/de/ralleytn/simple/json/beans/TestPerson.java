@@ -1,4 +1,4 @@
-package de.ralleytn.simple.json.tests.beans;
+package de.ralleytn.simple.json.beans;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import de.ralleytn.simple.json.serialization.JSONRoot;
 import de.ralleytn.simple.json.serialization.JSONTypeSerializationHandler;
 
 @JSONRoot
-public class Person implements Serializable, JSONTypeSerializationHandler {
+public class TestPerson implements Serializable, JSONTypeSerializationHandler {
 
 	private static final long serialVersionUID = -7375042144833399606L;
 
@@ -20,7 +20,7 @@ public class Person implements Serializable, JSONTypeSerializationHandler {
 	private String city;
 	private String country;
 	private LocalDate birthDate;
-	private List<Person> friends;
+	private List<TestPerson> friends;
 	
 	@JSONAttribute(type = JSONAttribute.Type.SETTER, name = "first_name")
 	public void setFirstName(String firstName) {
@@ -59,7 +59,7 @@ public class Person implements Serializable, JSONTypeSerializationHandler {
 	}
 	
 	@JSONAttribute(type = JSONAttribute.Type.SETTER, name = "friends")
-	public void setFriends(ArrayList<Person> friends) {
+	public void setFriends(ArrayList<TestPerson> friends) {
 		
 		this.friends = friends;
 	}
@@ -101,7 +101,7 @@ public class Person implements Serializable, JSONTypeSerializationHandler {
 	}
 	
 	@JSONAttribute(type = JSONAttribute.Type.GETTER, name = "friends")
-	public List<Person> getFriends() {
+	public List<TestPerson> getFriends() {
 		
 		return this.friends;
 	}

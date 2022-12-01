@@ -1,0 +1,104 @@
+[
+	{
+		"country": "DE",
+		"birth_date": "1984-10-27",
+		"city": "Braunschweig",
+		"first_name": "Josh",
+		"last_name": "Niemitz",
+		"age": 33,
+		"friends": [
+			{
+				"country": "DE",
+				"birth_date": "2003-01-06",
+				"city": "Hannover",
+				"first_name": "Veronika",
+				"last_name": "Niemitz",
+				"age": 15,
+				"friends": [
+					{
+						"country": "DE",
+						"birth_date": "1964-09-18",
+						"city": "Braunschweig",
+						"first_name": "Patrick",
+						"last_name": "König",
+						"age": 53,
+						"friends": [
+							
+						]
+					}
+				]
+			},
+			{
+				"country": "DE",
+				"birth_date": "1996-01-23",
+				"city": "Hannover",
+				"first_name": "Anna",
+				"last_name": "König",
+				"age": 22,
+				"friends": [
+					{
+						"country": "DE",
+						"birth_date": "1963-10-26",
+						"city": "Braunschweig",
+						"first_name": "Anna",
+						"last_name": "Niemitz",
+						"age": 54,
+						"friends": [
+							{
+								"country": "DE",
+								"birth_date": "1986-03-10",
+								"city": "Bremen",
+								"first_name": "Hans",
+								"last_name": "Steinhauer",
+								"age": 32,
+								"friends": [
+									
+								]
+							},
+							{
+								"country": "DE",
+								"birth_date": "2002-04-21",
+								"city": "Braunschweig",
+								"first_name": "Dennis",
+								"last_name": "Müller",
+								"age": 15,
+								"friends": [
+									{
+										"country": "DE",
+										"birth_date": "1971-04-13",
+										"city": "Hannover",
+										"first_name": "Patrick",
+										"last_name": "Müller",
+										"age": 46,
+										"friends": [
+											{
+												"country": "DE",
+												"birth_date": "1996-04-23",
+												"city": "Bremen",
+												"first_name": "Ralph",
+												"last_name": "Niemitz",
+												"age": 21,
+												"friends": [
+													
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"country": "DE",
+		"birth_date": "1966-05-17",
+		"city": "Bremen",
+		"first_name": "Sarah",
+		"last_name": "Schmidt",
+		"age": 51,
+		"friends": null
+	}
+]

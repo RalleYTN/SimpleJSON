@@ -201,87 +201,57 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.tests;
+package de.ralleytn.simple.json;
 
-import de.ralleytn.simple.json.JSONArray;
-import de.ralleytn.simple.json.JSONObject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-final class TestUtil {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
-	public static final String JSON_MINIMIZED = "{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]}";
-	public static final String JSON_FORMATTED_NORMAL = "{\n\t\"status\": {\n\t\t\"code\": 200,\n\t\t\"message\": \"OK\",\n\t\t\"error\": null\n\t},\n\t\"data\": [\n\t\t\"Hello World\",\n\t\t{\n\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\"att2\": \"Hello World! 2\"\n\t\t},\n\t\tnull,\n\t\t999,\n\t\t\"ÄÖÜäöüß\"\n\t]\n}";
-	public static final String JSON_FORMATTED_CRLF = "{\r\n\t\"status\": {\r\n\t\t\"code\": 200,\r\n\t\t\"message\": \"OK\",\r\n\t\t\"error\": null\r\n\t},\r\n\t\"data\": [\r\n\t\t\"Hello World\",\r\n\t\t{\r\n\t\t\t\"att1\": \"Hello World!\",\r\n\t\t\t\"att2\": \"Hello World! 2\"\r\n\t\t},\r\n\t\tnull,\r\n\t\t999,\r\n\t\t\"ÄÖÜäöüß\"\r\n\t]\r\n}";
-	public static final String JSON_FORMATTED_I2 = "{\n\t\t\"status\": {\n\t\t\t\t\"code\": 200,\n\t\t\t\t\"message\": \"OK\",\n\t\t\t\t\"error\": null\n\t\t},\n\t\t\"data\": [\n\t\t\t\t\"Hello World\",\n\t\t\t\t{\n\t\t\t\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\t\t\t\"att2\": \"Hello World! 2\"\n\t\t\t\t},\n\t\t\t\tnull,\n\t\t\t\t999,\n\t\t\t\t\"ÄÖÜäöüß\"\n\t\t]\n}";
-	public static final String JSON_FORMATTED_SPACE = "{\n \"status\": {\n  \"code\": 200,\n  \"message\": \"OK\",\n  \"error\": null\n },\n \"data\": [\n  \"Hello World\",\n  {\n   \"att1\": \"Hello World!\",\n   \"att2\": \"Hello World! 2\"\n  },\n  null,\n  999,\n  \"ÄÖÜäöüß\"\n ]\n}";
-	public static final String JSON_FORMATTED_SPACE_I2 = "{\n  \"status\": {\n    \"code\": 200,\n    \"message\": \"OK\",\n    \"error\": null\n  },\n  \"data\": [\n    \"Hello World\",\n    {\n      \"att1\": \"Hello World!\",\n      \"att2\": \"Hello World! 2\"\n    },\n    null,\n    999,\n    \"ÄÖÜäöüß\"\n  ]\n}";
-	public static final String JSON_FORMATTED_SPACE_CRLF = "{\r\n \"status\": {\r\n  \"code\": 200,\r\n  \"message\": \"OK\",\r\n  \"error\": null\r\n },\r\n \"data\": [\r\n  \"Hello World\",\r\n  {\r\n   \"att1\": \"Hello World!\",\r\n   \"att2\": \"Hello World! 2\"\r\n  },\r\n  null,\r\n  999,\r\n  \"ÄÖÜäöüß\"\r\n ]\r\n}";
-	public static final String JSON_FORMATTED_SPACE_CRLF_I2 = "{\r\n  \"status\": {\r\n    \"code\": 200,\r\n    \"message\": \"OK\",\r\n    \"error\": null\r\n  },\r\n  \"data\": [\r\n    \"Hello World\",\r\n    {\r\n      \"att1\": \"Hello World!\",\r\n      \"att2\": \"Hello World! 2\"\r\n    },\r\n    null,\r\n    999,\r\n    \"ÄÖÜäöüß\"\r\n  ]\r\n}";
+import org.junit.jupiter.api.Test;
+
+class TestJSONUtil {
+
+	private static final String UNESCAPED = "ÄÖÜäöüß²³\r\n\b\t\0\\\"'\f/Hello World!";
+	private static final String ESCAPED = "ÄÖÜäöüß²³\\r\\n\\b\\t\\u0000\\\\\\\"'\\f\\/Hello World!";
 	
-	private TestUtil() {}
-
-	public static final JSONArray createNumberStringArray() {
+	@Test
+	public void testEscape() {
 		
-		JSONArray array = new JSONArray();
-		array.add("1");
-		array.add("2");
-		array.add("3.5");
-		array.add("0.0001");
-		array.add("99999999999999999");
-		
-		return array;
+		assertEquals(ESCAPED, JSONUtil.escape(UNESCAPED));
+		assertNull(JSONUtil.escape(null));
 	}
-
-	public static final JSONArray createStringArray() {
+	
+	@Test
+	public void testIsJSONType() {
 		
-		JSONArray array = new JSONArray();
-		array.add("A");
-		array.add("AB");
-		array.add("C");
-		array.add("Z");
-		array.add("HHH");
+		assertTrue(JSONUtil.isJSONType(null));
+		assertTrue(JSONUtil.isJSONType(new JSONObject()));
+		assertTrue(JSONUtil.isJSONType(new JSONArray()));
+		assertTrue(JSONUtil.isJSONType(new HashMap<>()));
+		assertTrue(JSONUtil.isJSONType(new ArrayList<>()));
+		assertTrue(JSONUtil.isJSONType("Hello World!"));
+		assertTrue(JSONUtil.isJSONType(true));
+		assertTrue(JSONUtil.isJSONType(false));
+		assertTrue(JSONUtil.isJSONType(0));
+		assertTrue(JSONUtil.isJSONType(0.0F));
+		assertTrue(JSONUtil.isJSONType(0.00001D));
+		assertTrue(JSONUtil.isJSONType(999999999999999999L));
+		assertTrue(JSONUtil.isJSONType(new float[] {}));
+		assertTrue(JSONUtil.isJSONType(new byte[] {}));
+		assertTrue(JSONUtil.isJSONType(new String[] {}));
+		assertTrue(JSONUtil.isJSONType(new short[] {}));
+		assertTrue(JSONUtil.isJSONType(new int[] {}));
+		assertTrue(JSONUtil.isJSONType(new long[] {}));
+		assertTrue(JSONUtil.isJSONType(new double[] {}));
+		assertTrue(JSONUtil.isJSONType(new char[] {}));
 		
-		return array;
-	}
-
-	public static final JSONArray createNumberArray() {
-		
-		JSONArray array = new JSONArray();
-		array.add(1);
-		array.add(2);
-		array.add(3.5F);
-		array.add(0.0001D);
-		array.add(99999999999999999L);
-		
-		return array;
-	}
-
-	public static final JSONArray createArray() {
-		
-		JSONObject object = new JSONObject();
-		object.put("att1", "Hello World!");
-		object.put("att2", "Hello World! 2");
-		
-		JSONArray array = new JSONArray();
-		array.add("Hello World");
-		array.add(object);
-		array.add(null);
-		array.add(999);
-		array.add("ÄÖÜäöüß");
-		
-		return array;
-	}
-
-	public static final JSONObject createObject() {
-		
-		JSONObject status = new JSONObject();
-		status.put("code", 200);
-		status.put("message", "OK");
-		status.put("error", null);
-		
-		JSONObject json = new JSONObject();
-		json.put("status", status);
-		json.put("data", TestUtil.createArray());
-		
-		return json;
+		assertFalse(JSONUtil.isJSONType(new Date()));
+		assertFalse(JSONUtil.isJSONType(new TestJSONUtil()));
+		assertFalse(JSONUtil.isJSONType(new Exception()));
 	}
 }

@@ -201,114 +201,128 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.tests;
+package de.ralleytn.simple.json;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
+final class TestUtil {
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import org.junit.jupiter.api.Test;
-
-import de.ralleytn.simple.json.JSONArray;
-
-class JSONArrayTest {
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	public static final DateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private static final String EXPECTED_NUMBER_ARRAY = "[1,2,3.5,1.0E-4,99999999999999999]";
-	private static final String EXPECTED_NUMBER_STRING_ARRAY = "[\"1\",\"2\",\"3.5\",\"0.0001\",\"99999999999999999\"]";
-	private static final String EXPECTED_STRING_ARRAY = "[\"A\",\"AB\",\"C\",\"Z\",\"HHH\"]";
-	private static final String EXPECTED_ARRAY = "[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]";
+	public static final String JSON_MINIMIZED = "{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]}";
+	public static final String JSON_FORMATTED_NORMAL = "{\n\t\"status\": {\n\t\t\"code\": 200,\n\t\t\"message\": \"OK\",\n\t\t\"error\": null\n\t},\n\t\"data\": [\n\t\t\"Hello World\",\n\t\t{\n\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\"att2\": \"Hello World! 2\"\n\t\t},\n\t\tnull,\n\t\t999,\n\t\t\"ÄÖÜäöüß\"\n\t]\n}";
+	public static final String JSON_FORMATTED_CRLF = "{\r\n\t\"status\": {\r\n\t\t\"code\": 200,\r\n\t\t\"message\": \"OK\",\r\n\t\t\"error\": null\r\n\t},\r\n\t\"data\": [\r\n\t\t\"Hello World\",\r\n\t\t{\r\n\t\t\t\"att1\": \"Hello World!\",\r\n\t\t\t\"att2\": \"Hello World! 2\"\r\n\t\t},\r\n\t\tnull,\r\n\t\t999,\r\n\t\t\"ÄÖÜäöüß\"\r\n\t]\r\n}";
+	public static final String JSON_FORMATTED_I2 = "{\n\t\t\"status\": {\n\t\t\t\t\"code\": 200,\n\t\t\t\t\"message\": \"OK\",\n\t\t\t\t\"error\": null\n\t\t},\n\t\t\"data\": [\n\t\t\t\t\"Hello World\",\n\t\t\t\t{\n\t\t\t\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\t\t\t\"att2\": \"Hello World! 2\"\n\t\t\t\t},\n\t\t\t\tnull,\n\t\t\t\t999,\n\t\t\t\t\"ÄÖÜäöüß\"\n\t\t]\n}";
+	public static final String JSON_FORMATTED_SPACE = "{\n \"status\": {\n  \"code\": 200,\n  \"message\": \"OK\",\n  \"error\": null\n },\n \"data\": [\n  \"Hello World\",\n  {\n   \"att1\": \"Hello World!\",\n   \"att2\": \"Hello World! 2\"\n  },\n  null,\n  999,\n  \"ÄÖÜäöüß\"\n ]\n}";
+	public static final String JSON_FORMATTED_SPACE_I2 = "{\n  \"status\": {\n    \"code\": 200,\n    \"message\": \"OK\",\n    \"error\": null\n  },\n  \"data\": [\n    \"Hello World\",\n    {\n      \"att1\": \"Hello World!\",\n      \"att2\": \"Hello World! 2\"\n    },\n    null,\n    999,\n    \"ÄÖÜäöüß\"\n  ]\n}";
+	public static final String JSON_FORMATTED_SPACE_CRLF = "{\r\n \"status\": {\r\n  \"code\": 200,\r\n  \"message\": \"OK\",\r\n  \"error\": null\r\n },\r\n \"data\": [\r\n  \"Hello World\",\r\n  {\r\n   \"att1\": \"Hello World!\",\r\n   \"att2\": \"Hello World! 2\"\r\n  },\r\n  null,\r\n  999,\r\n  \"ÄÖÜäöüß\"\r\n ]\r\n}";
+	public static final String JSON_FORMATTED_SPACE_CRLF_I2 = "{\r\n  \"status\": {\r\n    \"code\": 200,\r\n    \"message\": \"OK\",\r\n    \"error\": null\r\n  },\r\n  \"data\": [\r\n    \"Hello World\",\r\n    {\r\n      \"att1\": \"Hello World!\",\r\n      \"att2\": \"Hello World! 2\"\r\n    },\r\n    null,\r\n    999,\r\n    \"ÄÖÜäöüß\"\r\n  ]\r\n}";
 	
-	private static final String EXPECTED_XML_ARRAY = "<array length=5><item>Hello World</item><item><att1>Hello World!</att1><att2>Hello World! 2</att2></item><item></item><item>999</item><item>ÄÖÜäöüß</item></array>";
-	private static final String EXPECTED_XML_NUMBER_ARRAY = "<array length=5><item>1</item><item>2</item><item>3.5</item><item>1.0E-4</item><item>99999999999999999</item></array>";
-	private static final String EXPECTED_XML_STRING_ARRAY = "<array length=5><item>A</item><item>AB</item><item>C</item><item>Z</item><item>HHH</item></array>";
-	private static final String EXPECTED_XML_NUMBER_STRING_ARRAY = "<array length=5><item>1</item><item>2</item><item>3.5</item><item>0.0001</item><item>99999999999999999</item></array>";
+	private TestUtil() {}
 	
-	@Test
-	public void testGetters() {
+	public static final JSONArray createArrayOfArrays() {
 		
-		
-	}
-	
-	@Test
-	public void testConversions() {
-		
-		
-	}
-	
-	@Test
-	public void testToXML() {
-		
-		assertEquals(EXPECTED_XML_ARRAY, TestUtil.createArray().toXML("array"));
-		assertEquals(EXPECTED_XML_STRING_ARRAY, TestUtil.createStringArray().toXML("array"));
-		assertEquals(EXPECTED_XML_NUMBER_ARRAY, TestUtil.createNumberArray().toXML("array"));
-		assertEquals(EXPECTED_XML_NUMBER_STRING_ARRAY, TestUtil.createNumberStringArray().toXML("array"));
-	}
-	
-	@Test
-	public void testConstructors() {
-		
-		
-	}
-	
-	@Test
-	public void testEquals() {
-		
-		// correct
-		float[] arrayCorrect = {0, 1, 2, 3, 4};
-		List<Float> listCorrect = Arrays.asList(0F, 1F, 2F, 3F, 4F);
-		JSONArray jsonArrayCorrect = new JSONArray(arrayCorrect);
-		
-		// incorrect
-		float[] arrayIncorrect = {71, 389, 21, 8};
-		List<Float> listIncorrect = Arrays.asList(0F);
-		JSONArray jsonArrayIncorrect = new JSONArray(arrayIncorrect);
-		
-		// build array
 		JSONArray array = new JSONArray();
-		array.add(0.0F);
-		array.add(1.0F);
-		array.add(2.0F);
-		array.add(3.0F);
-		array.add(4.0F);
+		array.add(createNumberArray());
+		array.add(createNumberStringArray());
+		array.add(createStringArray());
 		
-		// test correct
-		assertTrue(array.equals(arrayCorrect));
-		assertTrue(array.equals(listCorrect));
-		assertTrue(array.equals(jsonArrayCorrect));
+		return array;
+	}
+
+	public static final JSONArray createNumberStringArray() {
 		
-		// test incorrect
-		assertFalse(array.equals(arrayIncorrect));
-		assertFalse(array.equals(listIncorrect));
-		assertFalse(array.equals(jsonArrayIncorrect));
+		JSONArray array = new JSONArray();
+		array.add("1");
+		array.add("2");
+		array.add("3.5");
+		array.add("0.0001");
+		array.add("99999999999999999");
+		
+		return array;
+	}
+
+	public static final JSONArray createStringArray() {
+		
+		JSONArray array = new JSONArray();
+		array.add("A");
+		array.add("AB");
+		array.add("C");
+		array.add("Z");
+		array.add("HHH");
+		
+		return array;
+	}
+
+	public static final JSONArray createNumberArray() {
+		
+		JSONArray array = new JSONArray();
+		array.add(1);
+		array.add(2);
+		array.add(3.5F);
+		array.add(0.0001D);
+		array.add(99999999999999999L);
+		
+		return array;
+	}
+
+	public static final JSONArray createArray() {
+		
+		JSONObject object = new JSONObject();
+		object.put("att1", "Hello World!");
+		object.put("att2", "Hello World! 2");
+		
+		JSONArray array = new JSONArray();
+		array.add("Hello World");
+		array.add(object);
+		array.add(null);
+		array.add(999);
+		array.add("ÄÖÜäöüß");
+		
+		return array;
+	}
+
+	public static final JSONObject createObject() {
+		
+		JSONObject status = new JSONObject();
+		status.put("code", 200);
+		status.put("message", "OK");
+		status.put("error", null);
+		
+		JSONObject json = new JSONObject();
+		json.put("status", status);
+		json.put("data", TestUtil.createArray());
+		
+		return json;
 	}
 	
-	@Test
-	public void testWrite() {
+	public static final JSONArray createGetterTestNumberArray() {
 		
-		try(StringWriter writer = new StringWriter()) {
-			
-			TestUtil.createArray().write(writer);
-			assertEquals(EXPECTED_ARRAY, writer.toString());
-			
-		} catch(IOException exception) {
-			
-			fail(exception);
-		}
+		JSONArray array = new JSONArray();
+		array.add(100);
+		array.add("100");
+		array.add(null);
+		array.add(true);
+		array.add(false);
+		array.add(new Object());
+		
+		return array;
 	}
 	
-	@Test
-	public void testToString() {
+	public static final JSONArray createGetterTestBooleanArray() {
 		
-		assertEquals(EXPECTED_ARRAY, TestUtil.createArray().toString());
-		assertEquals(EXPECTED_STRING_ARRAY, TestUtil.createStringArray().toString());
-		assertEquals(EXPECTED_NUMBER_ARRAY, TestUtil.createNumberArray().toString());
-		assertEquals(EXPECTED_NUMBER_STRING_ARRAY, TestUtil.createNumberStringArray().toString());
+		JSONArray array = new JSONArray();
+		array.add(1);
+		array.add(0);
+		array.add(null);
+		array.add(true);
+		array.add(false);
+		array.add("true");
+		array.add("false");
+		array.add(new Object());
+		
+		return array;
 	}
 }
