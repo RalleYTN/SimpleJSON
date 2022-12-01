@@ -221,7 +221,7 @@ import de.ralleytn.simple.json.internal.Util;
  * Represents a JSON array.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public class JSONArray extends ArrayList<Object> {
@@ -473,7 +473,7 @@ public class JSONArray extends ArrayList<Object> {
 						
 						Object element = Array.get(object, index);
 
-						if(!((element == null && this.get(index) == null) || element.equals(this.get(index)))) {
+						if(!((element == null && this.get(index) == null) || this.get(index).equals(element))) {
 							
 							return false;
 						}
