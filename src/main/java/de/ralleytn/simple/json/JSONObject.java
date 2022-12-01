@@ -501,7 +501,9 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 					Object key = thisEntry.getKey();
 					Object value = thisEntry.getValue();
 					
-					if(!map.containsKey(key) || !(value == null && map.get(key) == null) || (value != null && !value.equals(map.get(key)))) {
+					if(!map.containsKey(key) ||
+					   (value != null && !value.equals(map.get(key))) ||
+					   ((value == null && map.get(key) != null) || (value != null && map.get(key) == null))) {
 						
 						return false;
 					}
