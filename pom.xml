@@ -48,6 +48,9 @@
                     <target>9</target>
                     <showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
+					<includes>
+            			<include>%regex[de.ralleytn.simple.json.Test*.java]</include>
+          			</includes>
 				</configuration>
 			</plugin>
 		</plugins>
