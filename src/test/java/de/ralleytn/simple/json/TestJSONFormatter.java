@@ -212,7 +212,7 @@ import java.io.StringWriter;
 
 import org.junit.jupiter.api.Test;
 
-class TestJSONFormatter {
+public class TestJSONFormatter {
 	
 	@Test
 	public void testFormat() {

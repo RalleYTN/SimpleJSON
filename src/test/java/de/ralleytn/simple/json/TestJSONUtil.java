@@ -214,7 +214,7 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
-class TestJSONUtil {
+public class TestJSONUtil {
 
 	private static final String UNESCAPED = "ÄÖÜäöüß²³\r\n\b\t\0\\\"'\f/Hello World!";
 	private static final String ESCAPED = "ÄÖÜäöüß²³\\r\\n\\b\\t\\u0000\\\\\\\"'\\f\\/Hello World!";

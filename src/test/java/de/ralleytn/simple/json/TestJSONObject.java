@@ -215,7 +215,7 @@ import java.io.StringReader;
 
 import org.junit.jupiter.api.Test;
 
-class TestJSONObject {
+public class TestJSONObject {
 
 	private static final void checkParsedObject(JSONObject object) {
 		

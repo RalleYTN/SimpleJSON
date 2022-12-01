@@ -230,7 +230,7 @@ import org.junit.jupiter.api.Test;
 
 import de.ralleytn.simple.json.beans.TestEnum;
 
-class TestJSONArray {
+public class TestJSONArray {
 	
 	private static final String EXPECTED_JSON_NUMBER_ARRAY = "[1,2,3.5,1.0E-4,99999999999999999]";
 	private static final String EXPECTED_JSON_NUMBER_STRING_ARRAY = "[\"1\",\"2\",\"3.5\",\"0.0001\",\"99999999999999999\"]";
