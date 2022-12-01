@@ -294,6 +294,90 @@ public class JSONFormatter {
 	
 	/**
 	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
+	 * @param reader the {@linkplain Reader} with the JSON data
+	 * @param writer the {@linkplain Writer} on which the formatted JSON data should be written
+	 * @throws IOException if an I/O error occurs
+	 * @since 1.0.0
+	 */
+	public void format(Reader reader, Writer writer) throws IOException {
+		
+		int level = 0;
+		boolean inString = false;
+		int read = -1;
+		char lastChar = '\0';
+		
+		while((read = reader.read()) != -1) {
+			
+			char character = (char)read;
+			
+			if(character == '"') {
+				
+				inString = !(inString && lastChar != '\\');
+			}
+			
+			if(!inString) {
+				
+				if(character == '{' || character == '[') {
+					
+					writer.write(character);
+					writer.write(this.lineBreak);
+					level++;
+					this.writeIndent(level, writer);
+					continue;
+					
+				} else if(character == '}' || character == ']') {
+					
+					writer.write(this.lineBreak);
+					level--;
+					this.writeIndent(level, writer);
+					writer.write(character);
+					continue;
+					
+				} else if(character == ',') {
+					
+					writer.write(character);
+					writer.write(this.lineBreak);
+					this.writeIndent(level, writer);
+					continue;
+					
+				} else if(character == ':') {
+					
+					writer.write(character);
+					writer.write(' ');
+					continue;
+				}
+			}
+			
+			writer.write(character);
+			lastChar = character;
+		}
+	}
+	
+	/**
+	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
+	 * @param json the JSON data that should be formatted
+	 * @return the formatted JSON data
+	 * @since 1.0.0
+	 */
+	public String format(String json) {
+
+		try(StringReader reader = new StringReader(json);
+			StringWriter writer = new StringWriter()) {
+			
+			this.format(reader, writer);
+			return writer.toString();
+			
+		} catch(IOException exception) {
+			
+			// WILL NEVER HAPPEN!
+			// DO NOTHING!
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
 	 * @param object The JSON object that is meant to be formatted
 	 * @param writer The writer on which the formatted JSON string will be written
 	 * @throws IOException if an I/O error occurs
@@ -761,90 +845,6 @@ public class JSONFormatter {
 			writer.write(JSONUtil.escape(value.toString()));
 			writer.write('"');
 		}
-	}
-	
-	/**
-	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
-	 * @param reader the {@linkplain Reader} with the JSON data
-	 * @param writer the {@linkplain Writer} on which the formatted JSON data should be written
-	 * @throws IOException if an I/O error occurs
-	 * @since 1.0.0
-	 */
-	public void format(Reader reader, Writer writer) throws IOException {
-		
-		int level = 0;
-		boolean inString = false;
-		int read = -1;
-		char lastChar = '\0';
-		
-		while((read = reader.read()) != -1) {
-			
-			char character = (char)read;
-			
-			if(character == '"') {
-				
-				inString = !(inString && lastChar != '\\');
-			}
-			
-			if(!inString) {
-				
-				if(character == '{' || character == '[') {
-					
-					writer.write(character);
-					writer.write(this.lineBreak);
-					level++;
-					this.writeIndent(level, writer);
-					continue;
-					
-				} else if(character == '}' || character == ']') {
-					
-					writer.write(this.lineBreak);
-					level--;
-					this.writeIndent(level, writer);
-					writer.write(character);
-					continue;
-					
-				} else if(character == ',') {
-					
-					writer.write(character);
-					writer.write(this.lineBreak);
-					this.writeIndent(level, writer);
-					continue;
-					
-				} else if(character == ':') {
-					
-					writer.write(character);
-					writer.write(' ');
-					continue;
-				}
-			}
-			
-			writer.write(character);
-			lastChar = character;
-		}
-	}
-	
-	/**
-	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
-	 * @param json the JSON data that should be formatted
-	 * @return the formatted JSON data
-	 * @since 1.0.0
-	 */
-	public String format(String json) {
-
-		try(StringReader reader = new StringReader(json);
-			StringWriter writer = new StringWriter()) {
-			
-			this.format(reader, writer);
-			return writer.toString();
-			
-		} catch(IOException exception) {
-			
-			// WILL NEVER HAPPEN!
-			// DO NOTHING!
-		}
-		
-		return null;
 	}
 	
 	/**
