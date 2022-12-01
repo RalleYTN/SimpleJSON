@@ -46,6 +46,13 @@
 					<release>11</release>
                     <showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M7</version>
+				<configuration>
 					<includes>
             			<include>%regex[de.ralleytn.simple.json.Test*.java]</include>
           			</includes>
