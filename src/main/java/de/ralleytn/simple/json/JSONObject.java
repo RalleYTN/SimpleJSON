@@ -220,7 +220,7 @@ import de.ralleytn.simple.json.internal.Util;
  * Represents a JSON object.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public class JSONObject extends LinkedHashMap<Object, Object> {
@@ -501,7 +501,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 					Object key = thisEntry.getKey();
 					Object value = thisEntry.getValue();
 					
-					if(!map.containsKey(key) || !value.equals(map.get(key))) {
+					if(!map.containsKey(key) || !(value == null && map.get(key) == null) || (value != null && !value.equals(map.get(key)))) {
 						
 						return false;
 					}
