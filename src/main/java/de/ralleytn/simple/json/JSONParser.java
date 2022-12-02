@@ -594,207 +594,35 @@ public class JSONParser {
 			
 			do {
 				
-				if(this.status == STATUS_INIT) {
-					
-					contentHandler.startJSON();
-					this.nextToken();
-					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
-						
-						this.status = STATUS_IN_FINISHED_VALUE;
-						statusStack.push(this.status);
-						
-						if(!contentHandler.primitive(this.token.value)) {
-							
+				switch(this.status) {
+					case STATUS_INIT:
+						if(this.handleStatusInit(statusStack, contentHandler))
 							return;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-						
-						if(this.pushStatusInObject(statusStack, contentHandler)) {
-							
+						break;
+					case STATUS_IN_FINISHED_VALUE:
+						if(this.handleStatusInFinishedValue(statusStack, contentHandler))
 							return;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-						
-						if(this.pushStatusInArray(statusStack, contentHandler)) {
-							
+						break;
+					case STATUS_IN_OBJECT:
+						if(this.handleStatusInObject(statusStack, contentHandler))
 							return;
-						}
-						
-					} else {
-						
-						this.status = STATUS_IN_ERROR;
-					}
-					
-				} else if(this.status == STATUS_IN_FINISHED_VALUE) {
-					
-					this.nextToken();
-					
-					if(this.token.type == Yytoken.TYPE_EOF) {
-						
-						contentHandler.endJSON();
-						status = STATUS_END;
+						break;
+					case STATUS_PASSED_PAIR_KEY:
+						if(this.handleStatusPassedPairKey(statusStack, contentHandler))
+							return;
+						break;
+					case STATUS_IN_PAIR_VALUE:
+						if(this.handleStatusInPairValue(statusStack, contentHandler))
+							return;
+						break;
+					case STATUS_IN_ARRAY:
+						if(this.handleStatusInArray(statusStack, contentHandler))
+							return;
+						break;
+					case STATUS_END:
 						return;
-						
-					} else {
-						
-						this.status = STATUS_IN_ERROR;
-					}
-					
-				} else if(this.status == STATUS_IN_OBJECT) {
-					
-					this.nextToken();
-					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
-						
-						if(this.token.value instanceof String) {
-							
-							String key = (String)this.token.value;
-							this.status = STATUS_PASSED_PAIR_KEY;
-							statusStack.push(this.status);
-							
-							if(!contentHandler.startObjectEntry(key)) {
-								
-								return;
-							}
-							
-						} else {
-							
-							this.status = STATUS_IN_ERROR;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_RIGHT_BRACE) {
-						
-						if(statusStack.size() > 1) {
-							
-							statusStack.pop();
-							this.status = (int)statusStack.peek();
-							
-						} else {
-							
-							this.status = STATUS_IN_FINISHED_VALUE;
-						}
-						
-						if(!contentHandler.endObject()) {
-							
-							return;
-						}
-						
-					} else if(this.token.type != Yytoken.TYPE_COMMA) {
-						
-						this.status = STATUS_IN_ERROR;
-					}
-					
-				} else if(this.status == STATUS_PASSED_PAIR_KEY) {
-					
-					this.nextToken();
-					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
-						
-						statusStack.pop();
-						this.status = (int)statusStack.peek();
-						
-						if(!contentHandler.primitive(this.token.value) || !contentHandler.endObjectEntry()) {
-							
-							return;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-						
-						statusStack.pop();
-						statusStack.push(STATUS_IN_PAIR_VALUE);
-						this.status = STATUS_IN_ARRAY;
-						statusStack.push(this.status);
-						
-						if(!contentHandler.startArray()) {
-							
-							return;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-						
-						statusStack.pop();
-						statusStack.push(STATUS_IN_PAIR_VALUE);
-						this.status = STATUS_IN_OBJECT;
-						statusStack.push(this.status);
-						
-						if(!contentHandler.startObject()) {
-							
-							return;
-						}
-						
-					} else if(this.token.type != Yytoken.TYPE_COLON) {
-						
-						this.status = STATUS_IN_ERROR;
-					}
-					
-				} else if(this.status == STATUS_IN_PAIR_VALUE) {
-					
-					statusStack.pop();
-					this.status = (int)statusStack.peek();
-					
-					if(!contentHandler.endObjectEntry()) {
-						
-						return;
-					}
-					
-				} else if(this.status == STATUS_IN_ARRAY) {
-					
-					this.nextToken();
-					
-					if(this.token.type == Yytoken.TYPE_VALUE) {
-						
-						if(!contentHandler.primitive(this.token.value)) {
-							
-							return;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_RIGHT_SQUARE) {
-						
-						if(statusStack.size() > 1) {
-							
-							statusStack.pop();
-							this.status = (int)statusStack.peek();
-							
-						} else {
-							
-							this.status = STATUS_IN_FINISHED_VALUE;
-						}
-						
-						if(!contentHandler.endArray()) {
-							
-							return;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
-						
-						if(this.pushStatusInObject(statusStack, contentHandler)) {
-							
-							return;
-						}
-						
-					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
-						
-						if(this.pushStatusInArray(statusStack, contentHandler)) {
-							
-							return;
-						}
-						
-					} else if(this.token.type != Yytoken.TYPE_COMMA) {
-						
-						this.status = STATUS_IN_ERROR;
-					}
-					
-				} else if(this.status == STATUS_END) {
-					
-					return;
-				}
-				
-				if(this.status == STATUS_IN_ERROR) {
-					
-					throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+					default:
+						throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
 				}
 				
 			} while(this.token.type != Yytoken.TYPE_EOF);
@@ -810,6 +638,205 @@ public class JSONParser {
 		
 		this.status = STATUS_IN_ERROR;
 		throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+	}
+	
+	private boolean handleStatusInArray(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		this.nextToken();
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			if(!contentHandler.primitive(this.token.value)) {
+				
+				return true;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_RIGHT_SQUARE) {
+			
+			if(statusStack.size() > 1) {
+				
+				statusStack.pop();
+				this.status = (int)statusStack.peek();
+				
+			} else {
+				
+				this.status = STATUS_IN_FINISHED_VALUE;
+			}
+			
+			if(!contentHandler.endArray()) {
+				
+				return true;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+			
+			return this.pushStatusInObject(statusStack, contentHandler);
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+			
+			return this.pushStatusInArray(statusStack, contentHandler);
+			
+		} else if(this.token.type != Yytoken.TYPE_COMMA) {
+			
+			this.status = STATUS_IN_ERROR;
+		}
+		
+		return false;
+	}
+	
+	private boolean handleStatusInPairValue(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		statusStack.pop();
+		this.status = (int)statusStack.peek();
+		
+		if(!contentHandler.endObjectEntry()) {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean handleStatusPassedPairKey(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		this.nextToken();
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			statusStack.pop();
+			this.status = (int)statusStack.peek();
+			
+			if(!contentHandler.primitive(this.token.value) || !contentHandler.endObjectEntry()) {
+				
+				return true;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+			
+			statusStack.pop();
+			statusStack.push(STATUS_IN_PAIR_VALUE);
+			this.status = STATUS_IN_ARRAY;
+			statusStack.push(this.status);
+			
+			if(!contentHandler.startArray()) {
+				
+				return true;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+			
+			statusStack.pop();
+			statusStack.push(STATUS_IN_PAIR_VALUE);
+			this.status = STATUS_IN_OBJECT;
+			statusStack.push(this.status);
+			
+			if(!contentHandler.startObject()) {
+				
+				return true;
+			}
+			
+		} else if(this.token.type != Yytoken.TYPE_COLON) {
+			
+			this.status = STATUS_IN_ERROR;
+		}
+		
+		return false;
+	}
+	
+	private boolean handleStatusInObject(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		this.nextToken();
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			if(this.token.value instanceof String) {
+				
+				String key = (String)this.token.value;
+				this.status = STATUS_PASSED_PAIR_KEY;
+				statusStack.push(this.status);
+				
+				if(!contentHandler.startObjectEntry(key)) {
+					
+					return true;
+				}
+				
+			} else {
+				
+				this.status = STATUS_IN_ERROR;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_RIGHT_BRACE) {
+			
+			if(statusStack.size() > 1) {
+				
+				statusStack.pop();
+				this.status = (int)statusStack.peek();
+				
+			} else {
+				
+				this.status = STATUS_IN_FINISHED_VALUE;
+			}
+			
+			if(!contentHandler.endObject()) {
+				
+				return true;
+			}
+			
+		} else if(this.token.type != Yytoken.TYPE_COMMA) {
+			
+			this.status = STATUS_IN_ERROR;
+		}
+		
+		return false;
+	}
+	
+	private boolean handleStatusInFinishedValue(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		this.nextToken();
+		
+		if(this.token.type == Yytoken.TYPE_EOF) {
+			
+			contentHandler.endJSON();
+			this.status = STATUS_END;
+			return true;
+			
+		} else {
+			
+			this.status = STATUS_IN_ERROR;
+		}
+		
+		return false;
+	}
+	
+	private boolean handleStatusInit(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		contentHandler.startJSON();
+		this.nextToken();
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			this.status = STATUS_IN_FINISHED_VALUE;
+			statusStack.push(this.status);
+			
+			if(!contentHandler.primitive(this.token.value)) {
+				
+				return true;
+			}
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
+			
+			return this.pushStatusInObject(statusStack, contentHandler);
+			
+		} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
+			
+			return this.pushStatusInArray(statusStack, contentHandler);
+			
+		} else {
+			
+			this.status = STATUS_IN_ERROR;
+		}
+		
+		return false;
 	}
 	
 	private boolean pushStatusInArray(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
