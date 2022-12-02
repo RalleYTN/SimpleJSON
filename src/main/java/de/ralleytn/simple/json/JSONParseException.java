@@ -310,19 +310,19 @@ public class JSONParseException extends Exception {
 		switch(this.errorType) {
 		
 			case ERROR_UNEXPECTED_CHAR:
-				builder.append("Unexpected character (").append(this.unexpectedObject).append(") at position ").append(this.position).append(".");
+				builder.append("Unexpected character (").append(this.getUnexpectedObject()).append(") at position ").append(this.getPosition()).append(".");
 				break;
 				
 			case ERROR_UNEXPECTED_TOKEN:
-				builder.append("Unexpected token ").append(this.unexpectedObject).append(" at position ").append(this.position).append(".");
+				builder.append("Unexpected token ").append(this.getUnexpectedObject()).append(" at position ").append(this.getPosition()).append(".");
 				break;
 				
 			case ERROR_UNEXPECTED_EXCEPTION:
-				builder.append("Unexpected exception at position ").append(this.position).append(": ").append(this.unexpectedObject);
+				builder.append("Unexpected exception at position ").append(this.getPosition()).append(": ").append(this.getUnexpectedObject());
 				break;
 			
 			default:
-				builder.append("Unknown error at position ").append(this.position).append(".");
+				builder.append("Unknown error at position ").append(this.getPosition()).append(".");
 				break;
 		}
 		
