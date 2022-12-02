@@ -1,3 +1,7 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/RalleYTN/SimpleJSON/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/RalleYTN/SimpleJSON/tree/master)
+[![CodeFactor](https://www.codefactor.io/repository/github/ralleytn/simplejson/badge/master)](https://www.codefactor.io/repository/github/ralleytn/simplejson/overview/master)
+[![Coverage Status](https://coveralls.io/repos/github/RalleYTN/SimpleJSON/badge.svg?branch=master)](https://coveralls.io/github/RalleYTN/SimpleJSON?branch=master)
+
 # Description
 
 SimpleJSON is an improved version of [json-simple](https://github.com/fangyidong/json-simple).
