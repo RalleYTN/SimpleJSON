@@ -341,6 +341,6 @@ public class TestJSONObject {
 	@Test
 	public void testToString() {
 		
-		assertEquals(TestUtil.JSON_MINIMIZED, TestUtil.createObject().toString());
+		assertEquals(TestUtil.JSON_TEST_OBJECT, TestUtil.createObject().toString());
 	}
 }
