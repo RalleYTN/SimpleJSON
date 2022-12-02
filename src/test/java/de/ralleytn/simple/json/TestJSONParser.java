@@ -207,8 +207,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
-import static de.ralleytn.simple.json.TestUtil.*;
-
 import org.junit.jupiter.api.Test;
 
 public class TestJSONParser {
