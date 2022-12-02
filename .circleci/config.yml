@@ -25,8 +25,8 @@ jobs:
       - run:
           name: Coverage Report
           command: npm install && make test-coverage
-      -coveralls/upload:
-        token: $COVERALLS_REPO_TOKEN
+      - coveralls/upload:
+          token: $COVERALLS_REPO_TOKEN
 workflows:
   sample:
     jobs:
