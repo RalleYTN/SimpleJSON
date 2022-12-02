@@ -426,6 +426,15 @@ public class JSONParser {
 		this.reset();
 	}
 	
+	private void reset(Reader reader, boolean resume) {
+		
+		if(!resume || this.handlerStatusStack == null) {
+			
+			this.reset(reader);
+			this.handlerStatusStack = new Stack<>();
+		}
+	}
+	
 	/**
 	 * @return the position where the current token begins
 	 * @since 1.0.0
@@ -578,12 +587,7 @@ public class JSONParser {
 	 */
 	public void parse(Reader reader, JSONContentHandler contentHandler, boolean resume) throws IOException, JSONParseException {
 		
-		if(!resume || this.handlerStatusStack == null) {
-			
-			this.reset(reader);
-			this.handlerStatusStack = new Stack<>();
-		}
-		
+		this.reset(reader, resume);
 		Stack<Object> statusStack = this.handlerStatusStack;	
 		
 		try {
@@ -607,20 +611,14 @@ public class JSONParser {
 						
 					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
 						
-						this.status = STATUS_IN_OBJECT;
-						statusStack.push(this.status);
-						
-						if(!contentHandler.startObject()) {
+						if(this.pushStatusInObject(statusStack, contentHandler)) {
 							
 							return;
 						}
 						
 					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
 						
-						this.status = STATUS_IN_ARRAY;
-						statusStack.push(this.status);
-						
-						if(!contentHandler.startArray()) {
+						if(this.pushStatusInArray(statusStack, contentHandler)) {
 							
 							return;
 						}
@@ -772,20 +770,14 @@ public class JSONParser {
 						
 					} else if(this.token.type == Yytoken.TYPE_LEFT_BRACE) {
 						
-						this.status = STATUS_IN_OBJECT;
-						statusStack.push(this.status);
-						
-						if(!contentHandler.startObject()) {
+						if(this.pushStatusInObject(statusStack, contentHandler)) {
 							
 							return;
 						}
 						
 					} else if(this.token.type == Yytoken.TYPE_LEFT_SQUARE) {
 						
-						this.status = STATUS_IN_ARRAY;
-						statusStack.push(this.status);
-						
-						if(!contentHandler.startArray()) {
+						if(this.pushStatusInArray(statusStack, contentHandler)) {
 							
 							return;
 						}
@@ -818,5 +810,31 @@ public class JSONParser {
 		
 		this.status = STATUS_IN_ERROR;
 		throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+	}
+	
+	private boolean pushStatusInArray(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		this.status = STATUS_IN_ARRAY;
+		statusStack.push(this.status);
+		
+		if(!contentHandler.startArray()) {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean pushStatusInObject(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
+		
+		this.status = STATUS_IN_OBJECT;
+		statusStack.push(this.status);
+		
+		if(!contentHandler.startObject()) {
+			
+			return true;
+		}
+		
+		return false;
 	}
 }
