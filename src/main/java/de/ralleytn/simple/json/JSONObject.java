@@ -291,7 +291,7 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 			
 			if(value != null) {
 				
-				object.put(key, value);
+				object.put(key, value instanceof Map ? new JSONObject((Map<?, ?>)value).compact() : value);
 			}
 		});
 		
