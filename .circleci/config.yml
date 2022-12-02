@@ -10,6 +10,7 @@ jobs:
             - image: circleci/node:10.0.0
         steps:
             - checkout
+            - run: npm install
             - run:
                 name: Build
                 command: mvn -B -DskipTests clean package
@@ -18,7 +19,7 @@ jobs:
                 command: mvn test
             - run:
                 name: Coverage Report
-                command: npm install && make test-coverage
+                command: npm run coverage
             - coveralls/upload:
                 token: COVERALLS_REPO_TOKEN
 workflows:
