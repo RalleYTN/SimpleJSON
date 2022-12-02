@@ -203,12 +203,14 @@
  */
 package de.ralleytn.simple.json;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+import static de.ralleytn.simple.json.TestUtil.*;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -220,13 +222,13 @@ public class TestJSONFormatter {
 		// This method calls assert and fail implicitly.
 		// Codacy tells bullshit on this one.
 		
-		testFormat(TestUtil.JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL", false, true, 1);
-		testFormat(TestUtil.JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF", true, true, 1);
-		testFormat(TestUtil.JSON_FORMATTED_I2, "JSON_FORMATTED_I2", false, true, 2);
-		testFormat(TestUtil.JSON_FORMATTED_SPACE, "JSON_FORMATTED_SPACE", false, false, 1);
-		testFormat(TestUtil.JSON_FORMATTED_SPACE_I2, "JSON_FORMATTED_SPACE_I2", false, false, 2);
-		testFormat(TestUtil.JSON_FORMATTED_SPACE_CRLF, "JSON_FORMATTED_SPACE_CRLF", true, false, 1);
-		testFormat(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2, "JSON_FORMATTED_SPACE_CRLF_I2", true, false, 2);
+		testFormat(JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL", false, true, 1);
+		testFormat(JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF", true, true, 1);
+		testFormat(JSON_FORMATTED_I2, "JSON_FORMATTED_I2", false, true, 2);
+		testFormat(JSON_FORMATTED_SPACE, "JSON_FORMATTED_SPACE", false, false, 1);
+		testFormat(JSON_FORMATTED_SPACE_I2, "JSON_FORMATTED_SPACE_I2", false, false, 2);
+		testFormat(JSON_FORMATTED_SPACE_CRLF, "JSON_FORMATTED_SPACE_CRLF", true, false, 1);
+		testFormat(JSON_FORMATTED_SPACE_CRLF_I2, "JSON_FORMATTED_SPACE_CRLF_I2", true, false, 2);
 	}
 	
 	private static final void testFormat(String expected, String message, boolean crlf, boolean tabs, int indent) {
@@ -240,10 +242,10 @@ public class TestJSONFormatter {
 		assertEquals(crlf, formatter.usesCRLF(), "Either setUseCRLF(boolean) or usesCRLF() doesn't work!");
 		assertEquals(tabs, formatter.usesTabs(), "Either setUseTabs(boolean) or usesTabs() doesn't work!");
 		
-		String result = formatter.format(TestUtil.JSON_MINIMIZED);
+		String result = formatter.format(JSON_MINIMIZED);
 		assertEquals(expected, result, message);
 		
-		try(StringReader reader = new StringReader(TestUtil.JSON_MINIMIZED)) {
+		try(StringReader reader = new StringReader(JSON_MINIMIZED)) {
 			
 			try(StringWriter writer = new StringWriter()) {
 				
@@ -259,7 +261,421 @@ public class TestJSONFormatter {
 	}
 	
 	@Test
-	public void testStreamedFormat() {
+	public void testStreamedFormatArrayNull() {
+		
+		String expected = "[\n"
+				+ "	null,\n"
+				+ "	null,\n"
+				+ "	null,\n"
+				+ "	null,\n"
+				+ "	null,\n"
+				+ "	null,\n"
+				+ "	null,\n"
+				+ "	null,\n"
+				+ "	null\n"
+				+ "]";
+		
+		JSONArray array = new JSONArray();
+		array.add((byte[])null);
+		array.add((short[])null);
+		array.add((int[])null);
+		array.add((long[])null);
+		array.add((float[])null);
+		array.add((double[])null);
+		array.add((boolean[])null);
+		array.add((char[])null);
+		array.add((List<String>)null);
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			formatter.format(array, writer);
+			assertEquals(expected, writer.toString());
+			
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
+	}
+	
+	@Test
+	public void testStreamedFormatArrayUntyped() {
+		
+		String expected = "[\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100,\n"
+				+ "		null\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100,\n"
+				+ "		null\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100,\n"
+				+ "		null\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100,\n"
+				+ "		null\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100.0,\n"
+				+ "		3.5,\n"
+				+ "		1.0E-4,\n"
+				+ "		9.9999998E16,\n"
+				+ "		null\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100.0,\n"
+				+ "		3.5,\n"
+				+ "		1.0E-4,\n"
+				+ "		1.0E17,\n"
+				+ "		null\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		true,\n"
+				+ "		true,\n"
+				+ "		false,\n"
+				+ "		false,\n"
+				+ "		true,\n"
+				+ "		false,\n"
+				+ "		null\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		A,\n"
+				+ "		AB,\n"
+				+ "		C,\n"
+				+ "		Z,\n"
+				+ "		HHH\n"
+				+ "	]\n"
+				+ "]";
+		
+		JSONArray array = new JSONArray();
+		array.add(UNTYPED_ARRAY_BYTES);
+		array.add(UNTYPED_ARRAY_SHORTS);
+		array.add(UNTYPED_ARRAY_INTEGERS);
+		array.add(UNTYPED_ARRAY_LONGS);
+		array.add(UNTYPED_ARRAY_FLOATS);
+		array.add(UNTYPED_ARRAY_DOUBLES);
+		array.add(UNTYPED_ARRAY_BOOLEANS);
+		array.add(UNTYPED_ARRAY_STRINGS);
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			formatter.format(array, writer);
+			assertEquals(expected, writer.toString());
+			
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
+	}
+	
+	@Test
+	public void testStreamedFormatArrayEmpty() {
+		
+		String expected = "[\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[],\n"
+				+ "	[]\n"
+				+ "]";
+		
+		JSONArray array = new JSONArray();
+		array.add(PRIMITIVE_BYTES_EMPTY);
+		array.add(PRIMITIVE_SHORTS_EMPTY);
+		array.add(PRIMITIVE_INTS_EMPTY);
+		array.add(PRIMITIVE_LONGS_EMPTY);
+		array.add(PRIMITIVE_FLOATS_EMPTY);
+		array.add(PRIMITIVE_DOUBLES_EMPTY);
+		array.add(PRIMITIVE_BOOLEANS_EMPTY);
+		array.add(PRIMITIVE_CHARS_EMPTY);
+		array.add(INSTANCED_BYTES_EMPTY);
+		array.add(INSTANCED_SHORTS_EMPTY);
+		array.add(INSTANCED_INTEGERS_EMPTY);
+		array.add(INSTANCED_LONGS_EMPTY);
+		array.add(INSTANCED_FLOATS_EMPTY);
+		array.add(INSTANCED_DOUBLES_EMPTY);
+		array.add(INSTANCED_BOOLEANS_EMPTY);
+		array.add(INSTANCED_STRINGS_EMPTY);
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			formatter.format(array, writer);
+			assertEquals(expected, writer.toString());
+			
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
+	}
+	
+	@Test
+	public void testStreamedFormatArrayOfPrimitiveArrays() {
+		
+		String expected = "[\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100,\n"
+				+ "		111,\n"
+				+ "		99,\n"
+				+ "		123,\n"
+				+ "		66,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		0,\n"
+				+ "		9,\n"
+				+ "		-100\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100.0,\n"
+				+ "		3.5,\n"
+				+ "		1.0E-4,\n"
+				+ "		9.9999998E16\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		100.0,\n"
+				+ "		3.5,\n"
+				+ "		1.0E-4,\n"
+				+ "		1.0E17\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		H,\n"
+				+ "		e,\n"
+				+ "		l,\n"
+				+ "		l,\n"
+				+ "		o,\n"
+				+ "		 ,\n"
+				+ "		t,\n"
+				+ "		h,\n"
+				+ "		e,\n"
+				+ "		r,\n"
+				+ "		e,\n"
+				+ "		!\n"
+				+ "	],\n"
+				+ "	[\n"
+				+ "		true,\n"
+				+ "		true,\n"
+				+ "		false,\n"
+				+ "		false,\n"
+				+ "		true,\n"
+				+ "		false\n"
+				+ "	]\n"
+				+ "]";
+		
+		JSONArray array = new JSONArray();
+		array.add(PRIMITIVE_BYTES);
+		array.add(PRIMITIVE_SHORTS);
+		array.add(PRIMITIVE_INTS);
+		array.add(PRIMITIVE_LONGS);
+		array.add(PRIMITIVE_FLOATS);
+		array.add(PRIMITIVE_DOUBLES);
+		array.add(PRIMITIVE_CHARS);
+		array.add(PRIMITIVE_BOOLEANS);
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			formatter.format(array, writer);
+			assertEquals(expected, writer.toString());
+			
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
+	}
+	
+	@Test
+	public void testStreamedFormatNull() {
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			formatter.format((JSONObject)null, writer);
+			formatter.format((JSONArray)null, writer);
+			assertEquals("nullnull", writer.toString());
+			
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
+	}
+	
+	@Test
+	public void testStreamedFormatObject() {
+		
+		Object object = new Object();
+		
+		String expected = "{\n"
+				+ "	\"first\": null,\n"
+				+ "	\"second\": [],\n"
+				+ "	\"third\": true,\n"
+				+ "	\"fourth\": null,\n"
+				+ "	\"fifth\": \"" + object.toString() + "\",\n"
+				+ "	\"sixth\": {\n"
+				+ "		\"status\": {\n"
+				+ "			\"code\": 200,\n"
+				+ "			\"message\": \"OK\",\n"
+				+ "			\"error\": null\n"
+				+ "		},\n"
+				+ "		\"data\": [\n"
+				+ "			\"Hello World\",\n"
+				+ "			{\n"
+				+ "				\"att1\": \"Hello World!\",\n"
+				+ "				\"att2\": \"Hello World! 2\"\n"
+				+ "			},\n"
+				+ "			null,\n"
+				+ "			999,\n"
+				+ "			\"ÄÖÜäöüß\"\n"
+				+ "		]\n"
+				+ "	},\n"
+				+ "	\"seventh\": null,\n"
+				+ "	\"eighth\": 9001,\n"
+				+ "	\"ninth\": null,\n"
+				+ "	\"tenth\": null,\n"
+				+ "	\"eleventh\": \"\\b\\u0000\\f\",\n"
+				+ "	\"twelveth\": 25.5,\n"
+				+ "	\"thirteenth\": 25.5\n"
+				+ "}";
+		
+		JSONObject json = new JSONObject();
+		json.put("first", null);
+		json.put("second", Arrays.asList(INSTANCED_BOOLEANS_EMPTY));
+		json.put("third", true);
+		json.put("fourth", Double.NaN);
+		json.put("fifth", object);
+		json.put("sixth", createObject());
+		json.put("seventh", Float.NaN);
+		json.put("eighth", 9001);
+		json.put("ninth", Double.POSITIVE_INFINITY);
+		json.put("tenth", Float.POSITIVE_INFINITY);
+		json.put("eleventh", "\b\0\f");
+		json.put("twelveth", 25.5D);
+		json.put("thirteenth", 25.5F);
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		try(StringWriter writer = new StringWriter()) {
+			
+			formatter.format(json, writer);
+			assertEquals(expected, writer.toString());
+			
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
+	}
+	
+	@Test
+	public void testStreamedFormatTestObject() {
 		
 		String expected =
 				  "{\n"
@@ -287,11 +703,13 @@ public class TestJSONFormatter {
 		
 		try(StringWriter writer = new StringWriter()) {
 			
-			JSONObject json1 = TestUtil.createObject();
-			formatter.format(json1, writer);
+			formatter.format(createObject(), writer);
 			assertEquals(expected, writer.toString());
 			
-		} catch(IOException exception) {}
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
 	}
 	
 	@Test
@@ -300,25 +718,25 @@ public class TestJSONFormatter {
 		// This method calls assert and fail implicitly.
 		// Codacy tells bullshit on this one.
 		
-		testMinimize(TestUtil.JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL");
-		testMinimize(TestUtil.JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF");
-		testMinimize(TestUtil.JSON_FORMATTED_I2, "JSON_FORMATTED_I2");
-		testMinimize(TestUtil.JSON_FORMATTED_SPACE, "JSON_FORMATTED_SPACE");
-		testMinimize(TestUtil.JSON_FORMATTED_SPACE_I2, "JSON_FORMATTED_SPACE_I2");
-		testMinimize(TestUtil.JSON_FORMATTED_SPACE_CRLF, "JSON_FORMATTED_SPACE_CRLF");
-		testMinimize(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2, "JSON_FORMATTED_SPACE_CRLF_I2");
+		testMinimize(JSON_FORMATTED_NORMAL, "JSON_FORMATTED_NORMAL");
+		testMinimize(JSON_FORMATTED_CRLF, "JSON_FORMATTED_CRLF");
+		testMinimize(JSON_FORMATTED_I2, "JSON_FORMATTED_I2");
+		testMinimize(JSON_FORMATTED_SPACE, "JSON_FORMATTED_SPACE");
+		testMinimize(JSON_FORMATTED_SPACE_I2, "JSON_FORMATTED_SPACE_I2");
+		testMinimize(JSON_FORMATTED_SPACE_CRLF, "JSON_FORMATTED_SPACE_CRLF");
+		testMinimize(JSON_FORMATTED_SPACE_CRLF_I2, "JSON_FORMATTED_SPACE_CRLF_I2");
 	}
 	
 	private static final void testMinimize(String formatted, String message) {
 		
-		assertEquals(TestUtil.JSON_MINIMIZED, new JSONFormatter().minimize(formatted));
+		assertEquals(JSON_MINIMIZED, new JSONFormatter().minimize(formatted));
 		
 		try(StringReader reader = new StringReader(formatted)) {
 			
 			try(StringWriter writer = new StringWriter()) {
 				
 				new JSONFormatter().minimize(reader, writer);
-				assertEquals(TestUtil.JSON_MINIMIZED, writer.toString(), message);
+				assertEquals(JSON_MINIMIZED, writer.toString(), message);
 				
 			} catch(IOException exception) {
 				

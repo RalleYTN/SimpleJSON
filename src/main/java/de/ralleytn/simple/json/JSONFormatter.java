@@ -498,12 +498,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(byte[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -533,12 +528,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(short[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -568,12 +558,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(int[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -603,12 +588,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(long[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -638,12 +618,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(float[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -673,12 +648,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(double[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -708,12 +678,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(boolean[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -743,12 +708,7 @@ public class JSONFormatter {
 	
 	private final void formatArray(char[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -778,12 +738,7 @@ public class JSONFormatter {
 	
 	private final <T>void formatArray(T[] array, Writer writer, int level) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			

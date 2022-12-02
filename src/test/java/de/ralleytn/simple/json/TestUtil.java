@@ -211,14 +211,59 @@ public final class TestUtil {
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	public static final DateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	public static final String JSON_MINIMIZED = "{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]}";
-	public static final String JSON_FORMATTED_NORMAL = "{\n\t\"status\": {\n\t\t\"code\": 200,\n\t\t\"message\": \"OK\",\n\t\t\"error\": null\n\t},\n\t\"data\": [\n\t\t\"Hello World\",\n\t\t{\n\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\"att2\": \"Hello World! 2\"\n\t\t},\n\t\tnull,\n\t\t999,\n\t\t\"ÄÖÜäöüß\"\n\t]\n}";
-	public static final String JSON_FORMATTED_CRLF = "{\r\n\t\"status\": {\r\n\t\t\"code\": 200,\r\n\t\t\"message\": \"OK\",\r\n\t\t\"error\": null\r\n\t},\r\n\t\"data\": [\r\n\t\t\"Hello World\",\r\n\t\t{\r\n\t\t\t\"att1\": \"Hello World!\",\r\n\t\t\t\"att2\": \"Hello World! 2\"\r\n\t\t},\r\n\t\tnull,\r\n\t\t999,\r\n\t\t\"ÄÖÜäöüß\"\r\n\t]\r\n}";
-	public static final String JSON_FORMATTED_I2 = "{\n\t\t\"status\": {\n\t\t\t\t\"code\": 200,\n\t\t\t\t\"message\": \"OK\",\n\t\t\t\t\"error\": null\n\t\t},\n\t\t\"data\": [\n\t\t\t\t\"Hello World\",\n\t\t\t\t{\n\t\t\t\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\t\t\t\"att2\": \"Hello World! 2\"\n\t\t\t\t},\n\t\t\t\tnull,\n\t\t\t\t999,\n\t\t\t\t\"ÄÖÜäöüß\"\n\t\t]\n}";
-	public static final String JSON_FORMATTED_SPACE = "{\n \"status\": {\n  \"code\": 200,\n  \"message\": \"OK\",\n  \"error\": null\n },\n \"data\": [\n  \"Hello World\",\n  {\n   \"att1\": \"Hello World!\",\n   \"att2\": \"Hello World! 2\"\n  },\n  null,\n  999,\n  \"ÄÖÜäöüß\"\n ]\n}";
-	public static final String JSON_FORMATTED_SPACE_I2 = "{\n  \"status\": {\n    \"code\": 200,\n    \"message\": \"OK\",\n    \"error\": null\n  },\n  \"data\": [\n    \"Hello World\",\n    {\n      \"att1\": \"Hello World!\",\n      \"att2\": \"Hello World! 2\"\n    },\n    null,\n    999,\n    \"ÄÖÜäöüß\"\n  ]\n}";
-	public static final String JSON_FORMATTED_SPACE_CRLF = "{\r\n \"status\": {\r\n  \"code\": 200,\r\n  \"message\": \"OK\",\r\n  \"error\": null\r\n },\r\n \"data\": [\r\n  \"Hello World\",\r\n  {\r\n   \"att1\": \"Hello World!\",\r\n   \"att2\": \"Hello World! 2\"\r\n  },\r\n  null,\r\n  999,\r\n  \"ÄÖÜäöüß\"\r\n ]\r\n}";
-	public static final String JSON_FORMATTED_SPACE_CRLF_I2 = "{\r\n  \"status\": {\r\n    \"code\": 200,\r\n    \"message\": \"OK\",\r\n    \"error\": null\r\n  },\r\n  \"data\": [\r\n    \"Hello World\",\r\n    {\r\n      \"att1\": \"Hello World!\",\r\n      \"att2\": \"Hello World! 2\"\r\n    },\r\n    null,\r\n    999,\r\n    \"ÄÖÜäöüß\"\r\n  ]\r\n}";
+	public static final Object UNTYPED_ARRAY_BYTES = new Byte[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
+	public static final Object UNTYPED_ARRAY_SHORTS = new Short[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
+	public static final Object UNTYPED_ARRAY_INTEGERS = new Integer[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
+	public static final Object UNTYPED_ARRAY_LONGS = new Long[] {100L, 111L, 99L, 123L, 66L, 0L, 0L, 0L, 9L, -100L, null};
+	public static final Object UNTYPED_ARRAY_FLOATS = new Float[] {100F, 3.5F, 1.0E-4F, 99999999999999999F, null};
+	public static final Object UNTYPED_ARRAY_DOUBLES = new Double[] {100D, 3.5D, 1.0E-4D, 99999999999999999D, null};
+	public static final Object UNTYPED_ARRAY_BOOLEANS = new Boolean[] {true, true, false, false, true, false, null};
+	public static final Object UNTYPED_ARRAY_STRINGS = new String[] {"A", "AB", "C", "Z", "HHH"};
+	
+	public static final byte[] PRIMITIVE_BYTES = new byte[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
+	public static final short[] PRIMITIVE_SHORTS = new short[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
+	public static final int[] PRIMITIVE_INTS = new int[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
+	public static final long[] PRIMITIVE_LONGS = new long[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
+	public static final float[] PRIMITIVE_FLOATS = new float[] {100F, 3.5F, 1.0E-4F, 99999999999999999F};
+	public static final double[] PRIMITIVE_DOUBLES = new double[] {100D, 3.5D, 1.0E-4D, 99999999999999999D};
+	public static final boolean[] PRIMITIVE_BOOLEANS = new boolean[] {true, true, false, false, true, false};
+	public static final char[] PRIMITIVE_CHARS = new char[] {'H', 'e', 'l', 'l', 'o', ' ', 't', 'h', 'e', 'r', 'e', '!'};
+	
+	public static final byte[] PRIMITIVE_BYTES_EMPTY = new byte[0];
+	public static final short[] PRIMITIVE_SHORTS_EMPTY = new short[0];
+	public static final int[] PRIMITIVE_INTS_EMPTY = new int[0];
+	public static final long[] PRIMITIVE_LONGS_EMPTY = new long[0];
+	public static final float[] PRIMITIVE_FLOATS_EMPTY = new float[0];
+	public static final double[] PRIMITIVE_DOUBLES_EMPTY = new double[0];
+	public static final boolean[] PRIMITIVE_BOOLEANS_EMPTY = new boolean[0];
+	public static final char[] PRIMITIVE_CHARS_EMPTY = new char[0];
+	
+	public static final Byte[] INSTANCED_BYTES = new Byte[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
+	public static final Short[] INSTANCED_SHORTS = new Short[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
+	public static final Integer[] INSTANCED_INTEGERS = new Integer[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
+	public static final Long[] INSTANCED_LONGS = new Long[] {100L, 111L, 99L, 123L, 66L, 0L, 0L, 0L, 9L, -100L, null};
+	public static final Float[] INSTANCED_FLOATS = new Float[] {100F, 3.5F, 1.0E-4F, 99999999999999999F, null};
+	public static final Double[] INSTANCED_DOUBLES = new Double[] {100D, 3.5D, 1.0E-4D, 99999999999999999D, null};
+	public static final Boolean[] INSTANCED_BOOLEANS = new Boolean[] {true, true, false, false, true, false, null};
+	public static final String[] STRINGS = new String[] {"A", "AB", "C", "Z", "HHH"};
+	
+	public static final Byte[] INSTANCED_BYTES_EMPTY = new Byte[0];
+	public static final Short[] INSTANCED_SHORTS_EMPTY = new Short[0];
+	public static final Integer[] INSTANCED_INTEGERS_EMPTY = new Integer[0];
+	public static final Long[] INSTANCED_LONGS_EMPTY = new Long[0];
+	public static final Float[] INSTANCED_FLOATS_EMPTY = new Float[0];
+	public static final Double[] INSTANCED_DOUBLES_EMPTY = new Double[0];
+	public static final Boolean[] INSTANCED_BOOLEANS_EMPTY = new Boolean[0];
+	public static final String[] INSTANCED_STRINGS_EMPTY = new String[0];
+	
+	public static final String JSON_MINIMIZED = "{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! \\\"2\"},null,999,\"ÄÖÜäöüß\"]}";
+	public static final String JSON_FORMATTED_NORMAL = "{\n\t\"status\": {\n\t\t\"code\": 200,\n\t\t\"message\": \"OK\",\n\t\t\"error\": null\n\t},\n\t\"data\": [\n\t\t\"Hello World\",\n\t\t{\n\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\"att2\": \"Hello World! \\\"2\"\n\t\t},\n\t\tnull,\n\t\t999,\n\t\t\"ÄÖÜäöüß\"\n\t]\n}";
+	public static final String JSON_FORMATTED_CRLF = "{\r\n\t\"status\": {\r\n\t\t\"code\": 200,\r\n\t\t\"message\": \"OK\",\r\n\t\t\"error\": null\r\n\t},\r\n\t\"data\": [\r\n\t\t\"Hello World\",\r\n\t\t{\r\n\t\t\t\"att1\": \"Hello World!\",\r\n\t\t\t\"att2\": \"Hello World! \\\"2\"\r\n\t\t},\r\n\t\tnull,\r\n\t\t999,\r\n\t\t\"ÄÖÜäöüß\"\r\n\t]\r\n}";
+	public static final String JSON_FORMATTED_I2 = "{\n\t\t\"status\": {\n\t\t\t\t\"code\": 200,\n\t\t\t\t\"message\": \"OK\",\n\t\t\t\t\"error\": null\n\t\t},\n\t\t\"data\": [\n\t\t\t\t\"Hello World\",\n\t\t\t\t{\n\t\t\t\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\t\t\t\"att2\": \"Hello World! \\\"2\"\n\t\t\t\t},\n\t\t\t\tnull,\n\t\t\t\t999,\n\t\t\t\t\"ÄÖÜäöüß\"\n\t\t]\n}";
+	public static final String JSON_FORMATTED_SPACE = "{\n \"status\": {\n  \"code\": 200,\n  \"message\": \"OK\",\n  \"error\": null\n },\n \"data\": [\n  \"Hello World\",\n  {\n   \"att1\": \"Hello World!\",\n   \"att2\": \"Hello World! \\\"2\"\n  },\n  null,\n  999,\n  \"ÄÖÜäöüß\"\n ]\n}";
+	public static final String JSON_FORMATTED_SPACE_I2 = "{\n  \"status\": {\n    \"code\": 200,\n    \"message\": \"OK\",\n    \"error\": null\n  },\n  \"data\": [\n    \"Hello World\",\n    {\n      \"att1\": \"Hello World!\",\n      \"att2\": \"Hello World! \\\"2\"\n    },\n    null,\n    999,\n    \"ÄÖÜäöüß\"\n  ]\n}";
+	public static final String JSON_FORMATTED_SPACE_CRLF = "{\r\n \"status\": {\r\n  \"code\": 200,\r\n  \"message\": \"OK\",\r\n  \"error\": null\r\n },\r\n \"data\": [\r\n  \"Hello World\",\r\n  {\r\n   \"att1\": \"Hello World!\",\r\n   \"att2\": \"Hello World! \\\"2\"\r\n  },\r\n  null,\r\n  999,\r\n  \"ÄÖÜäöüß\"\r\n ]\r\n}";
+	public static final String JSON_FORMATTED_SPACE_CRLF_I2 = "{\r\n  \"status\": {\r\n    \"code\": 200,\r\n    \"message\": \"OK\",\r\n    \"error\": null\r\n  },\r\n  \"data\": [\r\n    \"Hello World\",\r\n    {\r\n      \"att1\": \"Hello World!\",\r\n      \"att2\": \"Hello World! \\\"2\"\r\n    },\r\n    null,\r\n    999,\r\n    \"ÄÖÜäöüß\"\r\n  ]\r\n}";
 	
 	private TestUtil() {}
 	

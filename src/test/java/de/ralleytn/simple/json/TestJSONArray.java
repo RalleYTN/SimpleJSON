@@ -221,10 +221,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static de.ralleytn.simple.json.TestUtil.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -253,88 +251,61 @@ public class TestJSONArray {
 	private static final String EXPECTED_XML_NUMBER_STRING_ARRAY = "<array length=5><item>1</item><item>2</item><item>3.5</item><item>0.0001</item><item>99999999999999999</item></array>";
 	private static final String EXPECTED_XML_ARRAY_OF_ARRAYS = "<array length=3><item length=5><item>1</item><item>2</item><item>3.5</item><item>1.0E-4</item><item>99999999999999999</item></item><item length=5><item>1</item><item>2</item><item>3.5</item><item>0.0001</item><item>99999999999999999</item></item><item length=5><item>A</item><item>AB</item><item>C</item><item>Z</item><item>HHH</item></item></array>";
 	
-	private static final byte[] PRIMITIVE_BYTES = new byte[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
-	private static final short[] PRIMITIVE_SHORTS = new short[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
-	private static final int[] PRIMITIVE_INTS = new int[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
-	private static final long[] PRIMITIVE_LONGS = new long[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100};
-	private static final float[] PRIMITIVE_FLOATS = new float[] {100F, 3.5F, 1.0E-4F, 99999999999999999F};
-	private static final double[] PRIMITIVE_DOUBLES = new double[] {100D, 3.5D, 1.0E-4D, 99999999999999999D};
-	private static final boolean[] PRIMITIVE_BOOLEANS = new boolean[] {true, true, false, false, true, false};
-	private static final char[] PRIMITIVE_CHARS = new char[] {'H', 'e', 'l', 'l', 'o', ' ', 't', 'h', 'e', 'r', 'e', '!'};
-	
-	private static final Byte[] INSTANCED_BYTES = new Byte[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
-	private static final Short[] INSTANCED_SHORTS = new Short[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
-	private static final Integer[] INSTANCED_INTEGERS = new Integer[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
-	private static final Long[] INSTANCED_LONGS = new Long[] {100L, 111L, 99L, 123L, 66L, 0L, 0L, 0L, 9L, -100L, null};
-	private static final Float[] INSTANCED_FLOATS = new Float[] {100F, 3.5F, 1.0E-4F, 99999999999999999F, null};
-	private static final Double[] INSTANCED_DOUBLES = new Double[] {100D, 3.5D, 1.0E-4D, 99999999999999999D, null};
-	private static final Boolean[] INSTANCED_BOOLEANS = new Boolean[] {true, true, false, false, true, false, null};
-	private static final String[] STRINGS = new String[] {"A", "AB", "C", "Z", "HHH"};
-	
 	@Test
 	public void testConstructorForArraysWithoutType() {
 		
-		Object instancedBytes = new Byte[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
-		Object instancedShorts = new Short[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
-		Object instancedIntegers = new Integer[] {100, 111, 99, 123, 66, 0, 0, 0, 9, -100, null};
-		Object instancedLongs = new Long[] {100L, 111L, 99L, 123L, 66L, 0L, 0L, 0L, 9L, -100L, null};
-		Object instancedFloats = new Float[] {100F, 3.5F, 1.0E-4F, 99999999999999999F, null};
-		Object instancedDoubles = new Double[] {100D, 3.5D, 1.0E-4D, 99999999999999999D, null};
-		Object instancedBooleans = new Boolean[] {true, true, false, false, true, false, null};
-		Object strings = new String[] {"A", "AB", "C", "Z", "HHH"};
-		
 		JSONArray emptyArray = new JSONArray((Object)null);
 		JSONArray unknownObjectArray = new JSONArray(new Date());
-		JSONArray byteArray = new JSONArray(instancedBytes);
-		JSONArray shortArray = new JSONArray(instancedShorts);
-		JSONArray intArray = new JSONArray(instancedIntegers);
-		JSONArray longArray = new JSONArray(instancedLongs);
-		JSONArray floatArray = new JSONArray(instancedFloats);
-		JSONArray doubleArray = new JSONArray(instancedDoubles);
-		JSONArray booleanArray = new JSONArray(instancedBooleans);
-		JSONArray stringArray = new JSONArray(strings);
+		JSONArray byteArray = new JSONArray(UNTYPED_ARRAY_BYTES);
+		JSONArray shortArray = new JSONArray(UNTYPED_ARRAY_SHORTS);
+		JSONArray intArray = new JSONArray(UNTYPED_ARRAY_INTEGERS);
+		JSONArray longArray = new JSONArray(UNTYPED_ARRAY_LONGS);
+		JSONArray floatArray = new JSONArray(UNTYPED_ARRAY_FLOATS);
+		JSONArray doubleArray = new JSONArray(UNTYPED_ARRAY_DOUBLES);
+		JSONArray booleanArray = new JSONArray(UNTYPED_ARRAY_BOOLEANS);
+		JSONArray stringArray = new JSONArray(UNTYPED_ARRAY_STRINGS);
 		
 		assertEquals(0, emptyArray.size());
 		assertEquals(0, unknownObjectArray.size());
 		
-		for(int index = 0; index < ((Byte[])instancedBytes).length; index++) {
+		for(int index = 0; index < ((Byte[])UNTYPED_ARRAY_BYTES).length; index++) {
 			
-			assertEquals(((Byte[])instancedBytes)[index], byteArray.getByte(index));
+			assertEquals(((Byte[])UNTYPED_ARRAY_BYTES)[index], byteArray.getByte(index));
 		}
 		
-		for(int index = 0; index < ((Short[])instancedShorts).length; index++) {
+		for(int index = 0; index < ((Short[])UNTYPED_ARRAY_SHORTS).length; index++) {
 			
-			assertEquals(((Short[])instancedShorts)[index], shortArray.getShort(index));
+			assertEquals(((Short[])UNTYPED_ARRAY_SHORTS)[index], shortArray.getShort(index));
 		}
 		
-		for(int index = 0; index < ((Integer[])instancedIntegers).length; index++) {
+		for(int index = 0; index < ((Integer[])UNTYPED_ARRAY_INTEGERS).length; index++) {
 			
-			assertEquals(((Integer[])instancedIntegers)[index], intArray.getInteger(index));
+			assertEquals(((Integer[])UNTYPED_ARRAY_INTEGERS)[index], intArray.getInteger(index));
 		}
 		
-		for(int index = 0; index < ((Long[])instancedLongs).length; index++) {
+		for(int index = 0; index < ((Long[])UNTYPED_ARRAY_LONGS).length; index++) {
 			
-			assertEquals(((Long[])instancedLongs)[index], longArray.getLong(index));
+			assertEquals(((Long[])UNTYPED_ARRAY_LONGS)[index], longArray.getLong(index));
 		}
 		
-		for(int index = 0; index < ((Float[])instancedFloats).length; index++) {
+		for(int index = 0; index < ((Float[])UNTYPED_ARRAY_FLOATS).length; index++) {
 			
-			assertEquals(((Float[])instancedFloats)[index], floatArray.getFloat(index));
+			assertEquals(((Float[])UNTYPED_ARRAY_FLOATS)[index], floatArray.getFloat(index));
 		}
 		
-		for(int index = 0; index < ((Double[])instancedDoubles).length; index++) {
+		for(int index = 0; index < ((Double[])UNTYPED_ARRAY_DOUBLES).length; index++) {
 			
-			assertEquals(((Double[])instancedDoubles)[index], doubleArray.getDouble(index));
+			assertEquals(((Double[])UNTYPED_ARRAY_DOUBLES)[index], doubleArray.getDouble(index));
 		}
 		
-		for(int index = 0; index < ((Boolean[])instancedBooleans).length; index++) {
+		for(int index = 0; index < ((Boolean[])UNTYPED_ARRAY_BOOLEANS).length; index++) {
 			
-			assertEquals(((Boolean[])instancedBooleans)[index], booleanArray.getBoolean(index));
+			assertEquals(((Boolean[])UNTYPED_ARRAY_BOOLEANS)[index], booleanArray.getBoolean(index));
 		}
 		
-		for(int index = 0; index < ((String[])strings).length; index++) {
+		for(int index = 0; index < ((String[])UNTYPED_ARRAY_STRINGS).length; index++) {
 			
-			assertEquals(((String[])strings)[index], stringArray.getString(index));
+			assertEquals(((String[])UNTYPED_ARRAY_STRINGS)[index], stringArray.getString(index));
 		}
 	}
 	
@@ -344,7 +315,7 @@ public class TestJSONArray {
 		List<Object> mixed = new ArrayList<>();
 		mixed.add(null);
 		mixed.add(Arrays.asList(INSTANCED_BOOLEANS));
-		mixed.add(TestUtil.createObject());
+		mixed.add(createObject());
 		mixed.add(100);
 		
 		JSONArray byteArray = new JSONArray(Arrays.asList(INSTANCED_BYTES));
@@ -409,7 +380,7 @@ public class TestJSONArray {
 		assertEquals(4, mixedArray.size());
 		assertNull(mixedArray.get(0));
 		assertEquals(new JSONArray(Arrays.asList(INSTANCED_BOOLEANS)), mixedArray.getArray(1));
-		assertEquals(TestUtil.createObject(), mixedArray.getObject(2));
+		assertEquals(createObject(), mixedArray.getObject(2));
 		assertEquals(100, mixedArray.get(3));
 	}
 	
@@ -465,7 +436,7 @@ public class TestJSONArray {
 		JSONArray floatArray = new JSONArray(INSTANCED_FLOATS);
 		JSONArray doubleArray = new JSONArray(INSTANCED_DOUBLES);
 		JSONArray booleanArray = new JSONArray(INSTANCED_BOOLEANS);
-		JSONArray stringArray = TestUtil.createStringArray();
+		JSONArray stringArray = createStringArray();
 		
 		assertEquals(EXPECTED_JSON_INSTANCED_INTEGERS, byteArray.toString());
 		assertEquals(EXPECTED_JSON_INSTANCED_INTEGERS, shortArray.toString());
@@ -582,7 +553,7 @@ public class TestJSONArray {
 	@Test
 	public void testGetByte() {
 		
-		JSONArray array = TestUtil.createGetterTestNumberArray();
+		JSONArray array = createGetterTestNumberArray();
 
 		assertEquals(100, (byte)array.getByte(0));
 		assertEquals(100, (byte)array.getByte(1));
@@ -595,7 +566,7 @@ public class TestJSONArray {
 	@Test
 	public void testGetShort() {
 		
-		JSONArray array = TestUtil.createGetterTestNumberArray();
+		JSONArray array = createGetterTestNumberArray();
 
 		assertEquals(100, (short)array.getShort(0));
 		assertEquals(100, (short)array.getShort(1));
@@ -608,7 +579,7 @@ public class TestJSONArray {
 	@Test
 	public void testGetInteger() {
 		
-		JSONArray array = TestUtil.createGetterTestNumberArray();
+		JSONArray array = createGetterTestNumberArray();
 
 		assertEquals(100, (int)array.getInteger(0));
 		assertEquals(100, (int)array.getInteger(1));
@@ -621,7 +592,7 @@ public class TestJSONArray {
 	@Test
 	public void testGetLong() {
 		
-		JSONArray array = TestUtil.createGetterTestNumberArray();
+		JSONArray array = createGetterTestNumberArray();
 
 		assertEquals(100, (long)array.getLong(0));
 		assertEquals(100, (long)array.getLong(1));
@@ -634,7 +605,7 @@ public class TestJSONArray {
 	@Test
 	public void testGetFloat() {
 		
-		JSONArray array = TestUtil.createGetterTestNumberArray();
+		JSONArray array = createGetterTestNumberArray();
 
 		assertEquals(100, (float)array.getFloat(0));
 		assertEquals(100, (float)array.getFloat(1));
@@ -647,7 +618,7 @@ public class TestJSONArray {
 	@Test
 	public void testGetDouble() {
 		
-		JSONArray array = TestUtil.createGetterTestNumberArray();
+		JSONArray array = createGetterTestNumberArray();
 
 		assertEquals(100, (double)array.getDouble(0));
 		assertEquals(100, (double)array.getDouble(1));
@@ -660,7 +631,7 @@ public class TestJSONArray {
 	@Test
 	public void testGetBoolean() {
 		
-		JSONArray array = TestUtil.createGetterTestBooleanArray();
+		JSONArray array = createGetterTestBooleanArray();
 		
 		assertTrue((boolean)array.getBoolean(0));
 		assertFalse((boolean)array.getBoolean(1));
@@ -714,7 +685,7 @@ public class TestJSONArray {
 		array.add(1);
 		array.add(false);
 		array.add("Hello World!");
-		array.add(TestUtil.createObject());
+		array.add(createObject());
 		array.add(map);
 		
 		assertNull(array.getObject(0));
@@ -722,7 +693,7 @@ public class TestJSONArray {
 		assertNull(array.getObject(2));
 		assertNull(array.getObject(3));
 		assertNull(array.getObject(4));
-		assertEquals(TestUtil.createObject(), array.getObject(5));
+		assertEquals(createObject(), array.getObject(5));
 		assertEquals(object, array.getObject(6));
 	}
 	
@@ -754,8 +725,8 @@ public class TestJSONArray {
 		
 		JSONArray array = new JSONArray();
 		array.add(null);
-		array.add(TestUtil.DATE_FORMAT.format(date));
-		array.add(TestUtil.TIME_FORMAT.format(date));
+		array.add(DATE_FORMAT.format(date));
+		array.add(TIME_FORMAT.format(date));
 		array.add(date);
 		array.add("Hello World!");
 		array.add(new Object());
@@ -765,8 +736,8 @@ public class TestJSONArray {
 		try {
 			
 			assertNull(array.getDate(0, null));
-			assertEquals(TestUtil.DATE_FORMAT.parse(TestUtil.DATE_FORMAT.format(date)).getTime(), array.getDate(1, TestUtil.DATE_FORMAT).getTime());
-			assertEquals(TestUtil.TIME_FORMAT.parse(TestUtil.TIME_FORMAT.format(date)).getTime(), array.getDate(2, TestUtil.TIME_FORMAT).getTime());
+			assertEquals(DATE_FORMAT.parse(DATE_FORMAT.format(date)).getTime(), array.getDate(1, DATE_FORMAT).getTime());
+			assertEquals(TIME_FORMAT.parse(TIME_FORMAT.format(date)).getTime(), array.getDate(2, TIME_FORMAT).getTime());
 			assertEquals(date, array.getDate(3, null));
 			
 		} catch(ParseException exception) {
@@ -774,10 +745,10 @@ public class TestJSONArray {
 			fail(exception);
 		}
 		
-		assertThrows(ParseException.class, () -> array.getDate(4, TestUtil.DATE_FORMAT));
-		assertThrows(ParseException.class, () -> array.getDate(5, TestUtil.DATE_FORMAT));
-		assertThrows(ParseException.class, () -> array.getDate(6, TestUtil.DATE_FORMAT));
-		assertThrows(ParseException.class, () -> array.getDate(7, TestUtil.DATE_FORMAT));
+		assertThrows(ParseException.class, () -> array.getDate(4, DATE_FORMAT));
+		assertThrows(ParseException.class, () -> array.getDate(5, DATE_FORMAT));
+		assertThrows(ParseException.class, () -> array.getDate(6, DATE_FORMAT));
+		assertThrows(ParseException.class, () -> array.getDate(7, DATE_FORMAT));
 	}
 	
 	@Test
@@ -834,7 +805,7 @@ public class TestJSONArray {
 		
 		JSONArray array = new JSONArray();
 		array.add(map);
-		array.add(TestUtil.createObject());
+		array.add(createObject());
 		array.add(null);
 		
 		JSONObject[] objects = array.toObjectArray();
@@ -886,11 +857,11 @@ public class TestJSONArray {
 	@Test
 	public void testToXML() {
 		
-		assertEquals(EXPECTED_XML_ARRAY, TestUtil.createArray().toXML("array"));
-		assertEquals(EXPECTED_XML_STRING_ARRAY, TestUtil.createStringArray().toXML("array"));
-		assertEquals(EXPECTED_XML_NUMBER_ARRAY, TestUtil.createNumberArray().toXML("array"));
-		assertEquals(EXPECTED_XML_NUMBER_STRING_ARRAY, TestUtil.createNumberStringArray().toXML("array"));
-		assertEquals(EXPECTED_XML_ARRAY_OF_ARRAYS, TestUtil.createArrayOfArrays().toXML("array"));
+		assertEquals(EXPECTED_XML_ARRAY, createArray().toXML("array"));
+		assertEquals(EXPECTED_XML_STRING_ARRAY, createStringArray().toXML("array"));
+		assertEquals(EXPECTED_XML_NUMBER_ARRAY, createNumberArray().toXML("array"));
+		assertEquals(EXPECTED_XML_NUMBER_STRING_ARRAY, createNumberStringArray().toXML("array"));
+		assertEquals(EXPECTED_XML_ARRAY_OF_ARRAYS, createArrayOfArrays().toXML("array"));
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
@@ -939,7 +910,7 @@ public class TestJSONArray {
 		
 		try(StringWriter writer = new StringWriter()) {
 			
-			TestUtil.createArray().write(writer);
+			createArray().write(writer);
 			assertEquals(EXPECTED_JSON_ARRAY, writer.toString());
 			
 		} catch(IOException exception) {
@@ -951,9 +922,9 @@ public class TestJSONArray {
 	@Test
 	public void testToString() {
 		
-		assertEquals(EXPECTED_JSON_ARRAY, TestUtil.createArray().toString());
-		assertEquals(EXPECTED_JSON_STRING_ARRAY, TestUtil.createStringArray().toString());
-		assertEquals(EXPECTED_JSON_NUMBER_ARRAY, TestUtil.createNumberArray().toString());
-		assertEquals(EXPECTED_JSON_NUMBER_STRING_ARRAY, TestUtil.createNumberStringArray().toString());
+		assertEquals(EXPECTED_JSON_ARRAY, createArray().toString());
+		assertEquals(EXPECTED_JSON_STRING_ARRAY, createStringArray().toString());
+		assertEquals(EXPECTED_JSON_NUMBER_ARRAY, createNumberArray().toString());
+		assertEquals(EXPECTED_JSON_NUMBER_STRING_ARRAY, createNumberStringArray().toString());
 	}
 }
