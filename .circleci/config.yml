@@ -8,19 +8,19 @@ jobs:
         docker:
             - image: cimg/openjdk:11.0
             - image: circleci/node:10.0.0
-    steps:
-        - checkout
-        - run:
-            name: Build
-            command: mvn -B -DskipTests clean package
-        - run:
-            name: Test
-            command: mvn test
-        - run:
-            name: Coverage Report
-            command: npm install && make test-coverage
-        - coveralls/upload:
-            token: $COVERALLS_REPO_TOKEN
+        steps:
+            - checkout
+            - run:
+                name: Build
+                command: mvn -B -DskipTests clean package
+            - run:
+                name: Test
+                command: mvn test
+            - run:
+                name: Coverage Report
+                command: npm install && make test-coverage
+            - coveralls/upload:
+                token: $COVERALLS_REPO_TOKEN
 workflows:
     Workflow:
         jobs:
