@@ -286,20 +286,7 @@ public class TestJSONFormatter {
 		array.add((char[])null);
 		array.add((List<String>)null);
 		
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(1);
-		formatter.setUseCRLF(false);
-		formatter.setUseTabs(true);
-		
-		try(StringWriter writer = new StringWriter()) {
-			
-			formatter.format(array, writer);
-			assertEquals(expected, writer.toString());
-			
-		} catch(IOException exception) {
-			
-			fail(exception);
-		}
+		testStreamedFormat(expected, array);
 	}
 	
 	@Test
@@ -400,20 +387,7 @@ public class TestJSONFormatter {
 		array.add(UNTYPED_ARRAY_BOOLEANS);
 		array.add(UNTYPED_ARRAY_STRINGS);
 		
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(1);
-		formatter.setUseCRLF(false);
-		formatter.setUseTabs(true);
-		
-		try(StringWriter writer = new StringWriter()) {
-			
-			formatter.format(array, writer);
-			assertEquals(expected, writer.toString());
-			
-		} catch(IOException exception) {
-			
-			fail(exception);
-		}
+		testStreamedFormat(expected, array);
 	}
 	
 	@Test
@@ -456,20 +430,7 @@ public class TestJSONFormatter {
 		array.add(INSTANCED_BOOLEANS_EMPTY);
 		array.add(INSTANCED_STRINGS_EMPTY);
 		
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(1);
-		formatter.setUseCRLF(false);
-		formatter.setUseTabs(true);
-		
-		try(StringWriter writer = new StringWriter()) {
-			
-			formatter.format(array, writer);
-			assertEquals(expected, writer.toString());
-			
-		} catch(IOException exception) {
-			
-			fail(exception);
-		}
+		testStreamedFormat(expected, array);
 	}
 	
 	@Test
@@ -570,29 +531,13 @@ public class TestJSONFormatter {
 		array.add(PRIMITIVE_CHARS);
 		array.add(PRIMITIVE_BOOLEANS);
 		
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(1);
-		formatter.setUseCRLF(false);
-		formatter.setUseTabs(true);
-		
-		try(StringWriter writer = new StringWriter()) {
-			
-			formatter.format(array, writer);
-			assertEquals(expected, writer.toString());
-			
-		} catch(IOException exception) {
-			
-			fail(exception);
-		}
+		testStreamedFormat(expected, array);
 	}
 	
 	@Test
 	public void testStreamedFormatNull() {
 		
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(1);
-		formatter.setUseCRLF(false);
-		formatter.setUseTabs(true);
+		JSONFormatter formatter = createFormatter();
 		
 		try(StringWriter writer = new StringWriter()) {
 			
@@ -658,20 +603,7 @@ public class TestJSONFormatter {
 		json.put("twelveth", 25.5D);
 		json.put("thirteenth", 25.5F);
 		
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(1);
-		formatter.setUseCRLF(false);
-		formatter.setUseTabs(true);
-		
-		try(StringWriter writer = new StringWriter()) {
-			
-			formatter.format(json, writer);
-			assertEquals(expected, writer.toString());
-			
-		} catch(IOException exception) {
-			
-			fail(exception);
-		}
+		testStreamedFormat(expected, json);
 	}
 	
 	@Test
@@ -696,20 +628,43 @@ public class TestJSONFormatter {
 				+ "	]\n"
 				+ "}";
 		
-		JSONFormatter formatter = new JSONFormatter();
-		formatter.setIndent(1);
-		formatter.setUseCRLF(false);
-		formatter.setUseTabs(true);
+		testStreamedFormat(expected, createObject());
+	}
+	
+	private final void testStreamedFormat(String expected, JSONObject json) {
 		
 		try(StringWriter writer = new StringWriter()) {
 			
-			formatter.format(createObject(), writer);
+			createFormatter().format(json, writer);
 			assertEquals(expected, writer.toString());
 			
 		} catch(IOException exception) {
 			
 			fail(exception);
 		}
+	}
+	
+	private final void testStreamedFormat(String expected, JSONArray json) {
+
+		try(StringWriter writer = new StringWriter()) {
+			
+			createFormatter().format(json, writer);
+			assertEquals(expected, writer.toString());
+			
+		} catch(IOException exception) {
+			
+			fail(exception);
+		}
+	}
+	
+	private final JSONFormatter createFormatter() {
+		
+		JSONFormatter formatter = new JSONFormatter();
+		formatter.setIndent(1);
+		formatter.setUseCRLF(false);
+		formatter.setUseTabs(true);
+		
+		return formatter;
 	}
 	
 	@Test
