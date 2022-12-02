@@ -3,12 +3,6 @@
 version: 2.1
 orbs:
     coveralls: coveralls/coveralls@1.0.6
-workflows:
-    Workflow:
-        jobs:
-            - build-and-test:
-                context:
-                    - Coveralls
 jobs:
   build-and-test:
     docker:
@@ -28,6 +22,8 @@ jobs:
       - coveralls/upload:
           token: $COVERALLS_REPO_TOKEN
 workflows:
-  sample:
+  Workflow:
     jobs:
-      - build-and-test
+      - build-and-test:
+            context:
+                - Coveralls
