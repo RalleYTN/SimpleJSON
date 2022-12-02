@@ -4,26 +4,26 @@ version: 2.1
 orbs:
     coveralls: coveralls/coveralls@1.0.6
 jobs:
-  build-and-test:
-    docker:
-      - image: cimg/openjdk:11.0
-      - image: circleci/node:10.0.0
+    build-and-test:
+        docker:
+            - image: cimg/openjdk:11.0
+            - image: circleci/node:10.0.0
     steps:
-      - checkout
-      - run:
-          name: Build
-          command: mvn -B -DskipTests clean package
-      - run:
-          name: Test
-          command: mvn test
-      - run:
-          name: Coverage Report
-          command: npm install && make test-coverage
-      - coveralls/upload:
-          token: $COVERALLS_REPO_TOKEN
+        - checkout
+        - run:
+            name: Build
+            command: mvn -B -DskipTests clean package
+        - run:
+            name: Test
+            command: mvn test
+        - run:
+            name: Coverage Report
+            command: npm install && make test-coverage
+        - coveralls/upload:
+            token: $COVERALLS_REPO_TOKEN
 workflows:
-  Workflow:
-    jobs:
-      - build-and-test:
-            context:
-                - Coveralls
+    Workflow:
+        jobs:
+            - build-and-test:
+                context:
+                    - Coveralls
