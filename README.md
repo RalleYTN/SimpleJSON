@@ -4,12 +4,18 @@
 
 # Description
 
-SimpleJSON is an improved version of [json-simple](https://github.com/fangyidong/json-simple).
-It adds type safety, serialization, tidy formatting and improved performance.
+SimpleJSON is an improved version of [json-simple](https://github.com/fangyidong/json-simple) for Java 11+.
+
+### Features
+- [x] JSON DOM
+- [x] JSON Serialization
+- [x] Pretty Print
+- [x] Conversion of JSON to XML
+- [x] Type Safety
 
 ### Code example
 
-Creating JSON:
+Creating a JSON DOM:
 
 ```java
 int[] array = {1, 2, 3, 4, 5, 6, 7};
@@ -43,58 +49,68 @@ try {
 }
 ```
 
-## List of changes made to the original library
-
-This list only applies to version 1.0.0 of this library!
-
-- The packages of the original are merged into one
-- All public classes now have `JSON` in front of their name. This makes it easier to tell which classes come from that library. Also clears a conflict with the `java.text.ParseException`.
-- The `JSONParser` now uses actual stacks
-- The `JSONParser` now uses `if-else` instead of `switch-case` because it is faster
-- Updated the documentation
-- Fixed a bug that made it impossible to parse valid JSON with white spaces leading and/or trailing
-- Made it possible to serialize and deserialize JSON
-- Added the `JSONFormatter` class which makes it possible to format minimized or minimize formatted JSON data
-- Added more constructors to the `JSONArray` class
-- Added constructors to the `JSONObject` and `JSONArray` class which allows direct and type safe parsing of JSON data
-- Added getter methods to `JSONObject` and `JSONArray` which allow type safe reading of data
-- Deleted all unneeded and deprecated methods
-- Fixed a bug that would not quote non-JSON type values
-
 ## Changelog
 
-### Version 2.0.0 (incompatible with older versions of the library)
+### Version 2.1.0
+<sub>NOTE: This version is incompatible with older versions of the library.</sub>
+
+- Made the library Java 11 compatible
+- Behavior of `JSONObject#compact()` has changed; the `compact` method will now also be called recursively for all child objects
+- Increased unit test coverage
+- Cleaned the code
+- *[#7](https://github.com/RalleYTN/SimpleJSON/issues/7)*: Added new constructor to `JSONFormatter`
+- *[#6](https://github.com/RalleYTN/SimpleJSON/issues/6)*: Added `JSONFormatter#format(JSONArray,Writer)`
+- *[#6](https://github.com/RalleYTN/SimpleJSON/issues/6)*: Added `JSONFormatter#format(JSONObject,Writer)`
+- *BUGFIX*: Fixed a typo in `JSONParseException`
+- *BUGFIX*: Fixed a possible `NullPointerException` in `JSONObject#equals(Object)`
+- *BUGFIX*: Fixed a possible `NullPointerException` in `JSONArray#equals(Object)`
+
+### Version 2.0.0
+<sub>NOTE: This version is incompatible with older versions of the library.</sub>
 
 - Made the library Java 9 compatible
 - `Yylex` and `Yytoken` were moved to the new `de.ralleytn.simple.json.internal` package
-- Fixed a bug in `JSONFormatter` that caused the `minimize` methods not to remove the `\r` character
-- The `JSONValue` class was renamed to `Util` and moved to the `de.ralleytn.simple.json.internal` package
+- Refactored `de.ralleytn.simple.json.JSONValue` to `de.ralleytn.simple.json.internal.Util`
 - The `JSONFormatter` class is no longer static and its methods no longer final
 - The classes `JSONSerializer`, `JSONTypeSerializationHandler`, `JSONRoot` and `JSONAttrbute` were moved to the new `de.ralleytn.simple.json.serialization` package
-- Made Unit-Tests that cover basically all of the reachable code
 - Updated the documentation
 - Moved the static `writeJSONString` methods to the internal `Util` class
 - Renamed the non static `writeJSONString` methods to `write`
 - Removed the `toJSONString` methods; use `toString` instead
 - Removed the interfaces `JSONAware` and `JSONStreamAware`
-- Created a new class `JSONUtil` for utility methods that should be publicly visible
+- Removed the setters from the `JSONParseException` class
 - Improved the performance of the Lexer
 - `JSONArray` will no longer throw an exception if an object that isn't an array was given to the constructor; An empty `JSONArray` will be created instead
 - `JSONObject` and `JSONArray` now override the `equals(Object)` method
 - Added methods that allow for a conversion from `JSONArray` to primitive arrays
-- Removed the setters from the `JSONParseException` class
+- Added `JSONUtil`
+- Added unit tests
 - Numbers now always get converted to `Long` when being serialized
 - Deserialization will now throw an `Exception` if a setter has an interface type because interface types cannot be instantiated
+- *BUGFIX*: Fixed a bug that caused the `minimize` methods to not remove `\r` characters
 
 ### Version 1.1.0
 
-- Added the method `JSONObject#compact()`
-- Added the method `JSONObject#toXML(String)`
-- Added the method `JSONArray#toXML(String)`
+- Added `JSONObject#compact()`
+- Added `JSONObject#toXML(String)`
+- Added `JSONArray#toXML(String)`
 
 ### Version 1.0.0
+<sub>NOTE: This is a list of changes made to [json-simple](https://github.com/fangyidong/json-simple).</sub>
 
-- Release
+- Refactored packages
+- Refactored class names to include the prefix "JSON"
+- Cleared a conflict with `java.text.ParseException`
+- `JSONParser` now uses actual stacks
+- `JSONParser` now uses `if-else` instead of `switch-case` because it is faster
+- Updated the documentation
+- Implemented serialization
+- Implemented type safety
+- Added the `JSONFormatter` class
+- Added more constructors to the `JSONArray` class
+- Cleaned the code
+- *BUGFIX*: Fixed a bug that would not quote non-JSON type values
+- *BUGFIX*: Fixed a bug that made it impossible to parse valid JSON with white spaces leading and/or trailing
 
 ## License
 
