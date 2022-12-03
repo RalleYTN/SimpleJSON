@@ -850,7 +850,7 @@ public final class Util {
 	 * @param builder the {@linkplain StringBuilder} on which the result will be written
 	 * @since 1.0.0
 	 */
-    public static void escape(String string, StringBuilder builder) {
+    public static final void escape(String string, StringBuilder builder) {
     	
     	for(int index = 0; index < string.length(); index++) {
     		
@@ -867,25 +867,30 @@ public final class Util {
     		} else if(character == '/')  {builder.append("\\/");
     		} else {
     			
-    			if((character >= '\u0000' && character <= '\u001F') ||
-    			   (character >= '\u007F' && character <= '\u009F') ||
-    			   (character >= '\u2000' && character <= '\u20FF')) {
-    				
-    				String hex = Integer.toHexString(character);
-					builder.append("\\u");
-					
-					for(int k = 0; k < (4 - hex.length()); k++) {
-						
-						builder.append('0');
-					}
-					
-					builder.append(hex.toUpperCase());
-					
-    			} else {
-    				
-    				builder.append(character);
-    			}
+    			escapeUnicode(character, builder);
     		}
     	}
 	}
+    
+    private static final void escapeUnicode(char character, StringBuilder builder) {
+    	
+		if((character >= '\u0000' && character <= '\u001F') ||
+ 		   (character >= '\u007F' && character <= '\u009F') ||
+ 		   (character >= '\u2000' && character <= '\u20FF')) {
+ 				
+			String hex = Integer.toHexString(character);
+			builder.append("\\u");
+
+			for(int k = 0; k < (4 - hex.length()); k++) {
+						
+				builder.append('0');
+			}
+					
+			builder.append(hex.toUpperCase());
+					
+ 		} else {
+ 				
+ 			builder.append(character);
+ 		}
+    }
 }
