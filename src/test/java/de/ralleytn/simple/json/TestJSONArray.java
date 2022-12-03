@@ -727,18 +727,11 @@ public class TestJSONArray {
 		array.add(new Object());
 		array.add(9001);
 		array.add(25.5F);
-		
-		try {
-			
-			assertNull(array.getDate(0, null));
-			assertEquals(DATE_FORMAT.parse(DATE_FORMAT.format(date)).getTime(), array.getDate(1, DATE_FORMAT).getTime());
-			assertEquals(TIME_FORMAT.parse(TIME_FORMAT.format(date)).getTime(), array.getDate(2, TIME_FORMAT).getTime());
-			assertEquals(date, array.getDate(3, null));
-			
-		} catch(ParseException exception) {
-			
-			fail(exception);
-		}
+
+		assertDoesNotThrow(() -> assertNull(array.getDate(0, null)));
+		assertDoesNotThrow(() -> assertEquals(DATE_FORMAT.parse(DATE_FORMAT.format(date)).getTime(), array.getDate(1, DATE_FORMAT).getTime()));
+		assertDoesNotThrow(() -> assertEquals(TIME_FORMAT.parse(TIME_FORMAT.format(date)).getTime(), array.getDate(2, TIME_FORMAT).getTime()));
+		assertDoesNotThrow(() -> assertEquals(date, array.getDate(3, null)));
 		
 		assertThrows(ParseException.class, () -> array.getDate(4, DATE_FORMAT));
 		assertThrows(ParseException.class, () -> array.getDate(5, DATE_FORMAT));

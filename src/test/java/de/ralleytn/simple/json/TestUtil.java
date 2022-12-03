@@ -256,7 +256,6 @@ public final class TestUtil {
 	public static final Boolean[] INSTANCED_BOOLEANS_EMPTY = new Boolean[0];
 	public static final String[] INSTANCED_STRINGS_EMPTY = new String[0];
 	
-	public static final String JSON_TEST_OBJECT = "{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]}";
 	public static final String JSON_MINIMIZED = "{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! \\\"2\"},null,999,\"ÄÖÜäöüß\"]}";
 	public static final String JSON_FORMATTED_NORMAL = "{\n\t\"status\": {\n\t\t\"code\": 200,\n\t\t\"message\": \"OK\",\n\t\t\"error\": null\n\t},\n\t\"data\": [\n\t\t\"Hello World\",\n\t\t{\n\t\t\t\"att1\": \"Hello World!\",\n\t\t\t\"att2\": \"Hello World! \\\"2\"\n\t\t},\n\t\tnull,\n\t\t999,\n\t\t\"ÄÖÜäöüß\"\n\t]\n}";
 	public static final String JSON_FORMATTED_CRLF = "{\r\n\t\"status\": {\r\n\t\t\"code\": 200,\r\n\t\t\"message\": \"OK\",\r\n\t\t\"error\": null\r\n\t},\r\n\t\"data\": [\r\n\t\t\"Hello World\",\r\n\t\t{\r\n\t\t\t\"att1\": \"Hello World!\",\r\n\t\t\t\"att2\": \"Hello World! \\\"2\"\r\n\t\t},\r\n\t\tnull,\r\n\t\t999,\r\n\t\t\"ÄÖÜäöüß\"\r\n\t]\r\n}";

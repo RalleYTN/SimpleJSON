@@ -203,20 +203,300 @@
  */
 package de.ralleytn.simple.json;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+import static de.ralleytn.simple.json.TestUtil.*;
 
-import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class TestJSONObject {
+import de.ralleytn.simple.json.beans.TestEnum;
 
+public class TestJSONObject {
+	
+	@Test
+	public void testGetObject() {
+		
+		JSONObject json = createObjectWithAllPossibleTypes(new Object());
+		checkParsedObject(json.getObject("jsonObject"));
+		assertTrue(json.getObject("map") instanceof JSONObject);
+		assertNull(json.getObject("object"));
+		assertNull(json.getObject(null));
+	}
+	
+	@Test
+	public void testGetArray() {
+		
+		JSONObject json = createObjectWithAllPossibleTypes(new Object());
+		assertNull(json.getArray(null));
+		assertNull(json.getArray("valueThatDoesntExist"));
+		assertEquals(10, json.getArray("paBytes").size());
+		assertEquals(10, json.getArray("paShorts").size());
+		assertEquals(10, json.getArray("paInts").size());
+		assertEquals(10, json.getArray("paLongs").size());
+		assertEquals(4,  json.getArray("paFloats").size());
+		assertEquals(4,  json.getArray("paDoubles").size());
+		assertEquals(12, json.getArray("paChars").size());
+		assertEquals(6, json.getArray("paBooleans").size());
+		assertEquals(7, json.getArray("collection").size());
+		assertEquals(5, json.getArray("iaStrings").size());
+		assertNull(json.getArray("object"));
+	}
+	
+	@Test
+	public void testGetBoolean() {
+		
+		JSONObject json = createObjectWithAllPossibleTypes(new Object());
+		json.put("bTrueString", "true");
+		json.put("bFalseString", "false");
+		json.put("bTrueNumber", 1);
+		json.put("bFalseNumber", 0);
+		
+		assertTrue(json.getBoolean("bTrue"));
+		assertTrue(json.getBoolean("bTrueString"));
+		assertTrue(json.getBoolean("bTrueNumber"));
+		assertFalse(json.getBoolean("bFalse"));
+		assertFalse(json.getBoolean("bFalseString"));
+		assertFalse(json.getBoolean("bFalseNumber"));
+		assertNull(json.getBoolean("object"));
+		assertNull(json.getBoolean(null));
+		assertNull(json.getBoolean("valueThatDOesntExist"));
+	}
+	
+	@Test
+	public void testGetByte() {
+		
+		JSONObject json = createObjectForGetNumberTests();
+		assertEquals((byte)100, json.getByte("first"));
+		assertEquals((byte)100, json.getByte("second"));
+		assertNull(json.getByte("third"));
+		assertEquals((byte)1, json.getByte("fourth"));
+		assertEquals((byte)0, json.getByte("fifth"));
+		assertNull(json.getByte("sixth"));
+	}
+	
+	@Test
+	public void testGetShort() {
+		
+		JSONObject json = createObjectForGetNumberTests();
+		assertEquals((short)100, json.getShort("first"));
+		assertEquals((short)100, json.getShort("second"));
+		assertNull(json.getShort("third"));
+		assertEquals((short)1, json.getShort("fourth"));
+		assertEquals((short)0, json.getShort("fifth"));
+		assertNull(json.getShort("sixth"));
+	}
+	
+	@Test
+	public void testGetInteger() {
+		
+		JSONObject json = createObjectForGetNumberTests();
+		assertEquals(100, json.getInteger("first"));
+		assertEquals(100, json.getInteger("second"));
+		assertNull(json.getInteger("third"));
+		assertEquals(1, json.getInteger("fourth"));
+		assertEquals(0, json.getInteger("fifth"));
+		assertNull(json.getInteger("sixth"));
+	}
+	
+	@Test
+	public void testGetLong() {
+		
+		JSONObject json = createObjectForGetNumberTests();
+		assertEquals(100, json.getLong("first"));
+		assertEquals(100, json.getLong("second"));
+		assertNull(json.getLong("third"));
+		assertEquals(1, json.getLong("fourth"));
+		assertEquals(0, json.getLong("fifth"));
+		assertNull(json.getLong("sixth"));
+	}
+	
+	@Test
+	public void testGetFloat() {
+		
+		JSONObject json = createObjectForGetNumberTests();
+		json.put("seventh", 25.5F);
+		json.put("eigth", "25.5");
+		
+		assertEquals(100, json.getFloat("first"));
+		assertEquals(100, json.getFloat("second"));
+		assertNull(json.getFloat("third"));
+		assertEquals(1, json.getFloat("fourth"));
+		assertEquals(0, json.getFloat("fifth"));
+		assertNull(json.getFloat("sixth"));
+		assertEquals(25.5F, json.getFloat("seventh"));
+		assertEquals(25.5F, json.getFloat("eigth"));
+	}
+	
+	@Test
+	public void testGetDouble() {
+		
+		JSONObject json = createObjectForGetNumberTests();
+		json.put("seventh", 25.5F);
+		json.put("eigth", "25.5");
+		
+		assertEquals(100, json.getDouble("first"));
+		assertEquals(100, json.getDouble("second"));
+		assertNull(json.getDouble("third"));
+		assertEquals(1, json.getDouble("fourth"));
+		assertEquals(0, json.getDouble("fifth"));
+		assertNull(json.getDouble("sixth"));
+		assertEquals(25.5F, json.getDouble("seventh"));
+		assertEquals(25.5F, json.getDouble("eigth"));
+	}
+	
+	@Test
+	public void testGetEnum() {
+		
+		String[] keys = new String[] {"one", "two", "three", "four", "five", "six", "seven"};
+		
+		JSONObject json = new JSONObject();
+		json.put("one", null);
+		json.put("two", 0);
+		json.put("three", -1);
+		json.put("four", 25.0);
+		json.put("five", true);
+		json.put("six", false);
+		json.put("seven", "test3");
+		json.put("eight", "TEST3");
+		
+		for(int index = 0; index < 6; index++) {
+			
+			assertNull(json.getEnum(keys[index], TestEnum.class));
+		}
+		
+		assertEquals(TestEnum.TEST3, json.getEnum("eight", TestEnum.class));
+	}
+	
+	@Test
+	public void testGetDate() {
+		
+		Date date = new Date();
+		
+		JSONObject json = new JSONObject();
+		json.put("one", null);
+		json.put("two", DATE_FORMAT.format(date));
+		json.put("three", TIME_FORMAT.format(date));
+		json.put("four", date);
+		json.put("five", "Hello World!");
+		json.put("six", new Object());
+		json.put("seven", 9001);
+		json.put("eight", 25.5F);
+
+		assertDoesNotThrow(() -> assertNull(json.getDate("one", null)));
+		assertDoesNotThrow(() -> assertEquals(DATE_FORMAT.parse(DATE_FORMAT.format(date)).getTime(), json.getDate("two", DATE_FORMAT).getTime()));
+		assertDoesNotThrow(() -> assertEquals(TIME_FORMAT.parse(TIME_FORMAT.format(date)).getTime(), json.getDate("three", TIME_FORMAT).getTime()));
+		assertDoesNotThrow(() -> assertEquals(date, json.getDate("four", null)));
+		
+		assertThrows(ParseException.class, () -> json.getDate("five", DATE_FORMAT));
+		assertThrows(ParseException.class, () -> json.getDate("six", DATE_FORMAT));
+		assertThrows(ParseException.class, () -> json.getDate("seven", DATE_FORMAT));
+		assertThrows(ParseException.class, () -> json.getDate("eight", DATE_FORMAT));
+	}
+	
+	@Test
+	public void testEquals() {
+		
+		JSONObject noStatus = createObject();
+		noStatus.remove("status");
+		
+		assertEquals(createObject(), createObject());
+		assertNotEquals(noStatus, createObject());
+		assertNotEquals(createObject(), null);
+		assertNotEquals(createObject(), "Hello World!");
+	}
+	
+	@Test
+	public void testCompact() {
+		
+		String expected = "{\"status\":{\"code\":200,\"message\":\"OK\"},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]}";
+		assertEquals(expected, createObject().compact().toString());
+	}
+	
+	@Test
+	public void testToXML() {
+		
+		String expected = "<object><status><code>200</code><message>OK</message><error></error></status><data length=5><item>Hello World</item>"
+				+ "<item><att1>Hello World!</att1><att2>Hello World! 2</att2></item><item></item><item>999</item><item>ÄÖÜäöüß</item></data></object>";
+		assertEquals(expected, createObject().toXML("object"));
+	}
+	
+	@Test
+	public void testConstructorMapWithJSONObject() {
+		
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_MINIMIZED))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_FORMATTED_CRLF))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_FORMATTED_NORMAL))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_FORMATTED_I2))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_FORMATTED_SPACE))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_FORMATTED_SPACE_CRLF))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_FORMATTED_SPACE_I2))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new JSONObject(JSON_FORMATTED_SPACE_CRLF_I2))));
+	}
+	
+	@Test
+	public void testConstructorMap() {
+		
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_MINIMIZED)))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_FORMATTED_CRLF)))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_FORMATTED_NORMAL)))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_FORMATTED_I2)))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_FORMATTED_SPACE)))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_FORMATTED_SPACE_CRLF)))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_FORMATTED_SPACE_I2)))));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(new HashMap<>(new JSONObject(JSON_FORMATTED_SPACE_CRLF_I2)))));
+	}
+	
+	@Test
+	public void testConstructorReader() {
+		
+		checkConstructorWithReader(JSON_MINIMIZED);
+		checkConstructorWithReader(JSON_FORMATTED_CRLF);
+		checkConstructorWithReader(JSON_FORMATTED_NORMAL);
+		checkConstructorWithReader(JSON_FORMATTED_I2);
+		checkConstructorWithReader(JSON_FORMATTED_SPACE);
+		checkConstructorWithReader(JSON_FORMATTED_SPACE_CRLF);
+		checkConstructorWithReader(JSON_FORMATTED_SPACE_I2);
+		checkConstructorWithReader(JSON_FORMATTED_SPACE_CRLF_I2);
+	}
+	
+	@Test
+	public void testConstructorEmptyAndNull() {
+
+		assertTrue(new JSONObject().isEmpty());
+		assertThrows(NullPointerException.class, () -> new JSONObject((Map<?, ?>)null));
+		assertThrows(NullPointerException.class, () -> new JSONObject((Reader)null));
+		assertThrows(NullPointerException.class, () -> new JSONObject((String)null));
+	}
+	
+	@Test
+	public void testConstructorString() {
+		
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_MINIMIZED)));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_FORMATTED_CRLF)));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_FORMATTED_NORMAL)));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_FORMATTED_I2)));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_FORMATTED_SPACE)));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_FORMATTED_SPACE_CRLF)));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_FORMATTED_SPACE_I2)));
+		assertDoesNotThrow(() -> checkParsedObject(new JSONObject(JSON_FORMATTED_SPACE_CRLF_I2)));
+	}
+	
+	private static final void checkConstructorWithReader(String json) {
+		
+		try(StringReader reader = new StringReader(json)) {
+			
+			assertDoesNotThrow(() -> checkParsedObject(new JSONObject(reader)));
+		}
+	}
+	
 	private static final void checkParsedObject(JSONObject object) {
 		
 		assertNotNull(object);
@@ -251,96 +531,101 @@ public class TestJSONObject {
 		assertEquals("ÄÖÜäöüß", data.get(4));
 	}
 	
-	private static final void checkConstructorWithReader(String json) {
-		
-		try(StringReader reader = new StringReader(json)) {
-			
-			checkParsedObject(new JSONObject(reader));
-			
-		} catch(JSONParseException | IOException exception) {
-			
-			fail(exception);
-		}
-	}
-	
-	@Test
-	public void testEquals() {
-		
-		
-	}
-	
-	@Test
-	public void testWrite() {
-		
-		
-	}
-	
-	@Test
-	public void testCompact() {
-		
-		
-	}
-	
-	@Test
-	public void testGetters() {
-		
-		
-	}
-	
-	@Test
-	public void testToXML() {
-		
-		
-	}
-	
-	@Test
-	public void testConstructors() {
-		
-		try {
-			
-			// TEST CONSTRUCTORS THAT TAKE IN A STRING TO PARSE
-			checkParsedObject(new JSONObject(TestUtil.JSON_MINIMIZED));
-			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_CRLF));
-			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_NORMAL));
-			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_I2));
-			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE));
-			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF));
-			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_I2));
-			checkParsedObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2));
-			
-			// TEST CONSTRUCTORS THAT TAKE IN ANOTHER MAP
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_MINIMIZED)));
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_CRLF)));
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_NORMAL)));
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_I2)));
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE)));
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF)));
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_I2)));
-			checkParsedObject(new JSONObject(new JSONObject(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2)));
-			
-			// TEST CONSTRUCTORS THAT TAKE IN A READER WITH JSON DATA TO PARSE
-			checkConstructorWithReader(TestUtil.JSON_MINIMIZED);
-			checkConstructorWithReader(TestUtil.JSON_FORMATTED_CRLF);
-			checkConstructorWithReader(TestUtil.JSON_FORMATTED_NORMAL);
-			checkConstructorWithReader(TestUtil.JSON_FORMATTED_I2);
-			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE);
-			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_CRLF);
-			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_I2);
-			checkConstructorWithReader(TestUtil.JSON_FORMATTED_SPACE_CRLF_I2);
-			
-			// TEST EMPTY CONSTRUCTOR
-			JSONObject object = new JSONObject();
-			assertTrue(object.isEmpty());
-			
-		} catch(JSONParseException exception) {
-			
-			fail(exception);
-		}
-	}
-	
 	@Test
 	public void testToString() {
+
+		Object object = new Object();
 		
-		assertEquals(TestUtil.JSON_TEST_OBJECT, TestUtil.createObject().toString());
+		String expected = "{\"nil\":null,\"map\":{\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},"
+				+ "null,999,\"ÄÖÜäöüß\"],\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null}},\"dInfinite\":null,\"dNaN\":null,"
+				+ "\"double\":25.5,\"fInfinite\":null,\"fNaN\":null,\"float\":25.5,\"object\":\"" + object.toString() + "\",\"number\":90001,"
+				+ "\"string\":\"ÄÖÜäöüß\\u0000\\b\\r\\n\\\"\\\\\\f\\t\\/Hello World!\",\"bTrue\":true,\"bFalse\":false,\"jsonObject\":"
+				+ "{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\","
+				+ "\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]},\"paBytes\":[100,111,99,123,66,0,0,0,9,-100],\"paShorts\":"
+				+ "[100,111,99,123,66,0,0,0,9,-100],\"paInts\":[100,111,99,123,66,0,0,0,9,-100],\"paLongs\":[100,111,99,123,66,0,0,0,9,-100],"
+				+ "\"paFloats\":[100.0,3.5,1.0E-4,9.9999998E16],\"paDoubles\":[100.0,3.5,1.0E-4,1.0E17],\"paBooleans\":"
+				+ "[true,true,false,false,true,false],\"paChars\":[H,e,l,l,o, ,t,h,e,r,e,!],\"collection\":"
+				+ "[true,true,false,false,true,false,null],\"untypedArray\":[true,true,false,false,true,false,null],\"paBytesEmpty\":[],"
+				+ "\"paShortsEmpty\":[],\"paIntsEmpty\":[],\"paLongsEmpty\":[],\"paFloatsEmpty\":[],\"paDoublesEmpty\":[],\"paBooleansEmpty\":[],"
+				+ "\"paCharsEmpty\":[],\"iaBytes\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaShorts\":[100,111,99,123,66,0,0,0,9,-100,null],"
+				+ "\"iaInts\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaLongs\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaFloats\":"
+				+ "[100.0,3.5,1.0E-4,9.9999998E16,null],\"iaDoubles\":[100.0,3.5,1.0E-4,1.0E17,null],\"iaBooleans\":"
+				+ "[true,true,false,false,true,false,null],\"iaStrings\":[\"A\",\"AB\",\"C\",\"Z\",\"HHH\"],\"iaBytesEmpty\":[],\"iaShortsEmpty\":[],"
+				+ "\"iaIntsEmpty\":[],\"iaLongsEmpty\":[],\"iaFloatsEmpty\":[],\"iaDoublesEmpty\":[],\"iaBooleansEmpty\":[],\"iaStringsEmpty\":[],"
+				+ "\"mapNull\":null,\"collectionNull\":null}";
+
+		assertEquals(expected, createObjectWithAllPossibleTypes(object).toString());
+	}
+	
+	private static final JSONObject createObjectForGetNumberTests() {
+		
+		JSONObject json = new JSONObject();
+		json.put("first", 100);
+		json.put("second", "100");
+		json.put("third", null);
+		json.put("fourth", true);
+		json.put("fifth", false);
+		json.put("sixth", new Object());
+		
+		return json;
+	}
+	
+	private static final JSONObject createObjectWithAllPossibleTypes(Object object) {
+		
+		Map<Object, Object> map = new HashMap<>(createObject());
+		
+		JSONObject json = new JSONObject();
+		json.put("nil", null);
+		json.put("map", map);
+		json.put("dInfinite", Double.NEGATIVE_INFINITY);
+		json.put("dNaN", Double.NaN);
+		json.put("double", 25.5D);
+		json.put("fInfinite", Float.NEGATIVE_INFINITY);
+		json.put("fNaN", Float.NaN);
+		json.put("float", 25.5F);
+		json.put("object", object);
+		json.put("number", 90001);
+		json.put("string", "ÄÖÜäöüß\0\b\r\n\"\\\f\t/Hello World!");
+		json.put("bTrue", true);
+		json.put("bFalse", false);
+		json.put("jsonObject", createObject());
+		json.put("paBytes", PRIMITIVE_BYTES);
+		json.put("paShorts", PRIMITIVE_SHORTS);
+		json.put("paInts", PRIMITIVE_INTS);
+		json.put("paLongs", PRIMITIVE_LONGS);
+		json.put("paFloats", PRIMITIVE_FLOATS);
+		json.put("paDoubles", PRIMITIVE_DOUBLES);
+		json.put("paBooleans", PRIMITIVE_BOOLEANS);
+		json.put("paChars", PRIMITIVE_CHARS);
+		json.put("collection", Arrays.asList(INSTANCED_BOOLEANS));
+		json.put("untypedArray", UNTYPED_ARRAY_BOOLEANS);
+		json.put("paBytesEmpty", new byte[0]);
+		json.put("paShortsEmpty", new short[0]);
+		json.put("paIntsEmpty", new int[0]);
+		json.put("paLongsEmpty", new long[0]);
+		json.put("paFloatsEmpty", new float[0]);
+		json.put("paDoublesEmpty", new double[0]);
+		json.put("paBooleansEmpty", new boolean[0]);
+		json.put("paCharsEmpty", new char[0]);
+		json.put("iaBytes", INSTANCED_BYTES);
+		json.put("iaShorts", INSTANCED_SHORTS);
+		json.put("iaInts", INSTANCED_INTEGERS);
+		json.put("iaLongs", INSTANCED_LONGS);
+		json.put("iaFloats", INSTANCED_FLOATS);
+		json.put("iaDoubles", INSTANCED_DOUBLES);
+		json.put("iaBooleans", INSTANCED_BOOLEANS);
+		json.put("iaStrings", STRINGS);
+		json.put("iaBytesEmpty", new Byte[0]);
+		json.put("iaShortsEmpty", new Short[0]);
+		json.put("iaIntsEmpty", new Integer[0]);
+		json.put("iaLongsEmpty", new Long[0]);
+		json.put("iaFloatsEmpty", new Float[0]);
+		json.put("iaDoublesEmpty", new Double[0]);
+		json.put("iaBooleansEmpty", new Boolean[0]);
+		json.put("iaStringsEmpty", new String[0]);
+		json.put("mapNull", (Map<?, ?>)null);
+		json.put("collectionNull", (Collection<?>)null);
+		
+		return json;
 	}
 }

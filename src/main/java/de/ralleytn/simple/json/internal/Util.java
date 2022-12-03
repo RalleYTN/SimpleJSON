@@ -237,11 +237,7 @@ public final class Util {
      */
 	public static final void write(byte[] array, Writer writer) throws IOException {
 		
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -270,11 +266,7 @@ public final class Util {
      */
 	public static final void write(short[] array, Writer writer) throws IOException {
 
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -303,11 +295,7 @@ public final class Util {
      */
 	public static final void write(int[] array, Writer writer) throws IOException {
 
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -336,11 +324,7 @@ public final class Util {
      */
 	public static final void write(long[] array, Writer writer) throws IOException {
 
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -369,11 +353,7 @@ public final class Util {
      */
 	public static final void write(float[] array, Writer writer) throws IOException {
 
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -402,11 +382,7 @@ public final class Util {
      */
 	public static final void write(double[] array, Writer writer) throws IOException {
 
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -435,11 +411,7 @@ public final class Util {
      */
 	public static final void write(boolean[] array, Writer writer) throws IOException {
 
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -468,11 +440,7 @@ public final class Util {
      */
 	public static final void write(char[] array, Writer writer) throws IOException {
 
-		if(array == null) {
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -502,11 +470,7 @@ public final class Util {
      */
 	public static final <T>void write(T[] array, Writer writer) throws IOException {
 		
-		if(array == null){
-			
-			writer.write("null");
-			
-		} else if(array.length == 0) {
+		if(array.length == 0) {
 			
 			writer.write("[]");
 			
@@ -534,41 +498,34 @@ public final class Util {
      */
 	public static final void write(Collection<?> collection, Writer writer) throws IOException {
 
-		if(collection != null) {
-			
-			boolean first = true;
-			Iterator<?> iterator = collection.iterator();
-	        writer.write('[');
+		boolean first = true;
+		Iterator<?> iterator = collection.iterator();
+	    writer.write('[');
 	        
-			while(iterator.hasNext()) {
+		while(iterator.hasNext()) {
 				
-	            if(first) {
+	        if(first) {
 	            	
-	                first = false;
+	            first = false;
 	                
-	            } else {
+	        } else {
 	            	
-	                writer.write(',');
-	            }
+	            writer.write(',');
+	        }
 	            
-				Object value = iterator.next();
+			Object value = iterator.next();
 				
-				if(value == null) {
+			if(value == null) {
 					
-					writer.write("null");
+				writer.write("null");
 					
-				} else {
+			} else {
 					
-					Util.write(value, writer);
-				}
+				Util.write(value, writer);
 			}
-			
-			writer.write(']');
-			
-		} else {
-		
-			writer.write("null");
 		}
+			
+		writer.write(']');
 	}
 	
     /**
@@ -579,37 +536,30 @@ public final class Util {
      * @since 1.0.0
      */
 	public static final void write(Map<?, ?> map, Writer writer) throws IOException {
-		
-		if(map != null) {
-			
-			boolean first = true;
-			writer.write('{');
 
-			for(Map.Entry<?, ?> entry : map.entrySet()) {
+		boolean first = true;
+		writer.write('{');
+
+		for(Map.Entry<?, ?> entry : map.entrySet()) {
 				
-				if(first) {
+			if(first) {
 					
-	                first = false;
+				first = false;
 	                
-				} else {
+			} else {
 					
-	                writer.write(',');
-				}
-				
-	            writer.write('\"');
-	            writer.write(JSONUtil.escape(String.valueOf(entry.getKey())));
-	            writer.write('\"');
-	            writer.write(':');
-	            
-				Util.write(entry.getValue(), writer);
+				writer.write(',');
 			}
-			
-			writer.write('}');
-			
-		} else {
-			
-			writer.write("null");
+				
+	        writer.write('\"');
+	        writer.write(JSONUtil.escape(String.valueOf(entry.getKey())));
+	        writer.write('\"');
+	        writer.write(':');
+	            
+			Util.write(entry.getValue(), writer);
 		}
+			
+		writer.write('}');
 	}
 	
     /**
