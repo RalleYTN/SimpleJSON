@@ -535,7 +535,7 @@ public final class JSONSerializer {
 		
 		JSONAttribute annotation = method.getAnnotation(JSONAttribute.class);
 		
-		if(!Modifier.isTransient(method.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
+		if(annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
 			
 			Class<?> targetType = method.getParameterTypes()[0];
 			

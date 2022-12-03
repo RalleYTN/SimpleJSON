@@ -213,7 +213,7 @@ import de.ralleytn.simple.json.serialization.JSONRoot;
 import de.ralleytn.simple.json.serialization.JSONTypeSerializationHandler;
 
 @JSONRoot
-public class TestPerson implements Serializable, JSONTypeSerializationHandler {
+public class TestPersonWithGettersAndSetterMethods implements Serializable, JSONTypeSerializationHandler {
 
 	private static final long serialVersionUID = -7375042144833399606L;
 
@@ -223,7 +223,26 @@ public class TestPerson implements Serializable, JSONTypeSerializationHandler {
 	private String city;
 	private String country;
 	private LocalDate birthDate;
-	private List<TestPerson> friends;
+	private List<TestPersonWithGettersAndSetterMethods> friends;
+	private boolean bloodDonor;
+	private String gender;
+	private String postalCode;
+	
+	public void setGender(String gender) {
+		
+		this.gender = gender;
+	}
+	
+	public void setBloodDonor(boolean bloodDonor) {
+		
+		this.bloodDonor = bloodDonor;
+	}
+	
+	@JSONAttribute(type = JSONAttribute.Type.SETTER, name = "postal_code")
+	public void setPostalCode(String postalCode) {
+		
+		this.postalCode = postalCode;
+	}
 	
 	@JSONAttribute(type = JSONAttribute.Type.SETTER, name = "first_name")
 	public void setFirstName(String firstName) {
@@ -262,7 +281,7 @@ public class TestPerson implements Serializable, JSONTypeSerializationHandler {
 	}
 	
 	@JSONAttribute(type = JSONAttribute.Type.SETTER, name = "friends")
-	public void setFriends(ArrayList<TestPerson> friends) {
+	public void setFriends(ArrayList<TestPersonWithGettersAndSetterMethods> friends) {
 		
 		this.friends = friends;
 	}
@@ -304,9 +323,24 @@ public class TestPerson implements Serializable, JSONTypeSerializationHandler {
 	}
 	
 	@JSONAttribute(type = JSONAttribute.Type.GETTER, name = "friends")
-	public List<TestPerson> getFriends() {
+	public List<TestPersonWithGettersAndSetterMethods> getFriends() {
 		
 		return this.friends;
+	}
+	
+	public String getPostalCode() {
+		
+		return this.postalCode;
+	}
+	
+	public String getGender() {
+		
+		return this.gender;
+	}
+	
+	public boolean isBloodDonor() {
+		
+		return this.bloodDonor;
 	}
 
 	@Override

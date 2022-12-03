@@ -205,6 +205,10 @@ package de.ralleytn.simple.json;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class TestUtil {
 
@@ -369,5 +373,64 @@ public final class TestUtil {
 		array.add(new Object());
 		
 		return array;
+	}
+	
+	public static final JSONObject createObjectWithAllPossibleTypes(Object object) {
+		
+		Map<Object, Object> map = new HashMap<>(createObject());
+		
+		JSONObject json = new JSONObject();
+		json.put("nil", null);
+		json.put("map", map);
+		json.put("dInfinite", Double.NEGATIVE_INFINITY);
+		json.put("dNaN", Double.NaN);
+		json.put("double", 25.5D);
+		json.put("fInfinite", Float.NEGATIVE_INFINITY);
+		json.put("fNaN", Float.NaN);
+		json.put("float", 25.5F);
+		json.put("object", object);
+		json.put("number", 90001);
+		json.put("string", "ÄÖÜäöüß\0\b\r\n\"\\\f\t/Hello World!");
+		json.put("bTrue", true);
+		json.put("bFalse", false);
+		json.put("jsonObject", createObject());
+		json.put("paBytes", PRIMITIVE_BYTES);
+		json.put("paShorts", PRIMITIVE_SHORTS);
+		json.put("paInts", PRIMITIVE_INTS);
+		json.put("paLongs", PRIMITIVE_LONGS);
+		json.put("paFloats", PRIMITIVE_FLOATS);
+		json.put("paDoubles", PRIMITIVE_DOUBLES);
+		json.put("paBooleans", PRIMITIVE_BOOLEANS);
+		json.put("paChars", PRIMITIVE_CHARS);
+		json.put("collection", Arrays.asList(INSTANCED_BOOLEANS));
+		json.put("untypedArray", UNTYPED_ARRAY_BOOLEANS);
+		json.put("paBytesEmpty", new byte[0]);
+		json.put("paShortsEmpty", new short[0]);
+		json.put("paIntsEmpty", new int[0]);
+		json.put("paLongsEmpty", new long[0]);
+		json.put("paFloatsEmpty", new float[0]);
+		json.put("paDoublesEmpty", new double[0]);
+		json.put("paBooleansEmpty", new boolean[0]);
+		json.put("paCharsEmpty", new char[0]);
+		json.put("iaBytes", INSTANCED_BYTES);
+		json.put("iaShorts", INSTANCED_SHORTS);
+		json.put("iaInts", INSTANCED_INTEGERS);
+		json.put("iaLongs", INSTANCED_LONGS);
+		json.put("iaFloats", INSTANCED_FLOATS);
+		json.put("iaDoubles", INSTANCED_DOUBLES);
+		json.put("iaBooleans", INSTANCED_BOOLEANS);
+		json.put("iaStrings", STRINGS);
+		json.put("iaBytesEmpty", new Byte[0]);
+		json.put("iaShortsEmpty", new Short[0]);
+		json.put("iaIntsEmpty", new Integer[0]);
+		json.put("iaLongsEmpty", new Long[0]);
+		json.put("iaFloatsEmpty", new Float[0]);
+		json.put("iaDoublesEmpty", new Double[0]);
+		json.put("iaBooleansEmpty", new Boolean[0]);
+		json.put("iaStringsEmpty", new String[0]);
+		json.put("mapNull", (Map<?, ?>)null);
+		json.put("collectionNull", (Collection<?>)null);
+		
+		return json;
 	}
 }
