@@ -15,6 +15,10 @@ jobs:
                 command: mvn test -DrepoToken=$COVERALLS_REPO_TOKEN jacoco:report coveralls:report
             - store_artifacts:
                 path: target/site/jacoco/jacoco.xml
+                destination: jacoco.xml
+            - store_artifacts:
+                path: target/SimpleJSON-2.1.0.jar
+                destination: SimpleJSON-2.1.0.jar
 workflows:
     Workflow:
         jobs:
