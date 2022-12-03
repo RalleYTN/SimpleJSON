@@ -207,6 +207,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -218,7 +219,7 @@ import de.ralleytn.simple.json.JSONObject;
  * Provides static methods which allow you to convert Java objects into {@linkplain JSONObject}s
  * and the other way around.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public final class JSONSerializer {
@@ -232,7 +233,6 @@ public final class JSONSerializer {
 	 * @throws Exception if an error occurs
 	 * @since 1.0.0
 	 */
-	@SuppressWarnings("unchecked")
 	public static final void deserialize(JSONObject json, Object object) throws Exception {
 		
 		Class<?> clazz = object.getClass();
@@ -241,170 +241,148 @@ public final class JSONSerializer {
 		
 		for(Field field : fields) {
 			
-			JSONAttribute annotation = field.getAnnotation(JSONAttribute.class);
-			
-			if(!Modifier.isTransient(field.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
-
-				Class<?> targetType = field.getType();
-				Object value = json.get(annotation.name());
-				
-				if(value != null) {
-					
-					if(float.class.isAssignableFrom(targetType) || Float.class.isAssignableFrom(targetType)) {
-						
-						field.set(object, ((Number)value).floatValue());
-						
-					} else if(double.class.isAssignableFrom(targetType) || Double.class.isAssignableFrom(targetType)) {
-						
-						field.set(object, ((Number)value).doubleValue());
-						
-					} else if(byte.class.isAssignableFrom(targetType) || Byte.class.isAssignableFrom(targetType)) {
-						
-						field.set(object, ((Number)value).byteValue());
-						
-					} else if(short.class.isAssignableFrom(targetType) || Short.class.isAssignableFrom(targetType)) {
-						
-						field.set(object, ((Number)value).shortValue());
-						
-					} else if(int.class.isAssignableFrom(targetType) || Integer.class.isAssignableFrom(targetType)) {
-						
-						field.set(object, ((Number)value).intValue());
-						
-					} else if(long.class.isAssignableFrom(targetType) || Long.class.isAssignableFrom(targetType)) {
-						
-						field.set(object, ((Number)value).longValue());
-						
-					} else if(String.class.isAssignableFrom(targetType) || Number.class.isAssignableFrom(targetType) || Boolean.class.isAssignableFrom(targetType) || boolean.class.isAssignableFrom(targetType)) {
-						
-						field.set(object, value);
-						
-					} else if(Enum.class.isAssignableFrom(targetType)) {
-						
-						for(Object constant : targetType.getEnumConstants()) {
-							
-							if(((Enum<?>)constant).name().equals(value.toString())) {
-								
-								field.set(object, constant);
-								break;
-							}
-						}
-						
-					} else if(targetType.getAnnotation(JSONRoot.class) != null) {
-						
-						Object newObject = targetType.getDeclaredConstructor().newInstance();
-						JSONSerializer.deserialize((JSONObject)value, newObject);
-						field.set(object, newObject);
-						
-					} else if(Map.class.isAssignableFrom(targetType)) {
-						
-						Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
-						JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
-						field.set(object, map);
-						
-					} else if(Collection.class.isAssignableFrom(targetType)) {
-						
-						Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
-						JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
-						field.set(object, collection);
-						
-					} else if(targetType.isArray()) {
-						
-						Object newArray = Array.newInstance(targetType.getComponentType(), ((JSONArray)value).size());
-						JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value));
-						field.set(object, newArray);
-						
-					} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
-						
-						field.set(object, ((JSONTypeSerializationHandler)object).deserialize(targetType, value));
-					}
-				}
-			}
+			deserialzeField(field, clazz, object, json);
 		}
 		
 		for(Method method : methods) {
 
-			JSONAttribute annotation = method.getAnnotation(JSONAttribute.class);
+			deserializeMethod(method, clazz, object, json);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static final void deserialzeField(Field field, Class<?> clazz, Object object, JSONObject json) throws Exception {
+		
+		JSONAttribute annotation = field.getAnnotation(JSONAttribute.class);
+		
+		if(!Modifier.isTransient(field.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
+
+			Class<?> targetType = field.getType();
+			Object value = json.get(annotation.name());
 			
-			if(!Modifier.isTransient(method.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
+			if(value != null) {
 				
-				Class<?> targetType = method.getParameterTypes()[0];
-				
-				if(targetType.isInterface()) {
+					   if(float.class.isAssignableFrom(targetType)  || Float.class.isAssignableFrom(targetType))	{field.set(object, ((Number)value).floatValue());
+				} else if(double.class.isAssignableFrom(targetType) || Double.class.isAssignableFrom(targetType))	{field.set(object, ((Number)value).doubleValue());
+				} else if(byte.class.isAssignableFrom(targetType)   || Byte.class.isAssignableFrom(targetType))		{field.set(object, ((Number)value).byteValue());
+				} else if(short.class.isAssignableFrom(targetType)  || Short.class.isAssignableFrom(targetType))	{field.set(object, ((Number)value).shortValue());
+				} else if(int.class.isAssignableFrom(targetType)    || Integer.class.isAssignableFrom(targetType))	{field.set(object, ((Number)value).intValue());
+				} else if(long.class.isAssignableFrom(targetType)   || Long.class.isAssignableFrom(targetType))		{field.set(object, ((Number)value).longValue());
 					
-					throw new Exception("Cannot deserialize an interface! Method: " + method.getName() + ", Interface: " + targetType.getName());
-				}
-				
-				Object value = json.get(annotation.name());
-				
-				if(value != null) {
+				} else if(String.class.isAssignableFrom(targetType) || Number.class.isAssignableFrom(targetType) || Boolean.class.isAssignableFrom(targetType) || boolean.class.isAssignableFrom(targetType)) {
 					
-					if(float.class.isAssignableFrom(targetType) || Float.class.isAssignableFrom(targetType)) {
+					field.set(object, value);
+					
+				} else if(Enum.class.isAssignableFrom(targetType)) {
+					
+					for(Object constant : targetType.getEnumConstants()) {
 						
-						method.invoke(object, ((Number)value).floatValue());
-						
-					} else if(double.class.isAssignableFrom(targetType) || Double.class.isAssignableFrom(targetType)) {
-						
-						method.invoke(object, ((Number)value).doubleValue());
-						
-					} else if(byte.class.isAssignableFrom(targetType) || Byte.class.isAssignableFrom(targetType)) {
-						
-						method.invoke(object, ((Number)value).byteValue());
-						
-					} else if(short.class.isAssignableFrom(targetType) || Short.class.isAssignableFrom(targetType)) {
-						
-						method.invoke(object, ((Number)value).shortValue());
-						
-					} else if(int.class.isAssignableFrom(targetType) || Integer.class.isAssignableFrom(targetType)) {
-						
-						method.invoke(object, ((Number)value).intValue());
-						
-					} else if(long.class.isAssignableFrom(targetType) || Long.class.isAssignableFrom(targetType)) {
-						
-						method.invoke(object, ((Number)value).longValue());
-						
-					} else if(String.class.isAssignableFrom(targetType) || Number.class.isAssignableFrom(targetType) || Boolean.class.isAssignableFrom(targetType) || boolean.class.isAssignableFrom(targetType)) {
-						
-						method.invoke(object, value);
-						
-					} else if(Enum.class.isAssignableFrom(targetType)) {
-						
-						for(Object constant : targetType.getEnumConstants()) {
+						if(((Enum<?>)constant).name().equals(value.toString())) {
 							
-							if(((Enum<?>)constant).name().equals(value.toString())) {
-								
-								method.invoke(object, constant);
-								break;
-							}
+							field.set(object, constant);
+							break;
 						}
-						
-					} else if(targetType.getAnnotation(JSONRoot.class) != null) {
-						
-						Object newObject = targetType.getDeclaredConstructor().newInstance();
-						JSONSerializer.deserialize((JSONObject)value, newObject);
-						method.invoke(object, newObject);
-						
-					} else if(Map.class.isAssignableFrom(targetType)) {
-						
-						Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
-						JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
-						method.invoke(object, map);
-						
-					} else if(Collection.class.isAssignableFrom(targetType)) {
-						
-						Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
-						JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
-						method.invoke(object, collection);
-						
-					} else if(targetType.isArray()) {
-						
-						Object newArray = Array.newInstance(targetType.getComponentType(), ((JSONArray)value).size());
-						JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value));
-						method.invoke(object, newArray);
-						
-					} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
-						
-						method.invoke(object, ((JSONTypeSerializationHandler)object).deserialize(targetType, value));
 					}
+					
+				} else if(targetType.getAnnotation(JSONRoot.class) != null) {
+					
+					Object newObject = targetType.getDeclaredConstructor().newInstance();
+					JSONSerializer.deserialize((JSONObject)value, newObject);
+					field.set(object, newObject);
+					
+				} else if(Map.class.isAssignableFrom(targetType)) {
+					
+					Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
+					JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
+					field.set(object, map);
+					
+				} else if(Collection.class.isAssignableFrom(targetType)) {
+					
+					Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
+					JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
+					field.set(object, collection);
+					
+				} else if(targetType.isArray()) {
+					
+					Object newArray = Array.newInstance(targetType.getComponentType(), ((JSONArray)value).size());
+					JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value));
+					field.set(object, newArray);
+					
+				} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
+					
+					field.set(object, ((JSONTypeSerializationHandler)object).deserialize(targetType, value));
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static final void deserializeMethod(Method method, Class<?> clazz, Object object, JSONObject json) throws Exception {
+		
+		JSONAttribute annotation = method.getAnnotation(JSONAttribute.class);
+		
+		if(!Modifier.isTransient(method.getModifiers()) && annotation != null && JSONSerializer.contains(JSONAttribute.Type.SETTER, annotation)) {
+			
+			Class<?> targetType = method.getParameterTypes()[0];
+			
+			if(targetType.isInterface()) {
+				
+				throw new Exception("Cannot deserialize an interface! Method: " + method.getName() + ", Interface: " + targetType.getName());
+			}
+			
+			Object value = json.get(annotation.name());
+			
+			if(value != null) {
+				
+					   if(float.class.isAssignableFrom(targetType)  || Float.class.isAssignableFrom(targetType))	{method.invoke(object, ((Number)value).floatValue());
+				} else if(double.class.isAssignableFrom(targetType) || Double.class.isAssignableFrom(targetType))	{method.invoke(object, ((Number)value).doubleValue());
+				} else if(byte.class.isAssignableFrom(targetType)   || Byte.class.isAssignableFrom(targetType))		{method.invoke(object, ((Number)value).byteValue());
+				} else if(short.class.isAssignableFrom(targetType)  || Short.class.isAssignableFrom(targetType))	{method.invoke(object, ((Number)value).shortValue());
+				} else if(int.class.isAssignableFrom(targetType)    || Integer.class.isAssignableFrom(targetType))	{method.invoke(object, ((Number)value).intValue());
+				} else if(long.class.isAssignableFrom(targetType)   || Long.class.isAssignableFrom(targetType))		{method.invoke(object, ((Number)value).longValue());
+					
+				} else if(String.class.isAssignableFrom(targetType) || Number.class.isAssignableFrom(targetType) || Boolean.class.isAssignableFrom(targetType) || boolean.class.isAssignableFrom(targetType)) {
+					
+					method.invoke(object, value);
+					
+				} else if(Enum.class.isAssignableFrom(targetType)) {
+					
+					for(Object constant : targetType.getEnumConstants()) {
+						
+						if(((Enum<?>)constant).name().equals(value.toString())) {
+							
+							method.invoke(object, constant);
+							break;
+						}
+					}
+					
+				} else if(targetType.getAnnotation(JSONRoot.class) != null) {
+					
+					Object newObject = targetType.getDeclaredConstructor().newInstance();
+					JSONSerializer.deserialize((JSONObject)value, newObject);
+					method.invoke(object, newObject);
+					
+				} else if(Map.class.isAssignableFrom(targetType)) {
+					
+					Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
+					JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
+					method.invoke(object, map);
+					
+				} else if(Collection.class.isAssignableFrom(targetType)) {
+					
+					Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
+					JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
+					method.invoke(object, collection);
+					
+				} else if(targetType.isArray()) {
+					
+					Object newArray = Array.newInstance(targetType.getComponentType(), ((JSONArray)value).size());
+					JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value));
+					method.invoke(object, newArray);
+					
+				} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
+					
+					method.invoke(object, ((JSONTypeSerializationHandler)object).deserialize(targetType, value));
 				}
 			}
 		}
@@ -424,29 +402,12 @@ public final class JSONSerializer {
 					throw new Exception("Cannot deserialize an interface! Interface: " + type.getName());
 				}
 				
-				if(float.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)) {
-					
-					collection.add(((Number)value).floatValue());
-					
-				} else if(double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type)) {
-					
-					collection.add(((Number)value).doubleValue());
-					
-				} else if(byte.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)) {
-					
-					collection.add(((Number)value).byteValue());
-					
-				} else if(short.class.isAssignableFrom(type) || Short.class.isAssignableFrom(type)) {
-					
-					collection.add(((Number)value).shortValue());
-					
-				} else if(int.class.isAssignableFrom(type) || Integer.class.isAssignableFrom(type)) {
-					
-					collection.add(((Number)value).intValue());
-					
-				} else if(long.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)) {
-					
-					collection.add(((Number)value).longValue());
+					   if(float.class.isAssignableFrom(type)  || Float.class.isAssignableFrom(type))	{collection.add(((Number)value).floatValue());
+				} else if(double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type))	{collection.add(((Number)value).doubleValue());
+				} else if(byte.class.isAssignableFrom(type)   || Byte.class.isAssignableFrom(type))		{collection.add(((Number)value).byteValue());
+				} else if(short.class.isAssignableFrom(type)  || Short.class.isAssignableFrom(type))	{collection.add(((Number)value).shortValue());
+				} else if(int.class.isAssignableFrom(type)    || Integer.class.isAssignableFrom(type))	{collection.add(((Number)value).intValue());
+				} else if(long.class.isAssignableFrom(type)   || Long.class.isAssignableFrom(type))		{collection.add(((Number)value).longValue());
 					
 				} else if(String.class.isAssignableFrom(type) || Number.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
 		
@@ -516,29 +477,12 @@ public final class JSONSerializer {
 					throw new Exception("Cannot deserialize an interface! Interface: " + type.getName());
 				}
 				
-				if(float.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)) {
-					
-					map.put(entry.getKey(), ((Number)value).floatValue());
-					
-				} else if(double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type)) {
-					
-					map.put(entry.getKey(), ((Number)value).doubleValue());
-					
-				} else if(byte.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)) {
-					
-					map.put(entry.getKey(), ((Number)value).byteValue());
-					
-				} else if(short.class.isAssignableFrom(type) || Short.class.isAssignableFrom(type)) {
-					
-					map.put(entry.getKey(), ((Number)value).shortValue());
-					
-				} else if(int.class.isAssignableFrom(type) || Integer.class.isAssignableFrom(type)) {
-					
-					map.put(entry.getKey(), ((Number)value).intValue());
-					
-				} else if(long.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)) {
-					
-					map.put(entry.getKey(), ((Number)value).longValue());
+					   if(float.class.isAssignableFrom(type)  || Float.class.isAssignableFrom(type))	{map.put(entry.getKey(), ((Number)value).floatValue());
+				} else if(double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type))	{map.put(entry.getKey(), ((Number)value).doubleValue());
+				} else if(byte.class.isAssignableFrom(type)   || Byte.class.isAssignableFrom(type))		{map.put(entry.getKey(), ((Number)value).byteValue());
+				} else if(short.class.isAssignableFrom(type)  || Short.class.isAssignableFrom(type))	{map.put(entry.getKey(), ((Number)value).shortValue());
+				} else if(int.class.isAssignableFrom(type)    || Integer.class.isAssignableFrom(type))	{map.put(entry.getKey(), ((Number)value).intValue());
+				} else if(long.class.isAssignableFrom(type)   || Long.class.isAssignableFrom(type))		{map.put(entry.getKey(), ((Number)value).longValue());
 					
 				} else if(String.class.isAssignableFrom(type) || Number.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
 		
@@ -605,30 +549,13 @@ public final class JSONSerializer {
 			
 			Object value = json.get(index);
 			
-			if(float.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)) {
-				
-				Array.set(targetObject, index, ((Number)value).floatValue());
-				
-			} else if(double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type)) {
-				
-				Array.set(targetObject, index, ((Number)value).doubleValue());
-				
-			} else if(byte.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)) {
-				
-				Array.set(targetObject, index, ((Number)value).byteValue());
-				
-			} else if(short.class.isAssignableFrom(type) || Short.class.isAssignableFrom(type)) {
-				
-				Array.set(targetObject, index, ((Number)value).shortValue());
-				
-			} else if(int.class.isAssignableFrom(type) || Integer.class.isAssignableFrom(type)) {
-				
-				Array.set(targetObject, index, ((Number)value).intValue());
-				
-			} else if(long.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)) {
-				
-				Array.set(targetObject, index, ((Number)value).longValue());
-				
+				   if(float.class.isAssignableFrom(type)  || Float.class.isAssignableFrom(type))	{Array.set(targetObject, index, ((Number)value).floatValue());
+			} else if(double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type))	{Array.set(targetObject, index, ((Number)value).doubleValue());
+			} else if(byte.class.isAssignableFrom(type)   || Byte.class.isAssignableFrom(type))		{Array.set(targetObject, index, ((Number)value).byteValue());
+			} else if(short.class.isAssignableFrom(type)  || Short.class.isAssignableFrom(type))	{Array.set(targetObject, index, ((Number)value).shortValue());
+			} else if(int.class.isAssignableFrom(type)    || Integer.class.isAssignableFrom(type))	{Array.set(targetObject, index, ((Number)value).intValue());
+			} else if(long.class.isAssignableFrom(type)   || Long.class.isAssignableFrom(type))		{Array.set(targetObject, index, ((Number)value).longValue());
+			
 			} else if(String.class.isAssignableFrom(type) || Number.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
 	
 				Array.set(targetObject, index, value);
@@ -689,6 +616,9 @@ public final class JSONSerializer {
 		Method[] methods = clazz.getMethods();
 		JSONObject json = new JSONObject();
 		
+		Arrays.sort(fields, (o1, o2) -> o1.toString().compareTo(o2.toString()));
+		Arrays.sort(methods, (o1, o2) -> o1.toString().compareTo(o2.toString()));
+		
 		for(Field field : fields) {
 
 			JSONAttribute annotation = field.getAnnotation(JSONAttribute.class);
@@ -714,21 +644,21 @@ public final class JSONSerializer {
 	
 	private static final void serialize(JSONObject json, Class<?> clazz, Object classObject, Class<?> type, Object value, JSONAttribute annotation) throws Exception {
 
-		       if(value instanceof String || value instanceof Boolean) {json.put(annotation.name(), value);
-		} else if(value instanceof Number) {json.put(annotation.name(), value != null ? ((Number)value).longValue() : null);
-		} else if(value instanceof boolean[]) {json.put(annotation.name(), new JSONArray((boolean[])value));
-		} else if(value instanceof byte[]) {json.put(annotation.name(), new JSONArray((byte[])value));
-		} else if(value instanceof short[]) {json.put(annotation.name(), new JSONArray((short[])value));
-		} else if(value instanceof int[]) {json.put(annotation.name(), new JSONArray((int[])value));
-		} else if(value instanceof long[]) {json.put(annotation.name(), new JSONArray((long[])value));
-		} else if(value instanceof float[]) {json.put(annotation.name(), new JSONArray((float[])value));
-		} else if(value instanceof double[]) {json.put(annotation.name(), new JSONArray((double[])value));
-		} else if(value != null && value.getClass().isArray()) {json.put(annotation.name(), JSONSerializer.serializeArray(value, clazz, classObject));
-		} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.put(annotation.name(), JSONSerializer.serialize(value));
-		} else if(value instanceof Collection) {json.put(annotation.name(), JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
-		} else if(value instanceof Map) {json.put(annotation.name(), JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
-		} else if(value instanceof Enum) {json.put(annotation.name(), ((Enum<?>)value).name());
-		} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {json.put(annotation.name(), ((JSONTypeSerializationHandler)classObject).serialize(type, value));
+		       if(value instanceof String || value instanceof Boolean)						{json.put(annotation.name(), value);
+		} else if(value instanceof Number)													{json.put(annotation.name(), value != null ? ((Number)value).longValue() : null);
+		} else if(value instanceof boolean[])												{json.put(annotation.name(), new JSONArray((boolean[])value));
+		} else if(value instanceof byte[])													{json.put(annotation.name(), new JSONArray((byte[])value));
+		} else if(value instanceof short[])													{json.put(annotation.name(), new JSONArray((short[])value));
+		} else if(value instanceof int[])													{json.put(annotation.name(), new JSONArray((int[])value));
+		} else if(value instanceof long[])													{json.put(annotation.name(), new JSONArray((long[])value));
+		} else if(value instanceof float[])													{json.put(annotation.name(), new JSONArray((float[])value));
+		} else if(value instanceof double[])												{json.put(annotation.name(), new JSONArray((double[])value));
+		} else if(value != null && value.getClass().isArray())								{json.put(annotation.name(), JSONSerializer.serializeArray(value, clazz, classObject));
+		} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null)	{json.put(annotation.name(), JSONSerializer.serialize(value));
+		} else if(value instanceof Collection) 												{json.put(annotation.name(), JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
+		} else if(value instanceof Map)														{json.put(annotation.name(), JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
+		} else if(value instanceof Enum)													{json.put(annotation.name(), ((Enum<?>)value).name());
+		} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz))				{json.put(annotation.name(), ((JSONTypeSerializationHandler)classObject).serialize(type, value));
 		} else {
 			
 			json.put(annotation.name(), value);
@@ -743,20 +673,20 @@ public final class JSONSerializer {
 			
 			Object value = entry.getValue();
 			
-			       if(value instanceof boolean[]) {json.put(entry.getKey(), new JSONArray((boolean[])value));
-			} else if(value instanceof byte[]) {json.put(entry.getKey(), new JSONArray((byte[])value));
-			} else if(value instanceof short[]) {json.put(entry.getKey(), new JSONArray((short[])value));
-			} else if(value instanceof int[]) {json.put(entry.getKey(), new JSONArray((int[])value));
-			} else if(value instanceof long[]) {json.put(entry.getKey(), new JSONArray((long[])value));
-			} else if(value instanceof float[]) {json.put(entry.getKey(), new JSONArray((float[])value));
-			} else if(value instanceof double[]) {json.put(entry.getKey(), new JSONArray((double[])value));
-			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.put(entry.getKey(), JSONSerializer.serialize(value));
-			} else if(value instanceof Map) {json.put(entry.getKey(), JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
-			} else if(value instanceof Collection) {json.put(entry.getKey(), JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
-			} else if(value != null && value.getClass().isArray()) {json.put(entry.getKey(), JSONSerializer.serializeArray(value, clazz, classObject));
-			} else if(value instanceof Enum) {json.put(entry.getKey(), ((Enum<?>)value).name());
-			} else if(value instanceof String || value instanceof Boolean || value instanceof Number) {json.put(entry.getKey(), value);
-			} else if(value != null && JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {json.put(entry.getKey(), ((JSONTypeSerializationHandler)classObject).serialize(value.getClass(), value));
+			       if(value instanceof boolean[])														{json.put(entry.getKey(), new JSONArray((boolean[])value));
+			} else if(value instanceof byte[])															{json.put(entry.getKey(), new JSONArray((byte[])value));
+			} else if(value instanceof short[])															{json.put(entry.getKey(), new JSONArray((short[])value));
+			} else if(value instanceof int[])															{json.put(entry.getKey(), new JSONArray((int[])value));
+			} else if(value instanceof long[])															{json.put(entry.getKey(), new JSONArray((long[])value));
+			} else if(value instanceof float[])															{json.put(entry.getKey(), new JSONArray((float[])value));
+			} else if(value instanceof double[])														{json.put(entry.getKey(), new JSONArray((double[])value));
+			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null)			{json.put(entry.getKey(), JSONSerializer.serialize(value));
+			} else if(value instanceof Map)																{json.put(entry.getKey(), JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
+			} else if(value instanceof Collection)														{json.put(entry.getKey(), JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
+			} else if(value != null && value.getClass().isArray())										{json.put(entry.getKey(), JSONSerializer.serializeArray(value, clazz, classObject));
+			} else if(value instanceof Enum)															{json.put(entry.getKey(), ((Enum<?>)value).name());
+			} else if(value instanceof String || value instanceof Boolean || value instanceof Number)	{json.put(entry.getKey(), value);
+			} else if(value != null && JSONTypeSerializationHandler.class.isAssignableFrom(clazz))		{json.put(entry.getKey(), ((JSONTypeSerializationHandler)classObject).serialize(value.getClass(), value));
 			} else {
 				
 				json.put(entry.getKey(), value);
@@ -775,20 +705,20 @@ public final class JSONSerializer {
 			
 			Object value = iterator.next();
 			
-			       if(value instanceof boolean[]) {json.add(new JSONArray((boolean[])value));
-			} else if(value instanceof byte[]) {json.add(new JSONArray((byte[])value));
-			} else if(value instanceof short[]) {json.add(new JSONArray((short[])value));
-			} else if(value instanceof int[]) {json.add(new JSONArray((int[])value));
-			} else if(value instanceof long[]) {json.add(new JSONArray((long[])value));
-			} else if(value instanceof float[]) {json.add(new JSONArray((float[])value));
-			} else if(value instanceof double[]) {json.add(new JSONArray((double[])value));
-			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.add(JSONSerializer.serialize(value));
-			} else if(value instanceof Map) {json.add(JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
-			} else if(value instanceof Collection) {json.add(JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
-			} else if(value != null && value.getClass().isArray()) {json.add(JSONSerializer.serializeArray(value, clazz, classObject));
-			} else if(value instanceof Enum) {json.add(((Enum<?>)value).name());
-			} else if(value instanceof String || value instanceof Boolean || value instanceof Number) {json.add(value);
-			} else if(value != null && JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {((JSONTypeSerializationHandler)classObject).serialize(value.getClass(), value);
+			       if(value instanceof boolean[])														{json.add(new JSONArray((boolean[])value));
+			} else if(value instanceof byte[])															{json.add(new JSONArray((byte[])value));
+			} else if(value instanceof short[])															{json.add(new JSONArray((short[])value));
+			} else if(value instanceof int[])															{json.add(new JSONArray((int[])value));
+			} else if(value instanceof long[])															{json.add(new JSONArray((long[])value));
+			} else if(value instanceof float[])															{json.add(new JSONArray((float[])value));
+			} else if(value instanceof double[])														{json.add(new JSONArray((double[])value));
+			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null)			{json.add(JSONSerializer.serialize(value));
+			} else if(value instanceof Map)																{json.add(JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
+			} else if(value instanceof Collection)														{json.add(JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
+			} else if(value != null && value.getClass().isArray())										{json.add(JSONSerializer.serializeArray(value, clazz, classObject));
+			} else if(value instanceof Enum)															{json.add(((Enum<?>)value).name());
+			} else if(value instanceof String || value instanceof Boolean || value instanceof Number)	{json.add(value);
+			} else if(value != null && JSONTypeSerializationHandler.class.isAssignableFrom(clazz))		{((JSONTypeSerializationHandler)classObject).serialize(value.getClass(), value);
 			} else {
 				
 				json.add(value);
@@ -806,20 +736,20 @@ public final class JSONSerializer {
 			
 			Object value = Array.get(array, index);
 			
-			       if(value instanceof boolean[]) {json.add(new JSONArray((boolean[])value));
-			} else if(value instanceof byte[]) {json.add(new JSONArray((byte[])value));
-			} else if(value instanceof short[]) {json.add(new JSONArray((short[])value));
-			} else if(value instanceof int[]) {json.add(new JSONArray((int[])value));
-			} else if(value instanceof long[]) {json.add(new JSONArray((long[])value));
-			} else if(value instanceof float[]) {json.add(new JSONArray((float[])value));
-			} else if(value instanceof double[]) {json.add(new JSONArray((double[])value));
-			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null) {json.add(JSONSerializer.serialize(value));
-			} else if(value instanceof Map) {json.add(JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
-			} else if(value instanceof Collection) {json.add(JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
-			} else if(value != null && value.getClass().isArray()) {json.add(JSONSerializer.serializeArray(value, clazz, classObject));
-			} else if(value instanceof Enum) {json.add(((Enum<?>)value).name());
-			} else if(value instanceof String || value instanceof Boolean || value instanceof Number) {json.add(value);
-			} else if(value != null && JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {json.add(((JSONTypeSerializationHandler)classObject).serialize(value.getClass(), value));
+			       if(value instanceof boolean[])														{json.add(new JSONArray((boolean[])value));
+			} else if(value instanceof byte[])															{json.add(new JSONArray((byte[])value));
+			} else if(value instanceof short[])															{json.add(new JSONArray((short[])value));
+			} else if(value instanceof int[])															{json.add(new JSONArray((int[])value));
+			} else if(value instanceof long[])															{json.add(new JSONArray((long[])value));
+			} else if(value instanceof float[])															{json.add(new JSONArray((float[])value));
+			} else if(value instanceof double[])														{json.add(new JSONArray((double[])value));
+			} else if(value != null && value.getClass().getAnnotation(JSONRoot.class) != null)			{json.add(JSONSerializer.serialize(value));
+			} else if(value instanceof Map)																{json.add(JSONSerializer.serializeObject((Map<?, ?>)value, clazz, classObject));
+			} else if(value instanceof Collection)														{json.add(JSONSerializer.serializeArray((Collection<?>)value, clazz, classObject));
+			} else if(value != null && value.getClass().isArray())										{json.add(JSONSerializer.serializeArray(value, clazz, classObject));
+			} else if(value instanceof Enum)															{json.add(((Enum<?>)value).name());
+			} else if(value instanceof String || value instanceof Boolean || value instanceof Number)	{json.add(value);
+			} else if(value != null && JSONTypeSerializationHandler.class.isAssignableFrom(clazz))		{json.add(((JSONTypeSerializationHandler)classObject).serialize(value.getClass(), value));
 			} else {
 				
 				json.add(value);

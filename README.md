@@ -64,6 +64,7 @@ try {
 - *BUGFIX*: Fixed a typo in `JSONParseException`
 - *BUGFIX*: Fixed a possible `NullPointerException` in `JSONObject#equals(Object)`
 - *BUGFIX*: Fixed a possible `NullPointerException` in `JSONArray#equals(Object)`
+- *BUGFIX*: Fixed a bug that would cause the JSON output of a serialized object to be differently ordered on every run
 
 ### Version 2.0.0
 <sub>NOTE: This version is incompatible with older versions of the library.</sub>
