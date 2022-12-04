@@ -64,8 +64,9 @@ try {
 - *BUGFIX*: Fixed a typo in `JSONParseException`
 - *BUGFIX*: Fixed a possible `NullPointerException` in `JSONObject#equals(Object)`
 - *BUGFIX*: Fixed a possible `NullPointerException` in `JSONArray#equals(Object)`
-- *BUGFIX*: Fixed a bug that would cause the JSON output of a serialized object to be differently ordered on every run
-- *BUGFIX*: Fixed a bug that would cause character arrays to not convert into string arrays during JSON output under certain circumstances.
+- *BUGFIX*: Fixed a bug that caused the JSON output of a serialized object to be differently ordered on every run
+- *BUGFIX*: Fixed a bug that cased floating point numbers to be serialized as integers
+- *BUGFIX*: Fixed a bug that caused character arrays to not convert into string arrays during JSON output under certain circumstances.
 
 ### Version 2.0.0
 <sub>NOTE: This version is incompatible with older versions of the library.</sub>

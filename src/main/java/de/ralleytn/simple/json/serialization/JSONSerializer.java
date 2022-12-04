@@ -645,6 +645,8 @@ public final class JSONSerializer {
 	private static final void serialize(JSONObject json, Class<?> clazz, Object classObject, Class<?> type, Object value, JSONAttribute annotation) throws Exception {
 
 		       if(value instanceof String || value instanceof Boolean)						{json.put(annotation.name(), value);
+		} else if(value instanceof Float) 													{json.put(annotation.name(), value != null ? ((Number)value).floatValue() : null);
+		} else if(value instanceof Double)													{json.put(annotation.name(), value != null ? ((Number)value).doubleValue() : null);
 		} else if(value instanceof Number)													{json.put(annotation.name(), value != null ? ((Number)value).longValue() : null);
 		} else if(value instanceof boolean[])												{json.put(annotation.name(), new JSONArray((boolean[])value));
 		} else if(value instanceof byte[])													{json.put(annotation.name(), new JSONArray((byte[])value));
