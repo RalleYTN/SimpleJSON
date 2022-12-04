@@ -212,7 +212,7 @@ import java.lang.annotation.Target;
 /**
  * Marks a JSON attribute for serialization.
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -233,6 +233,13 @@ public @interface JSONAttribute {
 	 * @since 1.0.0
 	 */
 	public Type[] type() default {Type.GETTER, Type.SETTER};
+	
+	/**
+	 * Defines the 
+	 * @return the generic type for the values within the attribute for correct mapping during deserialization.
+	 * @since 2.1.0
+	 */
+	public Class<?> genericType() default void.class;
 	
 	/**
 	 * Represents the type of an attribute. Not the data type but more if it's read only or not.

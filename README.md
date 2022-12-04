@@ -61,11 +61,13 @@ try {
 - *[#7](https://github.com/RalleYTN/SimpleJSON/issues/7)*: Added new constructor to `JSONFormatter`
 - *[#6](https://github.com/RalleYTN/SimpleJSON/issues/6)*: Added `JSONFormatter#format(JSONArray,Writer)`
 - *[#6](https://github.com/RalleYTN/SimpleJSON/issues/6)*: Added `JSONFormatter#format(JSONObject,Writer)`
+- Added `JSONAttribute#genericType()`
 - *BUGFIX*: Fixed a typo in `JSONParseException`
 - *BUGFIX*: Fixed a possible `NullPointerException` in `JSONObject#equals(Object)`
 - *BUGFIX*: Fixed a possible `NullPointerException` in `JSONArray#equals(Object)`
 - *BUGFIX*: Fixed a bug that caused the JSON output of a serialized object to be differently ordered on every run
-- *BUGFIX*: Fixed a bug that cased floating point numbers to be serialized as integers
+- *BUGFIX*: Fixed a bug that caused floating point numbers to be serialized as integers
+- *BUGFIX*: Fixed a bug that caused values of collections and maps to be deserialized as `JSONObject` instead of their respectively defined generic type.
 - *BUGFIX*: Fixed a bug that caused character arrays to not convert into string arrays during JSON output under certain circumstances.
 
 ### Version 2.0.0

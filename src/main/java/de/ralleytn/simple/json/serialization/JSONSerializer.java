@@ -251,13 +251,18 @@ public final class JSONSerializer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static final void deserialize(Class<?> clazz, Object classObject, Collection<Object> collection, JSONArray json) throws Exception {
+	private static final void deserialize(Class<?> clazz, Object classObject, Collection<Object> collection, JSONArray json, JSONAttribute annotation) throws Exception {
 		
 		for(Object value : json) {
 			
 			if(value != null) {
 				
 				Class<?> type = value.getClass();
+				
+				if(!annotation.genericType().equals(void.class)) {
+					
+					type = annotation.genericType();
+				}
 				
 				if(type.isInterface()) {
 					
@@ -295,19 +300,19 @@ public final class JSONSerializer {
 				} else if(Map.class.isAssignableFrom(type)) {
 					
 					Map<Object, Object> newMap = (Map<Object, Object>)type.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, classObject, newMap, (JSONObject)value);
+					JSONSerializer.deserialize(clazz, classObject, newMap, (JSONObject)value, annotation);
 					collection.add(newMap);
 					
 				} else if(Collection.class.isAssignableFrom(type)) {
 
 					Collection<Object> newCollection = (Collection<Object>)type.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, classObject, newCollection, (JSONArray)value);
+					JSONSerializer.deserialize(clazz, classObject, newCollection, (JSONArray)value, annotation);
 					collection.add(newCollection);
 					
 				} else if(type.isArray()) {
 					
 					Object newArray = Array.newInstance(type.getComponentType(), ((JSONArray)value).size());
-					JSONSerializer.deserialize(clazz, classObject, newArray, ((JSONArray)value));
+					JSONSerializer.deserialize(clazz, classObject, newArray, ((JSONArray)value), annotation);
 					collection.add(newArray);
 					
 				} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
@@ -323,7 +328,7 @@ public final class JSONSerializer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static final void deserialize(Class<?> clazz, Object classObject, Map<Object, Object> map, JSONObject json) throws Exception {
+	private static final void deserialize(Class<?> clazz, Object classObject, Map<Object, Object> map, JSONObject json, JSONAttribute annotation) throws Exception {
 
 		for(Object jsonEntry : json.entrySet()) {
 			
@@ -333,6 +338,11 @@ public final class JSONSerializer {
 			if(value != null) {
 				
 				Class<?> type = value.getClass();
+				
+				if(!annotation.genericType().equals(void.class)) {
+					
+					type = annotation.genericType();
+				}
 				
 				if(type.isInterface()) {
 					
@@ -370,19 +380,19 @@ public final class JSONSerializer {
 				} else if(Map.class.isAssignableFrom(type)) {
 					
 					Map<Object, Object> newMap = (Map<Object, Object>)type.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, classObject, newMap, (JSONObject)value);
+					JSONSerializer.deserialize(clazz, classObject, newMap, (JSONObject)value, annotation);
 					map.put(entry.getKey(), newMap);
 					
 				} else if(Collection.class.isAssignableFrom(type)) {
 					
 					Collection<Object> collection = (Collection<Object>)type.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, classObject, collection, (JSONArray)value);
+					JSONSerializer.deserialize(clazz, classObject, collection, (JSONArray)value, annotation);
 					map.put(entry.getKey(), collection);
 					
 				} else if(type.isArray()) {
 					
 					Object newArray = Array.newInstance(type.getComponentType(), ((JSONArray)value).size());
-					JSONSerializer.deserialize(clazz, classObject, newArray, ((JSONArray)value));
+					JSONSerializer.deserialize(clazz, classObject, newArray, ((JSONArray)value), annotation);
 					map.put(entry.getKey(), newArray);
 					
 				} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
@@ -398,7 +408,7 @@ public final class JSONSerializer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static final void deserialize(Class<?> clazz, Object classObject, Object targetObject, JSONArray json) throws Exception {
+	private static final void deserialize(Class<?> clazz, Object classObject, Object targetObject, JSONArray json, JSONAttribute annotation) throws Exception {
 
 		Class<?> type = targetObject.getClass().getComponentType();
 		
@@ -442,19 +452,19 @@ public final class JSONSerializer {
 			} else if(Map.class.isAssignableFrom(type)) {
 				
 				Map<Object, Object> map = (Map<Object, Object>)type.getDeclaredConstructor().newInstance();
-				JSONSerializer.deserialize(clazz, classObject, map, (JSONObject)value);
+				JSONSerializer.deserialize(clazz, classObject, map, (JSONObject)value, annotation);
 				Array.set(targetObject, index, map);
 				
 			} else if(Collection.class.isAssignableFrom(type)) {
 				
 				Collection<Object> collection = (Collection<Object>)type.getDeclaredConstructor().newInstance();
-				JSONSerializer.deserialize(clazz, classObject, collection, (JSONArray)value);
+				JSONSerializer.deserialize(clazz, classObject, collection, (JSONArray)value, annotation);
 				Array.set(targetObject, index, collection);
 				
 			} else if(type.isArray()) {
 				
 				Object newArray = Array.newInstance(type.getComponentType(), ((JSONArray)value).size());
-				JSONSerializer.deserialize(clazz, classObject, newArray, ((JSONArray)value));
+				JSONSerializer.deserialize(clazz, classObject, newArray, ((JSONArray)value), annotation);
 				Array.set(targetObject, index, newArray);
 				
 			} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
@@ -507,19 +517,19 @@ public final class JSONSerializer {
 				} else if(Map.class.isAssignableFrom(targetType)) {
 					
 					Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
+					JSONSerializer.deserialize(clazz, object, map, (JSONObject)value, annotation);
 					field.set(object, map);
 					
 				} else if(Collection.class.isAssignableFrom(targetType)) {
 					
 					Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
+					JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value, annotation);
 					field.set(object, collection);
 					
 				} else if(targetType.isArray()) {
 					
 					Object newArray = Array.newInstance(targetType.getComponentType(), ((JSONArray)value).size());
-					JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value));
+					JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value), annotation);
 					field.set(object, newArray);
 					
 				} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
@@ -579,19 +589,19 @@ public final class JSONSerializer {
 				} else if(Map.class.isAssignableFrom(targetType)) {
 					
 					Map<Object, Object> map = (Map<Object, Object>)targetType.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, object, map, (JSONObject)value);
+					JSONSerializer.deserialize(clazz, object, map, (JSONObject)value, annotation);
 					method.invoke(object, map);
 					
 				} else if(Collection.class.isAssignableFrom(targetType)) {
 					
 					Collection<Object> collection = (Collection<Object>)targetType.getDeclaredConstructor().newInstance();
-					JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value);
+					JSONSerializer.deserialize(clazz, object, collection, (JSONArray)value, annotation);
 					method.invoke(object, collection);
 					
 				} else if(targetType.isArray()) {
 					
 					Object newArray = Array.newInstance(targetType.getComponentType(), ((JSONArray)value).size());
-					JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value));
+					JSONSerializer.deserialize(clazz, object, newArray, ((JSONArray)value), annotation);
 					method.invoke(object, newArray);
 					
 				} else if(JSONTypeSerializationHandler.class.isAssignableFrom(clazz)) {
