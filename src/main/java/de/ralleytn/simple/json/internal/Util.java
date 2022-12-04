@@ -447,12 +447,12 @@ public final class Util {
 		} else {
 			
 			writer.write("[");
-			writer.write(""+ array[0]);
+			writer.write("\"" + array[0] + "\"");
 			
 			for(int index = 1; index < array.length; index++) {
 				
 				writer.write(",");
-				writer.write("" + array[index]);
+				writer.write("\"" + array[index] + "\"");
 			}
 			
 			writer.write("]");
