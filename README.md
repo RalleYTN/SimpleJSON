@@ -49,6 +49,36 @@ try {
 }
 ```
 
+## Maven
+
+In order to use SimpleJSON as a Maven dependency in your own projects you first have to include Jitpack as a repository to your POM.
+
+```xml
+<project>
+	...
+	<repositories>
+		...
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+		...
+	</repositories>
+	...
+</project>
+```
+
+Then add the following as dependency:
+
+```xml
+<dependency>
+	<groupId>com.github.RalleYTN</groupId>
+	<artifactId>SimpleJSON</artifactId>
+	<!-- NOTE: You can also use the commit ID as version number -->
+	<version>2.1.0</version>
+</dependency>
+```
+
 ## Changelog
 
 ### Version 2.1.0
