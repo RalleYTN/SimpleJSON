@@ -207,7 +207,7 @@ package de.ralleytn.simple.json.internal;
  * Represents a token.
  * @author FangYidong(fangyidong@yahoo.com.cn)
  * @author Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public class Yytoken {
@@ -219,7 +219,18 @@ public class Yytoken {
 	/** @since 1.0.0 */ public static final int TYPE_RIGHT_SQUARE = 4;
 	/** @since 1.0.0 */ public static final int TYPE_COMMA = 5;
 	/** @since 1.0.0 */ public static final int TYPE_COLON = 6;
-	/** @since 1.0.0 */ public static final int TYPE_EOF = -1;
+	/** @since 1.0.0 */ public static final int TYPE_EOF = 7;
+	
+	private static final String[] TYPE_STRINGS = new String[] {
+		"",
+		"LEFT BRACE({)",
+		"RIGHT BRACE(})",
+		"LEFT SQUARE([)",
+		"RIGHT SQUARE(])",
+		"COMMA(,)",
+		"COLON(:)",
+		"END OF FILE"
+	};
 	
 	public int type;
 	public Object value;
@@ -233,29 +244,13 @@ public class Yytoken {
 		
 		this.type = type;
 		this.value = value;
+		
+		TYPE_STRINGS[0] = "VALUE(" + value + ")";
 	}
 	
-	// Code is preserved in case it is needed at some point
-	// TODO someone should do an analysis to find out if this code can be removed
-	/*@Override
+	@Override
 	public String toString() {
 		
-		StringBuilder builder = new StringBuilder();
-		
-		// ==== 01.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// Replaced switch-case with if-else because if-else is faster
-		// ====
-		
-		       if(this.type == Yytoken.TYPE_VALUE) {builder.append("VALUE(").append(this.value).append(")");
-		} else if(this.type == Yytoken.TYPE_LEFT_BRACE) {builder.append("LEFT BRACE({)");
-		} else if(this.type == Yytoken.TYPE_RIGHT_BRACE) {builder.append("RIGHT BRACE(})");
-		} else if(this.type == Yytoken.TYPE_LEFT_SQUARE) {builder.append("LEFT SQUARE([)");
-		} else if(this.type == Yytoken.TYPE_RIGHT_SQUARE) {builder.append("RIGHT SQUARE(])");
-		} else if(this.type == Yytoken.TYPE_COMMA) {builder.append("COMMA(,)");
-		} else if(this.type == Yytoken.TYPE_COLON) {builder.append("COLON(:)");
-		} else if(this.type == Yytoken.TYPE_EOF) {builder.append("END OF FILE");
-		}
-
-		return builder.toString();
-	}*/
+		return TYPE_STRINGS[this.type];
+	}
 }
