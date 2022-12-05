@@ -78,7 +78,6 @@ try {
 - Refactored `de.ralleytn.simple.json.JSONValue` to `de.ralleytn.simple.json.internal.Util`
 - The `JSONFormatter` class is no longer static and its methods no longer final
 - The classes `JSONSerializer`, `JSONTypeSerializationHandler`, `JSONRoot` and `JSONAttrbute` were moved to the new `de.ralleytn.simple.json.serialization` package
-- Updated the documentation
 - Moved the static `writeJSONString` methods to the internal `Util` class
 - Renamed the non static `writeJSONString` methods to `write`
 - Removed the `toJSONString` methods; use `toString` instead
@@ -108,7 +107,6 @@ try {
 - Cleared a conflict with `java.text.ParseException`
 - `JSONParser` now uses actual stacks
 - `JSONParser` now uses `if-else` instead of `switch-case` because it is faster
-- Updated the documentation
 - Implemented serialization
 - Implemented type safety
 - Added the `JSONFormatter` class
@@ -329,4 +327,3 @@ try {
 - [Online Documentation](https://ralleytn.github.io/SimpleJSON/)
 - [Download](https://github.com/RalleYTN/SimpleJSON/releases)
 - [Wiki](https://github.com/RalleYTN/SimpleJSON/wiki)
-- [Java 8 Compatible Version (no longer maintained)](https://github.com/RalleYTN/SimpleJSON/tree/java8)
