@@ -542,7 +542,7 @@ public class TestJSONObject {
 				+ "\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]},\"paBytes\":[100,111,99,123,66,0,0,0,9,-100],\"paShorts\":"
 				+ "[100,111,99,123,66,0,0,0,9,-100],\"paInts\":[100,111,99,123,66,0,0,0,9,-100],\"paLongs\":[100,111,99,123,66,0,0,0,9,-100],"
 				+ "\"paFloats\":[100.0,3.5,1.0E-4,9.9999998E16],\"paDoubles\":[100.0,3.5,1.0E-4,1.0E17],\"paBooleans\":"
-				+ "[true,true,false,false,true,false],\"paChars\":[H,e,l,l,o, ,t,h,e,r,e,!],\"collection\":"
+				+ "[true,true,false,false,true,false],\"paChars\":[\"H\",\"e\",\"l\",\"l\",\"o\",\" \",\"t\",\"h\",\"e\",\"r\",\"e\",\"!\"],\"collection\":"
 				+ "[true,true,false,false,true,false,null],\"untypedArray\":[true,true,false,false,true,false,null],\"paBytesEmpty\":[],"
 				+ "\"paShortsEmpty\":[],\"paIntsEmpty\":[],\"paLongsEmpty\":[],\"paFloatsEmpty\":[],\"paDoublesEmpty\":[],\"paBooleansEmpty\":[],"
 				+ "\"paCharsEmpty\":[],\"iaBytes\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaShorts\":[100,111,99,123,66,0,0,0,9,-100,null],"
