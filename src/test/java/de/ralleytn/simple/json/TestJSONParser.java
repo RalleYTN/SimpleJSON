@@ -258,6 +258,12 @@ public class TestJSONParser {
 	};
 	
 	@Test
+	public void testParseWithTralingWhitespaces() {
+		
+		assertDoesNotThrow(() -> new JSONParser().parse("   \t{}"));
+	}
+	
+	@Test
 	public void testParseWithContentHandlerPositive() {
 		
 		JSONParser parser = new JSONParser();
