@@ -258,6 +258,24 @@ public class TestJSONParser {
 	};
 	
 	@Test
+	public void testParseStrict() {
+		
+		String testData1 = "{\"key\":1 \"key\":2}";
+		String testData2 = "{\"key\" 1 \"key\" 2}";
+		String testData3 = "[1 2 3 4]";
+		
+		JSONParser parser = new JSONParser();
+		
+		assertDoesNotThrow(() -> parser.parse(testData1));
+		assertDoesNotThrow(() -> parser.parse(testData2));
+		assertDoesNotThrow(() -> parser.parse(testData3));
+		
+		assertThrows(JSONParseException.class, () -> parser.parse(testData1, true));
+		assertThrows(JSONParseException.class, () -> parser.parse(testData2, true));
+		assertThrows(JSONParseException.class, () -> parser.parse(testData3, true));
+	}
+	
+	@Test
 	public void testParseWithTralingWhitespaces() {
 		
 		assertDoesNotThrow(() -> new JSONParser().parse("   \t{}"));
