@@ -221,10 +221,10 @@ public class TestJSONSerializer {
 
 	private static final String EXPECTED_SIMPLE = "{\"age\":21,\"city\":\"Example City\",\"country\":\"Example Country\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"birth_date\":\"1998-06-01\",\"friends\":null}";
 	private static final String EXPECTED_NESTED = "{\"age\":21,\"city\":\"Example City\",\"country\":\"Example Country\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"birth_date\":\"1998-06-01\",\"friends\":[{\"age\":21,\"city\":\"Example City\",\"country\":\"Example Country\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"birth_date\":\"1998-06-01\",\"friends\":[{\"age\":21,\"city\":\"Example City\",\"country\":\"Example Country\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"birth_date\":\"1998-06-01\",\"friends\":null}]},{\"age\":21,\"city\":\"Example City\",\"country\":\"Example Country\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"birth_date\":\"1998-06-01\",\"friends\":null},{\"age\":21,\"city\":\"Example City\",\"country\":\"Example Country\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"birth_date\":\"1998-06-01\",\"friends\":null}]}";
-	private static final String EXPECTED_VARIOUS = "{\"bFalse\":false,\"bTrue\":true,\"vByte\":9,\"vEnum\":\"TEST5\",\"vEnumNull\":null,\"person\":{\"age\":0,\"city\":null,\"country\":null,\"first_name\":null,\"last_name\":null,\"birth_date\":null,\"friends\":null},\"vDouble\":14,\"vFloat\":13,\"vInt\":11,\"bFalseInstance\":false,\"bNullInstance\":null,\"bTrueInstance\":true,\"iByte\":15,\"iByteNull\":null,\"iDouble\":20,\"iDoubleNull\":null,\"iFloat\":19,\"iFloatNull\":null,\"iInt\":17,\"iIntNull\":null,\"iLong\":18,\"iLongNull\":null,\"iShort\":16,\"iShortNull\":null,\"string\":\"Hello World!\",\"stringNull\":null,\"collection\":[\"A\",\"AB\",\"C\",\"Z\",\"HHH\"],\"date\":\"Thu Jan 01 01:00:00 CET 1970\",\"map\":{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]},\"map2\":{\"nil\":null,\"map\":{\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"],\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null}},\"dInfinite\":null,\"dNaN\":null,\"double\":25.5,\"fInfinite\":null,\"fNaN\":null,\"float\":25.5,\"object\":\"Thu Jan 01 01:00:00 CET 1970\",\"number\":90001,\"string\":\"ÄÖÜäöüß\\u0000\\b\\r\\n\\\"\\\\\\f\\t\\/Hello World!\",\"bTrue\":true,\"bFalse\":false,\"jsonObject\":{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]},\"paBytes\":[100,111,99,123,66,0,0,0,9,-100],\"paShorts\":[100,111,99,123,66,0,0,0,9,-100],\"paInts\":[100,111,99,123,66,0,0,0,9,-100],\"paLongs\":[100,111,99,123,66,0,0,0,9,-100],\"paFloats\":[100.0,3.5,1.0E-4,9.9999998E16],\"paDoubles\":[100.0,3.5,1.0E-4,1.0E17],\"paBooleans\":[true,true,false,false,true,false],\"paChars\":[\"H\",\"e\",\"l\",\"l\",\"o\",\" \",\"t\",\"h\",\"e\",\"r\",\"e\",\"!\"],\"collection\":[true,true,false,false,true,false,null],\"untypedArray\":[true,true,false,false,true,false,null],\"paBytesEmpty\":[],\"paShortsEmpty\":[],\"paIntsEmpty\":[],\"paLongsEmpty\":[],\"paFloatsEmpty\":[],\"paDoublesEmpty\":[],\"paBooleansEmpty\":[],\"paCharsEmpty\":[],\"iaBytes\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaShorts\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaInts\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaLongs\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaFloats\":[100.0,3.5,1.0E-4,9.9999998E16,null],\"iaDoubles\":[100.0,3.5,1.0E-4,1.0E17,null],\"iaBooleans\":[true,true,false,false,true,false,null],\"iaStrings\":[\"A\",\"AB\",\"C\",\"Z\",\"HHH\"],\"iaBytesEmpty\":[],\"iaShortsEmpty\":[],\"iaIntsEmpty\":[],\"iaLongsEmpty\":[],\"iaFloatsEmpty\":[],\"iaDoublesEmpty\":[],\"iaBooleansEmpty\":[],\"iaStringsEmpty\":[],\"mapNull\":null,\"collectionNull\":null},\"vLong\":12,\"vShort\":10}";
+	private static final String EXPECTED_VARIOUS = "{\"bFalse\":false,\"bTrue\":true,\"vByte\":9,\"vEnum\":\"TEST5\",\"vEnumNull\":null,\"person\":{\"age\":0,\"city\":null,\"country\":null,\"first_name\":null,\"last_name\":null,\"birth_date\":null,\"friends\":null},\"vDouble\":14.4,\"vFloat\":13.3,\"vInt\":11,\"bFalseInstance\":false,\"bNullInstance\":null,\"bTrueInstance\":true,\"iByte\":15,\"iByteNull\":null,\"iDouble\":20.5,\"iDoubleNull\":null,\"iFloat\":19.9,\"iFloatNull\":null,\"iInt\":17,\"iIntNull\":null,\"iLong\":18,\"iLongNull\":null,\"iShort\":16,\"iShortNull\":null,\"string\":\"Hello World!\",\"stringNull\":null,\"collection\":[\"A\",\"AB\",\"C\",\"Z\",\"HHH\"],\"date\":\"Thu Jan 01 01:00:00 CET 1970\",\"map\":{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]},\"map2\":{\"nil\":null,\"map\":{\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"],\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null}},\"dInfinite\":null,\"dNaN\":null,\"double\":25.5,\"fInfinite\":null,\"fNaN\":null,\"float\":25.5,\"object\":\"Thu Jan 01 01:00:00 CET 1970\",\"number\":90001,\"string\":\"ÄÖÜäöüß\\u0000\\b\\r\\n\\\"\\\\\\f\\t\\/Hello World!\",\"bTrue\":true,\"bFalse\":false,\"jsonObject\":{\"status\":{\"code\":200,\"message\":\"OK\",\"error\":null},\"data\":[\"Hello World\",{\"att1\":\"Hello World!\",\"att2\":\"Hello World! 2\"},null,999,\"ÄÖÜäöüß\"]},\"paBytes\":[100,111,99,123,66,0,0,0,9,-100],\"paShorts\":[100,111,99,123,66,0,0,0,9,-100],\"paInts\":[100,111,99,123,66,0,0,0,9,-100],\"paLongs\":[100,111,99,123,66,0,0,0,9,-100],\"paFloats\":[100.0,3.5,1.0E-4,9.9999998E16],\"paDoubles\":[100.0,3.5,1.0E-4,1.0E17],\"paBooleans\":[true,true,false,false,true,false],\"paChars\":[\"H\",\"e\",\"l\",\"l\",\"o\",\" \",\"t\",\"h\",\"e\",\"r\",\"e\",\"!\"],\"collection\":[true,true,false,false,true,false,null],\"untypedArray\":[true,true,false,false,true,false,null],\"paBytesEmpty\":[],\"paShortsEmpty\":[],\"paIntsEmpty\":[],\"paLongsEmpty\":[],\"paFloatsEmpty\":[],\"paDoublesEmpty\":[],\"paBooleansEmpty\":[],\"paCharsEmpty\":[],\"iaBytes\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaShorts\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaInts\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaLongs\":[100,111,99,123,66,0,0,0,9,-100,null],\"iaFloats\":[100.0,3.5,1.0E-4,9.9999998E16,null],\"iaDoubles\":[100.0,3.5,1.0E-4,1.0E17,null],\"iaBooleans\":[true,true,false,false,true,false,null],\"iaStrings\":[\"A\",\"AB\",\"C\",\"Z\",\"HHH\"],\"iaBytesEmpty\":[],\"iaShortsEmpty\":[],\"iaIntsEmpty\":[],\"iaLongsEmpty\":[],\"iaFloatsEmpty\":[],\"iaDoublesEmpty\":[],\"iaBooleansEmpty\":[],\"iaStringsEmpty\":[],\"mapNull\":null,\"collectionNull\":null},\"vLong\":12,\"vShort\":10}";
 	private static final String EXPECTED_PRIMITIVE_ARRAYS = "{\"booleans\":[true,true,false,false,true,false],\"bytes\":[100,111,99,123,66,0,0,0,9,-100],\"doubles\":[100.0,3.5,1.0E-4,1.0E17],\"floats\":[100.0,3.5,1.0E-4,9.9999998E16],\"ints\":[100,111,99,123,66,0,0,0,9,-100],\"longs\":[100,111,99,123,66,0,0,0,9,-100],\"shorts\":[100,111,99,123,66,0,0,0,9,-100]}";
 	
-	//@Test
+	@Test
 	public void testDeserializeVarious() {
 		
 		TestDataContainerVarious container = new TestDataContainerVarious().empty();
@@ -255,6 +255,22 @@ public class TestJSONSerializer {
 	}
 	
 	@Test
+	public void testDeserializeNestedWithFields() {
+		
+		TestPersonWithPublicFields person = new TestPersonWithPublicFields().empty();
+		assertDoesNotThrow(() -> JSONSerializer.deserialize(new JSONObject(EXPECTED_NESTED), person));
+		assertEquals(person, createJohnDoeNested());
+	}
+	
+	@Test
+	public void testDeserializeNestedWithMethods() {
+		
+		TestPersonWithGettersAndSetterMethods person = new TestPersonWithGettersAndSetterMethods().empty();
+		assertDoesNotThrow(() -> JSONSerializer.deserialize(new JSONObject(EXPECTED_NESTED), person));
+		assertEquals(person, createJohnDoeBeanNested());
+	}
+	
+	@Test
 	public void testSerializeObjectWithVariousValues() {
 		
 		assertDoesNotThrow(() -> assertEquals(EXPECTED_VARIOUS, JSONSerializer.serialize(new TestDataContainerVarious()).toString()));
@@ -276,25 +292,35 @@ public class TestJSONSerializer {
 	@Test
 	public void testSerializeNestedWithFields() {
 		
+		assertDoesNotThrow(() -> assertEquals(EXPECTED_NESTED, JSONSerializer.serialize(createJohnDoeNested()).toString()));
+	}
+	
+	@Test
+	public void testSerializeNestedWithMethods() {
+		
+		assertDoesNotThrow(() -> assertEquals(EXPECTED_NESTED, JSONSerializer.serialize(createJohnDoeBeanNested()).toString()));
+	}
+	
+	private static final TestPersonWithPublicFields createJohnDoeNested() {
+		
 		TestPersonWithPublicFields nestedPerson = createJohnDoe();
 		nestedPerson.friends = new ArrayList<TestPersonWithPublicFields>(Arrays.asList(createJohnDoe()));
 		
 		TestPersonWithPublicFields person = createJohnDoe();
 		person.friends = new ArrayList<TestPersonWithPublicFields>(Arrays.asList(nestedPerson, createJohnDoe(), createJohnDoe()));
 		
-		assertDoesNotThrow(() -> assertEquals(EXPECTED_NESTED, JSONSerializer.serialize(person).toString()));
+		return person;
 	}
 	
-	@Test
-	public void testSerializeNestedWithMethods() {
+	private static final TestPersonWithGettersAndSetterMethods createJohnDoeBeanNested() {
 		
 		TestPersonWithGettersAndSetterMethods nestedPerson = createJohnDoeBean();
-		nestedPerson.setFriends(new ArrayList<>(Arrays.asList(createJohnDoeBean())));
+		nestedPerson.setFriends(new ArrayList<TestPersonWithGettersAndSetterMethods>(Arrays.asList(createJohnDoeBean())));
 		
 		TestPersonWithGettersAndSetterMethods person = createJohnDoeBean();
-		person.setFriends(new ArrayList<>(Arrays.asList(nestedPerson, createJohnDoeBean(), createJohnDoeBean())));
+		person.setFriends(new ArrayList<TestPersonWithGettersAndSetterMethods>(Arrays.asList(nestedPerson, createJohnDoeBean(), createJohnDoeBean())));
 		
-		assertDoesNotThrow(() -> assertEquals(EXPECTED_NESTED, JSONSerializer.serialize(person).toString()));
+		return person;
 	}
 	
 	private static final TestPersonWithPublicFields createJohnDoe() {
@@ -312,16 +338,6 @@ public class TestJSONSerializer {
 		person.postalCode = "12345";
 		
 		return person;
-	}
-	
-	private static final void testJohnDoe(TestPersonWithPublicFields person) {
-		
-		assertEquals(person.firstName, "John");
-		assertEquals(person.lastName, "Doe");
-		assertEquals(person.age, 21);
-		assertEquals(person.birthDate, LocalDate.of(1998, 6, 1));
-		assertEquals(person.city, "Example City");
-		assertEquals(person.country, "Example Country");
 	}
 	
 	private static final TestPersonWithGettersAndSetterMethods createJohnDoeBean() {
@@ -349,5 +365,15 @@ public class TestJSONSerializer {
 		assertEquals(person.getBirthDate(), LocalDate.of(1998, 6, 1));
 		assertEquals(person.getCity(), "Example City");
 		assertEquals(person.getCountry(), "Example Country");
+	}
+	
+	private static final void testJohnDoe(TestPersonWithPublicFields person) {
+		
+		assertEquals(person.firstName, "John");
+		assertEquals(person.lastName, "Doe");
+		assertEquals(person.age, 21);
+		assertEquals(person.birthDate, LocalDate.of(1998, 6, 1));
+		assertEquals(person.city, "Example City");
+		assertEquals(person.country, "Example Country");
 	}
 }

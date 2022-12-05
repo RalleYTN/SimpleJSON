@@ -223,10 +223,68 @@ public class TestPersonWithGettersAndSetterMethods implements Serializable, JSON
 	private String city;
 	private String country;
 	private LocalDate birthDate;
-	private List<TestPersonWithGettersAndSetterMethods> friends;
+	private ArrayList<TestPersonWithGettersAndSetterMethods> friends;
 	private boolean bloodDonor;
 	private String gender;
 	private String postalCode;
+	
+	public TestPersonWithGettersAndSetterMethods empty() {
+		
+		this.firstName = null;
+		this.lastName = null;
+		this.age = 0;
+		this.city = null;
+		this.country = null;
+		this.birthDate = null;
+		this.friends = null;
+		this.bloodDonor = false;
+		this.gender = null;
+		this.postalCode = null;
+		
+		return this;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+
+		if(obj != null && obj instanceof TestPersonWithGettersAndSetterMethods) {
+			
+			TestPersonWithGettersAndSetterMethods other = (TestPersonWithGettersAndSetterMethods)obj;
+
+			return this.equals(this.firstName, other.firstName) &&
+				   this.equals(this.lastName, other.lastName) &&
+				   this.age == other.age &&
+				   this.equals(this.city, other.city) &&
+				   this.equals(this.country, other.country) &&
+				   this.equals(this.birthDate, other.birthDate) &&
+				   this.equals(this.friends, other.friends);
+		}
+		
+		return false;
+	}
+	
+	private boolean equals(Object thisValue, Object otherValue) {
+
+		return thisValue == null ? otherValue == null : thisValue.equals(otherValue);
+	}
+	
+	private boolean equals(ArrayList<TestPersonWithGettersAndSetterMethods> thisValue, ArrayList<TestPersonWithGettersAndSetterMethods> otherValue) {
+
+		if(thisValue != null && otherValue != null && thisValue.size() == otherValue.size()) {
+
+			for(int index = 0; index < thisValue.size(); index++) {
+				
+				if(!thisValue.get(index).equals(otherValue.get(index))) {
+					
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
+		return thisValue == otherValue;
+	}
 	
 	public void setGender(String gender) {
 		
@@ -280,7 +338,7 @@ public class TestPersonWithGettersAndSetterMethods implements Serializable, JSON
 		this.birthDate = birthDate;
 	}
 	
-	@JSONAttribute(type = JSONAttribute.Type.SETTER, name = "friends")
+	@JSONAttribute(type = JSONAttribute.Type.SETTER, name = "friends", genericType = TestPersonWithGettersAndSetterMethods.class)
 	public void setFriends(ArrayList<TestPersonWithGettersAndSetterMethods> friends) {
 		
 		this.friends = friends;
