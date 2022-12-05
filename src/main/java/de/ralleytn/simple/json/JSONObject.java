@@ -256,6 +256,18 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 	}
 	
 	/**
+	 * Constructs a {@linkplain JSONObject} from JSON data.
+	 * @param json the JSON data
+	 * @param strict {@code true} for strict validation of JSON data; {@code false} if missing colons and commas should be tolerated
+	 * @throws JSONParseException if the JSON data is invalid
+	 * @since 2.1.0
+	 */
+	public JSONObject(String json, boolean strict) throws JSONParseException {
+		
+		super((JSONObject)new JSONParser().parse(json, strict));
+	}
+	
+	/**
 	 * Constructs a {@linkplain JSONObject} with JSON data from a {@linkplain Reader}.
 	 * @param reader the {@linkplain Reader} with the JSON data
 	 * @throws IOException if an I/O error occurred
@@ -265,6 +277,19 @@ public class JSONObject extends LinkedHashMap<Object, Object> {
 	public JSONObject(Reader reader) throws IOException, JSONParseException {
 		
 		super((JSONObject)new JSONParser().parse(reader));
+	}
+	
+	/**
+	 * Constructs a {@linkplain JSONObject} with JSON data from a {@linkplain Reader}.
+	 * @param reader the {@linkplain Reader} with the JSON data
+	 * @param strict {@code true} for strict validation of JSON data; {@code false} if missing colons and commas should be tolerated
+	 * @throws IOException if an I/O error occurred
+	 * @throws JSONParseException if the JSON is invalid
+	 * @since 2.1.0
+	 */
+	public JSONObject(Reader reader, boolean strict) throws IOException, JSONParseException {
+		
+		super((JSONObject)new JSONParser().parse(reader, strict));
 	}
 
 	/**

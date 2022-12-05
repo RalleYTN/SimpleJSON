@@ -88,9 +88,14 @@ Then add the following as dependency:
 - Behavior of `JSONObject#compact()` has changed; the `compact` method will now also be called recursively for all child objects
 - Increased unit test coverage
 - Cleaned the code
-- *[#7](https://github.com/RalleYTN/SimpleJSON/issues/7)*: Added new constructor to `JSONFormatter`
+- *[#5](https://github.com/RalleYTN/SimpleJSON/issues/5)*: Added `JSONParser#parse(String,boolean)`
+- *[#5](https://github.com/RalleYTN/SimpleJSON/issues/5)*: Added `JSONParser#parse(Reader,boolean)`
+- *[#5](https://github.com/RalleYTN/SimpleJSON/issues/5)*: Added `JSONParser#parse(Reader,JSONContentHandler,boolean,boolean)`
+- *[#5](https://github.com/RalleYTN/SimpleJSON/issues/5)*: Added new constructors to `JSONArray`
+- *[#5](https://github.com/RalleYTN/SimpleJSON/issues/5)*: Added new constructors to `JSONObject`
 - *[#6](https://github.com/RalleYTN/SimpleJSON/issues/6)*: Added `JSONFormatter#format(JSONArray,Writer)`
 - *[#6](https://github.com/RalleYTN/SimpleJSON/issues/6)*: Added `JSONFormatter#format(JSONObject,Writer)`
+- *[#7](https://github.com/RalleYTN/SimpleJSON/issues/7)*: Added new constructor to `JSONFormatter`
 - Added `JSONAttribute#genericType()`
 - *BUGFIX*: Fixed a typo in `JSONParseException`
 - *BUGFIX*: Fixed a possible `NullPointerException` in `JSONObject#equals(Object)`
@@ -99,6 +104,7 @@ Then add the following as dependency:
 - *BUGFIX*: Fixed a bug that caused floating point numbers to be serialized as integers
 - *BUGFIX*: Fixed a bug that caused values of collections and maps to be deserialized as `JSONObject` instead of their respectively defined generic type.
 - *BUGFIX*: Fixed a bug that caused character arrays to not convert into string arrays during JSON output under certain circumstances.
+- *BUGFIX*: JSONParseException will now actually show a string representation of the unexpected token instead of its ID
 
 ### Version 2.0.0
 <sub>NOTE: This version is incompatible with older versions of the library.</sub>

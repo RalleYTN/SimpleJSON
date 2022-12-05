@@ -393,6 +393,18 @@ public class JSONArray extends ArrayList<Object> {
 	}
 	
 	/**
+	 * Constructs a {@linkplain JSONArray} from a JSON string.
+	 * @param json the JSON string
+	 * @param strict {@code true} for strict validation of JSON data; {@code false} if missing colons and commas should be tolerated
+	 * @throws JSONParseException if the JSON is invalid
+	 * @since 2.1.0
+	 */
+	public JSONArray(String json, boolean strict) throws JSONParseException {
+		
+		super((JSONArray)new JSONParser().parse(json, strict));
+	}
+	
+	/**
 	 * Constructs a {@linkplain JSONArray} from JSON data read from a {@linkplain Reader}.
 	 * @param reader the {@linkplain Reader}
 	 * @throws JSONParseException if the JSON is invalid
@@ -400,6 +412,19 @@ public class JSONArray extends ArrayList<Object> {
 	 * @since 1.0.0
 	 */
 	public JSONArray(Reader reader) throws JSONParseException, IOException {
+		
+		super((JSONArray)new JSONParser().parse(reader));
+	}
+	
+	/**
+	 * Constructs a {@linkplain JSONArray} from JSON data read from a {@linkplain Reader}.
+	 * @param reader the {@linkplain Reader}
+	 * @param strict {@code true} for strict validation of JSON data; {@code false} if missing colons and commas should be tolerated
+	 * @throws JSONParseException if the JSON is invalid
+	 * @throws IOException if an I/O error occurred
+	 * @since 2.1.0
+	 */
+	public JSONArray(Reader reader, boolean strict) throws JSONParseException, IOException {
 		
 		super((JSONArray)new JSONParser().parse(reader));
 	}

@@ -235,6 +235,7 @@ public class JSONParser {
 	private Stack<Object> handlerStatusStack;
 	private Yylex lexer = new Yylex((Reader)null);
 	private Yytoken token;
+	private Yytoken lastToken;
 	private int status = STATUS_INIT;
 	
 	private final void nextToken() throws JSONParseException, IOException {
@@ -411,6 +412,7 @@ public class JSONParser {
     public void reset() {
     	
         this.token = null;
+        this.lastToken = null;
         this.status = STATUS_INIT;
         this.handlerStatusStack = null;
     }
@@ -443,7 +445,7 @@ public class JSONParser {
 		
 		return this.lexer.getPosition();
 	}
-
+	
 	/**
 	 * Parses JSON data.
 	 * @param json the JSON data
@@ -461,9 +463,30 @@ public class JSONParser {
 	 */
 	public Object parse(String json) throws JSONParseException {
 		
+		return this.parse(json, false);
+	}
+
+	/**
+	 * Parses JSON data.
+	 * @param json the JSON data
+	 * @param strict {@code true} for strict validation of JSON data; {@code false} if missing colons and commas should be tolerated
+	 * @return An instance of:
+	 * <ul>
+	 * <li>{@linkplain JSONObject}</li>
+	 * <li>{@linkplain JSONArray}</li>
+	 * <li>{@linkplain String}</li>
+	 * <li>{@linkplain Number}</li>
+	 * <li>{@linkplain Boolean}</li>
+	 * <li>{@code null}</li>
+	 * </ul>
+	 * @throws JSONParseException if the JSON is invalid
+	 * @since 2.1.0
+	 */
+	public Object parse(String json, boolean strict) throws JSONParseException {
+		
 		try(StringReader reader = new StringReader(json)) {
 			
-			return this.parse(reader);
+			return this.parse(reader, strict);
 			
 		} catch(IOException exception) {
 			
@@ -490,6 +513,28 @@ public class JSONParser {
 	 */
 	public Object parse(Reader reader) throws IOException, JSONParseException {
 		
+		return this.parse(reader, false);
+	}
+	
+	/**
+	 * Parses JSON data from a {@linkplain Reader}.
+	 * @param reader the {@linkplain Reader}
+	 * @param strict {@code true} for strict validation of JSON data; {@code false} if missing colons and commas should be tolerated
+	 * @return An instance of:
+	 * <ul>
+	 * <li>{@linkplain JSONObject}</li>
+	 * <li>{@linkplain JSONArray}</li>
+	 * <li>{@linkplain String}</li>
+	 * <li>{@linkplain Number}</li>
+	 * <li>{@linkplain Boolean}</li>
+	 * <li>{@code null}</li>
+	 * </ul>
+	 * @throws IOException if an I/O error occurs
+	 * @throws JSONParseException if the JSON is invalid
+	 * @since 2.1.0
+	 */
+	public Object parse(Reader reader, boolean strict) throws IOException, JSONParseException {
+		
 		this.reset(reader);
 		Stack<Object> statusStack = new Stack<>();
 		Stack<Object> valueStack = new Stack<>();
@@ -497,6 +542,11 @@ public class JSONParser {
 		do {
 			
 			this.nextToken();
+			
+			if(strict) {
+				
+				this.validateCommaAndColonPlacement();
+			}
 			
 			switch(this.status) {
 				case STATUS_INIT:
@@ -521,6 +571,8 @@ public class JSONParser {
 				
 				throw new JSONParseException(getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, token);
 			}
+			
+			this.lastToken = this.token;
 	
 		} while(this.token.type != Yytoken.TYPE_EOF);
 
@@ -587,12 +639,33 @@ public class JSONParser {
 	 */
 	public void parse(Reader reader, JSONContentHandler contentHandler, boolean resume) throws IOException, JSONParseException {
 		
+		this.parse(reader, contentHandler, resume, false);
+	}
+	
+	/**
+	 * Goes over JSON data step by step using a {@linkplain JSONContentHandler}.
+	 * @see JSONContentHandler
+	 * @param reader the {@linkplain Reader}
+	 * @param contentHandler the {@linkplain JSONContentHandler}
+	 * @param resume Indicates if the previous parsing operation should be continued.
+	 * @param strict {@code true} for strict validation of JSON data; {@code false} if missing colons and commas should be tolerated
+	 * @throws IOException if an I/O error occurs or the {@linkplain JSONContentHandler} throws it
+	 * @throws JSONParseException if the JSON is invalid or the {@linkplain JSONContentHandler} throws it
+	 * @since 2.1.0
+	 */
+	public void parse(Reader reader, JSONContentHandler contentHandler, boolean resume, boolean strict) throws IOException, JSONParseException {
+		
 		this.reset(reader, resume);
 		Stack<Object> statusStack = this.handlerStatusStack;	
 		
 		try {
 			
 			do {
+				
+				if(strict) {
+					
+					this.validateCommaAndColonPlacement();
+				}
 				
 				switch(this.status) {
 					case STATUS_INIT:
@@ -625,6 +698,8 @@ public class JSONParser {
 						throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
 				}
 				
+				this.lastToken = this.token;
+				
 			} while(this.token.type != Yytoken.TYPE_EOF);
 		
 		} catch(IOException | JSONParseException | RuntimeException | Error exception) {
@@ -638,6 +713,29 @@ public class JSONParser {
 		
 		this.status = STATUS_IN_ERROR;
 		throw new JSONParseException(this.getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, this.token);
+	}
+	
+	private void validateCommaAndColonPlacement() throws JSONParseException {
+		
+		if(this.token.type == Yytoken.TYPE_VALUE) {
+			
+			if(this.status == STATUS_IN_ARRAY) {
+				
+				if(!(this.lastToken.type == Yytoken.TYPE_COMMA || this.lastToken.type == Yytoken.TYPE_LEFT_SQUARE)) {
+					
+					throw new JSONParseException(getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, token);
+				}
+				
+			} else if(this.status == STATUS_IN_OBJECT) {
+				
+				if(!(this.lastToken.type == Yytoken.TYPE_COLON ||
+					 this.lastToken.type == Yytoken.TYPE_LEFT_BRACE ||
+					 this.lastToken.type == Yytoken.TYPE_COMMA)) {
+
+					throw new JSONParseException(getPosition(), JSONParseException.ERROR_UNEXPECTED_TOKEN, token);
+				}
+			}
+		}
 	}
 	
 	private boolean handleStatusInArray(Stack<Object> statusStack, JSONContentHandler contentHandler) throws JSONParseException, IOException {
