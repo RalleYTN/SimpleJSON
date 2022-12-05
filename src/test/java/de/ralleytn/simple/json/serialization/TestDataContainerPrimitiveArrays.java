@@ -201,10 +201,7 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.beans;
-
-import de.ralleytn.simple.json.serialization.JSONAttribute;
-import de.ralleytn.simple.json.serialization.JSONRoot;
+package de.ralleytn.simple.json.serialization;
 
 import static de.ralleytn.simple.json.TestUtil.*;
 

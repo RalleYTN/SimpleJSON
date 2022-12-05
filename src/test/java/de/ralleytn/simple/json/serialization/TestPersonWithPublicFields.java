@@ -201,15 +201,11 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.beans;
+package de.ralleytn.simple.json.serialization;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
-import de.ralleytn.simple.json.serialization.JSONAttribute;
-import de.ralleytn.simple.json.serialization.JSONRoot;
-import de.ralleytn.simple.json.serialization.JSONTypeSerializationHandler;
 
 @JSONRoot
 public class TestPersonWithPublicFields implements Serializable, JSONTypeSerializationHandler {

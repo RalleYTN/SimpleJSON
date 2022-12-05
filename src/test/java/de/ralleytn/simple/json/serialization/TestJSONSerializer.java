@@ -212,10 +212,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import de.ralleytn.simple.json.JSONObject;
-import de.ralleytn.simple.json.beans.TestDataContainerPrimitiveArrays;
-import de.ralleytn.simple.json.beans.TestDataContainerVarious;
-import de.ralleytn.simple.json.beans.TestPersonWithGettersAndSetterMethods;
-import de.ralleytn.simple.json.beans.TestPersonWithPublicFields;
 
 public class TestJSONSerializer {
 

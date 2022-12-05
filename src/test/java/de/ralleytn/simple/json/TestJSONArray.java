@@ -221,7 +221,7 @@ import static de.ralleytn.simple.json.TestUtil.*;
 
 import org.junit.jupiter.api.Test;
 
-import de.ralleytn.simple.json.beans.TestEnum;
+import de.ralleytn.simple.json.serialization.TestEnum;
 
 public class TestJSONArray {
 	

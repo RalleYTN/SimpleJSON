@@ -201,15 +201,13 @@
  *    See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ralleytn.simple.json.beans;
+package de.ralleytn.simple.json.serialization;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
 import de.ralleytn.simple.json.JSONObject;
-import de.ralleytn.simple.json.serialization.JSONAttribute;
-import de.ralleytn.simple.json.serialization.JSONRoot;
 
 import static de.ralleytn.simple.json.TestUtil.*;
 
