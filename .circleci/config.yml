@@ -17,8 +17,8 @@ jobs:
                 path: target/site/jacoco/jacoco.xml
                 destination: jacoco.xml
             - store_artifacts:
-                path: target/SimpleJSON-2.1.0.jar
-                destination: SimpleJSON-2.1.0.jar
+                path: target/SimpleJSON-2.1.1.jar
+                destination: SimpleJSON-2.1.1.jar
 workflows:
     Workflow:
         jobs:
