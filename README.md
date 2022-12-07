@@ -75,7 +75,7 @@ Then add the following as dependency:
 	<groupId>com.github.RalleYTN</groupId>
 	<artifactId>SimpleJSON</artifactId>
 	<!-- NOTE: You can also use the commit ID as version number -->
-	<version>2.1.0</version>
+	<version>2.1.1</version>
 </dependency>
 ```
 
